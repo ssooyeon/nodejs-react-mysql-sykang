@@ -33,7 +33,7 @@ export default function Footer(props) {
             <a href="https://github.com/ssooyeon/nodejs-react-mysql-sykang" target="_blank" className={classes.a}>
               Sykang
             </a>
-            , <i class="fa fa-heart heart"></i> 🙌🙌
+            , <i className="fa fa-heart heart"></i> 🙌🙌
           </span>
         </p>
       </div>
