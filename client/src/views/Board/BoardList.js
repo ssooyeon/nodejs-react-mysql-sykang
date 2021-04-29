@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Moment from "react-moment";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Pagination from "@material-ui/lab/Pagination";
@@ -130,9 +131,9 @@ export default function BoardList() {
                   <p className={classes.cardContent}>{board.content.length > 200 ? board.content.substr(0, 200) + "..." : board.content}</p>
                 </CardBody>
                 <CardFooter stats>
-                  {/* TODO: using moment for date */}
-                  {/* <div className={classes.stats}>{this.$moment(board.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div> */}
-                  <div className={classes.stats}>{board.createdAt}</div>
+                  <div className={classes.stats}>
+                    <Moment format="YYYY-MM-DD HH:mm:ss">{board.createdAt}</Moment>
+                  </div>
                   <div className={classes.stats}>
                     by &nbsp; <strong>{board.user.account}</strong>
                   </div>

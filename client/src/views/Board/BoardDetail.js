@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useAlert } from "react-alert-17";
+import Moment from "react-moment";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
@@ -136,7 +137,9 @@ export default function BoardDetail(props) {
             <CardFooter stats>
               {/* TODO: using moment for date */}
               {/* <div className={classes.stats}>{this.$moment(board.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div> */}
-              <div className={classes.stats}>{boards.createdAt}</div>
+              <div className={classes.stats}>
+                <Moment format="YYYY-MM-DD HH:mm:ss">{boards.createdAt}</Moment>
+              </div>
               <div className={classes.stats}>
                 {/* TODO: not working */}
                 {/* <strong>{boards.user.account}</strong> */}
