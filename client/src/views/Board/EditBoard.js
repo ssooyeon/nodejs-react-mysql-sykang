@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useAlert } from "react-alert-17";
+import SimpleReactValidator from "simple-react-validator";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { ArrowBack } from "@material-ui/icons";
@@ -22,6 +23,10 @@ const styles = {
   cardFooter: {
     justifyContent: "center",
   },
+  errorText: {
+    color: "red",
+    margin: "auto",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -29,6 +34,7 @@ const useStyles = makeStyles(styles);
 export default function EditBoard(props) {
   const classes = useStyles();
   const alert = useAlert();
+  const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
 
   const initialBoardstate = {
     id: null,
@@ -36,6 +42,9 @@ export default function EditBoard(props) {
     content: "",
     userId: null,
   };
+
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
 
   const [currentBoard, setCurrentBoard] = useState(initialBoardstate);
   const dispatch = useDispatch();
@@ -60,20 +69,26 @@ export default function EditBoard(props) {
   };
 
   const saveBoard = () => {
-    dispatch(updateBoard(currentBoard.id, currentBoard))
-      .then(() => {
-        alert.show("The Board was updated successfully.", {
-          title: "",
-          type: "success",
-          onClose: () => {
-            setCurrentBoard(initialBoardstate);
-            props.history.push(`/admin/board/detail/${props.match.params.id}`);
-          },
+    const valid = validator.current.allValid();
+    if (valid) {
+      dispatch(updateBoard(currentBoard.id, currentBoard))
+        .then(() => {
+          alert.show("The Board was updated successfully.", {
+            title: "",
+            type: "success",
+            onClose: () => {
+              setCurrentBoard(initialBoardstate);
+              props.history.push(`/admin/board/detail/${props.match.params.id}`);
+            },
+          });
+        })
+        .catch((e) => {
+          console.log(e);
         });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    } else {
+      validator.current.showMessages();
+      forceUpdate();
+    }
   };
 
   return (
@@ -81,48 +96,54 @@ export default function EditBoard(props) {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Card>
-            <CardHeader>
-              <h4 className={classes.cardTitleWhite}>Edit Board</h4>
-            </CardHeader>
-            <CardBody>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <CustomInput
-                    labelText="Title"
-                    id="title"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      name: "title",
-                      value: currentBoard.title,
-                      onChange: (e) => handleInputChange(e),
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <CustomInput
-                    labelText="Content"
-                    id="content"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      name: "content",
-                      value: currentBoard.content,
-                      onChange: (e) => handleInputChange(e),
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-            </CardBody>
-            <CardFooter className={classes.cardFooter}>
-              <Button color="primary" onClick={saveBoard}>
-                Submit
-              </Button>
-            </CardFooter>
+            <form autoComplete="off">
+              <CardHeader>
+                <h4 className={classes.cardTitleWhite}>Edit Board</h4>
+              </CardHeader>
+              <CardBody>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <CustomInput
+                      labelText="Title"
+                      id="title"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        name: "title",
+                        value: currentBoard.title,
+                        onChange: (e) => handleInputChange(e),
+                        onBlur: () => validator.current.showMessageFor("title"),
+                      }}
+                    />
+                    <p className={classes.errorText}>{validator.current.message("title", currentBoard.title, "required")}</p>
+                  </GridItem>
+                </GridContainer>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <CustomInput
+                      labelText="Content"
+                      id="content"
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                      inputProps={{
+                        name: "content",
+                        value: currentBoard.content,
+                        onChange: (e) => handleInputChange(e),
+                        onBlur: () => validator.current.showMessageFor("content"),
+                      }}
+                    />
+                    <p className={classes.errorText}>{validator.current.message("content", currentBoard.content, "required")}</p>
+                  </GridItem>
+                </GridContainer>
+              </CardBody>
+              <CardFooter className={classes.cardFooter}>
+                <Button color="primary" onClick={saveBoard}>
+                  Submit
+                </Button>
+              </CardFooter>
+            </form>
           </Card>
         </GridItem>
       </GridContainer>
