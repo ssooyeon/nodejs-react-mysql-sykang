@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useAlert } from "react-alert-17";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { ArrowBack } from "@material-ui/icons";
@@ -13,6 +15,9 @@ import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 import CardFooter from "components/Card/CardFooter";
 
+import { updateBoard } from "actions/boards";
+import BoardService from "services/BoardService";
+
 const styles = {
   cardFooter: {
     justifyContent: "center",
@@ -21,8 +26,56 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function EditBoard() {
+export default function EditBoard(props) {
   const classes = useStyles();
+  const alert = useAlert();
+
+  const initialBoardstate = {
+    id: null,
+    title: "",
+    content: "",
+    userId: null,
+  };
+
+  const [currentBoard, setCurrentBoard] = useState(initialBoardstate);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getBoard(props.match.params.id);
+  }, []);
+
+  const getBoard = (id) => {
+    BoardService.get(id)
+      .then((res) => {
+        setCurrentBoard(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentBoard({ ...currentBoard, [name]: value });
+  };
+
+  const saveBoard = () => {
+    dispatch(updateBoard(currentBoard.id, currentBoard))
+      .then(() => {
+        alert.show("The Board was updated successfully.", {
+          title: "",
+          type: "success",
+          onClose: () => {
+            setCurrentBoard(initialBoardstate);
+            props.history.push(`/admin/board/detail/${props.match.params.id}`);
+          },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   return (
     <>
       <GridContainer>
@@ -40,6 +93,11 @@ export default function EditBoard() {
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    inputProps={{
+                      name: "title",
+                      value: currentBoard.title,
+                      onChange: (e) => handleInputChange(e),
+                    }}
                   />
                 </GridItem>
               </GridContainer>
@@ -51,17 +109,24 @@ export default function EditBoard() {
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    inputProps={{
+                      name: "content",
+                      value: currentBoard.content,
+                      onChange: (e) => handleInputChange(e),
+                    }}
                   />
                 </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter className={classes.cardFooter}>
-              <Button color="primary">Submit</Button>
+              <Button color="primary" onClick={saveBoard}>
+                Submit
+              </Button>
             </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
-      <Link className={classes.cardLink} to={"/admin/board/"}>
+      <Link className={classes.cardLink} to={`/admin/board/detail/${props.match.params.id}`}>
         <Button>
           <ArrowBack />
           Back

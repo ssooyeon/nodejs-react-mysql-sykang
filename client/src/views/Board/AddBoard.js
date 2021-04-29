@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useAlert } from "react-alert-17";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { ArrowBack } from "@material-ui/icons";
@@ -24,29 +25,35 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function AddBoard() {
+export default function AddBoard(props) {
   const classes = useStyles();
+  const alert = useAlert();
 
   const initialBoardstate = {
-    id: null,
     title: "",
     content: "",
+    userId: 1, // TODO: binding current user (with store)
   };
 
   const [board, setBoard] = useState(initialBoardstate);
   const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
-    // const { name, value } = e.target;
-    console.log(e.target);
-    // setBoard({ ...board, [name]: value });
+    const { name, value } = e.target;
+    setBoard({ ...board, [name]: value });
   };
 
   const saveBoard = () => {
     console.log(board);
     dispatch(createBoard(board))
-      .then((data) => {
-        console.log("success");
+      .then(() => {
+        alert.show("The Board was created successfully.", {
+          title: "",
+          type: "success",
+          onClose: () => {
+            props.history.push("/admin/board");
+          },
+        });
       })
       .catch((e) => {
         console.log(e);
@@ -69,9 +76,12 @@ export default function AddBoard() {
                     id="title"
                     name="title"
                     value={board.title}
-                    // onChange={(e) => handleInputChange(e)}
                     formControlProps={{
                       fullWidth: true,
+                    }}
+                    inputProps={{
+                      name: "title",
+                      onChange: (e) => handleInputChange(e),
                     }}
                   />
                 </GridItem>
@@ -83,9 +93,12 @@ export default function AddBoard() {
                     id="content"
                     name="content"
                     value={board.content}
-                    // onChange={handleInputChange}
                     formControlProps={{
                       fullWidth: true,
+                    }}
+                    inputProps={{
+                      name: "content",
+                      onChange: (e) => handleInputChange(e),
                     }}
                   />
                 </GridItem>

@@ -130,6 +130,7 @@ export default function BoardList() {
                   <p className={classes.cardContent}>{board.content.length > 200 ? board.content.substr(0, 200) + "..." : board.content}</p>
                 </CardBody>
                 <CardFooter stats>
+                  {/* TODO: using moment for date */}
                   {/* <div className={classes.stats}>{this.$moment(board.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div> */}
                   <div className={classes.stats}>{board.createdAt}</div>
                   <div className={classes.stats}>

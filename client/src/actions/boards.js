@@ -36,6 +36,7 @@ export const retrieveBoard = (id) => async (dispatch) => {
       type: RETRIEVE_BOARD,
       payload: res.data,
     });
+    console.log(res.data);
   } catch (err) {
     console.log(err);
   }
@@ -44,7 +45,6 @@ export const retrieveBoard = (id) => async (dispatch) => {
 export const updateBoard = (id, data) => async (dispatch) => {
   try {
     const res = await BoardService.update(id, data);
-
     dispatch({
       type: UPDATE_BOARD,
       payload: data,
@@ -58,7 +58,7 @@ export const updateBoard = (id, data) => async (dispatch) => {
 
 export const deleteBoard = (id) => async (dispatch) => {
   try {
-    await BoardService.remove(id);
+    await BoardService.delete(id);
 
     dispatch({
       type: DELETE_BOARD,
@@ -71,7 +71,7 @@ export const deleteBoard = (id) => async (dispatch) => {
 
 export const deleteAllBoards = () => async (dispatch) => {
   try {
-    const res = await BoardService.removeAll();
+    const res = await BoardService.deleteAll();
 
     dispatch({
       type: DELETE_ALL_BOARDS,

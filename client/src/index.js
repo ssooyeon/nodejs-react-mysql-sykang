@@ -1,14 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import AlertMUITemplate from "react-alert-template-mui";
 import App from "./App";
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
+import { transitions, positions, Provider as AlertProvider } from "react-alert-17";
 import { Provider } from "react-redux";
 import store from "./store";
 
+const options = {
+  position: positions.MIDDLE,
+};
+
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <AlertProvider template={AlertMUITemplate} {...options}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </AlertProvider>,
   document.getElementById("root")
 );

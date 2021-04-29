@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useAlert } from "react-alert-17";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
@@ -16,7 +17,7 @@ import CardHeader from "components/Card/CardHeader";
 import CardFooter from "components/Card/CardFooter";
 import CardBody from "components/Card/CardBody";
 
-import { retrieveBoard } from "actions/boards";
+import { retrieveBoard, deleteBoard } from "actions/boards";
 
 const styles = {
   buttonWrapper: {
@@ -69,6 +70,7 @@ const useStyles = makeStyles(styles);
 
 export default function BoardDetail(props) {
   const classes = useStyles();
+  const alert = useAlert();
 
   const boards = useSelector((state) => state.boards);
   const dispatch = useDispatch();
@@ -77,6 +79,37 @@ export default function BoardDetail(props) {
     const id = props.match.params.id;
     dispatch(retrieveBoard(id));
   }, []);
+
+  const confirmRemoveBoard = () => {
+    alert.show("Are you sure delete this board?", {
+      title: "",
+      closeCopy: "Cancel",
+      type: "success",
+      actions: [
+        {
+          copy: "YES",
+          onClick: () => removeBoard(),
+        },
+      ],
+    });
+  };
+
+  const removeBoard = () => {
+    const id = props.match.params.id;
+    dispatch(deleteBoard(id))
+      .then(() => {
+        alert.show("The Board was created successfully.", {
+          title: "",
+          type: "success",
+          onClose: () => {
+            props.history.push("/admin/board");
+          },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -91,11 +124,9 @@ export default function BoardDetail(props) {
                     <Edit />
                   </Button>
                 </Link>
-                <Link to={"/"}>
-                  <Button color="danger" justIcon>
-                    <Delete />
-                  </Button>
-                </Link>
+                <Button color="danger" justIcon onClick={confirmRemoveBoard}>
+                  <Delete />
+                </Button>
               </div>
             </CardHeader>
             <Divider light />
@@ -103,6 +134,7 @@ export default function BoardDetail(props) {
               <p className={classes.cardContent}>{boards.content}</p>
             </CardBody>
             <CardFooter stats>
+              {/* TODO: using moment for date */}
               {/* <div className={classes.stats}>{this.$moment(board.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div> */}
               <div className={classes.stats}>{boards.createdAt}</div>
               <div className={classes.stats}>

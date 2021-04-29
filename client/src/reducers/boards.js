@@ -16,7 +16,14 @@ function boardReducer(boards = initialState, action) {
       return payload;
 
     case UPDATE_BOARD:
-      return boards.map((board) => {
+      // edit 페이지에서 새로고침하고 업데이트하면 boards가 list인데 한 번 더 업데이트하면 그냥 object가 됨
+      let results = [];
+      if (boards.length === undefined) {
+        results.push(boards);
+      } else {
+        results = boards;
+      }
+      return results.map((board) => {
         if (board.id === payload.id) {
           return {
             ...board,
