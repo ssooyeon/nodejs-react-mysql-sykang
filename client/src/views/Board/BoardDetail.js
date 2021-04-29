@@ -135,8 +135,6 @@ export default function BoardDetail(props) {
               <p className={classes.cardContent}>{boards.content}</p>
             </CardBody>
             <CardFooter stats>
-              {/* TODO: using moment for date */}
-              {/* <div className={classes.stats}>{this.$moment(board.createdAt).format("YYYY-MM-DD HH:mm:ss")}</div> */}
               <div className={classes.stats}>
                 <Moment format="YYYY-MM-DD HH:mm:ss">{boards.createdAt}</Moment>
               </div>

@@ -6,6 +6,7 @@ import Moment from "react-moment";
 import { makeStyles } from "@material-ui/core/styles";
 import Pagination from "@material-ui/lab/Pagination";
 import { Add } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -13,6 +14,7 @@ import Button from "components/CustomButtons/Button";
 import Card from "components/Card/Card";
 import CardFooter from "components/Card/CardFooter";
 import CardBody from "components/Card/CardBody";
+import CustomInput from "components/CustomInput/CustomInput";
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 
 import { retrieveBoards } from "actions/boards";
@@ -70,6 +72,13 @@ const styles = {
     display: "flex",
     justifyContent: "center",
   },
+  searchButtonWrapper: {
+    margin: "auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "20px",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -78,7 +87,6 @@ export default function BoardList() {
   const classes = useStyles();
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const [totalpages, setTotalpages] = useState(0);
   const [pageSize, setPageSize] = useState(9);
   const [search, setSearch] = useState("");
 
@@ -86,9 +94,7 @@ export default function BoardList() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const params = getReqParams(search, currentPage, pageSize);
-    dispatch(retrieveBoards(params));
-    // setTotalpages(Math.ceil(res.data.count / this.pageSize));
+    searchBoards();
   }, [currentPage]);
 
   const getReqParams = (searchTitle, page, pageSize) => {
@@ -109,6 +115,17 @@ export default function BoardList() {
     setCurrentPage(value);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      searchBoards();
+    }
+  };
+
+  const searchBoards = () => {
+    const params = getReqParams(search, currentPage, pageSize);
+    dispatch(retrieveBoards(params));
+  };
+
   return (
     <>
       <GridContainer>
@@ -119,6 +136,30 @@ export default function BoardList() {
               Add
             </Button>
           </Link>
+        </GridItem>
+
+        <GridItem xs={12} sm={12} md={11}>
+          <CustomInput
+            labelText="Search"
+            id="search"
+            name="search"
+            value={search}
+            formControlProps={{
+              fullWidth: true,
+            }}
+            inputProps={{
+              name: "search",
+              onChange: (e) => setSearch(e.target.value),
+              onKeyPress: (e) => handleKeyPress(e),
+            }}
+          />
+        </GridItem>
+        <GridItem xs={12} sm={12} md={1}>
+          <div className={classes.searchButtonWrapper}>
+            <Button justIcon onClick={searchBoards}>
+              <Search />
+            </Button>
+          </div>
         </GridItem>
         {boards.rows &&
           boards.rows.map((board, index) => (
