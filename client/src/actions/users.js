@@ -90,9 +90,9 @@ export const updateUser = (id, data) => async (dispatch) => {
     const res = await UserService.update(id, data);
     dispatch({
       type: UPDATE_USER,
-      payload: data,
+      payload: res.data,
     });
-
+    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);

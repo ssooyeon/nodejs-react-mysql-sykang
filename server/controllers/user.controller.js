@@ -86,11 +86,12 @@ exports.compareCurrentPassword = (req, res) => {
 
 exports.update = (req, res) => {
   const id = req.params.id;
-  if (req.body.password !== undefined) {
+  if (req.body.password !== undefined && req.body.password !== "") {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
     req.body.password = hash;
   }
+
   User.update(req.body, { where: { id: id } })
     .then((num) => {
       Log.create({ status: "SUCCESS", message: `User update successfully. User account is: ${req.body.account}` });
