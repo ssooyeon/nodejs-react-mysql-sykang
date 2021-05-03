@@ -2,9 +2,9 @@ const os = require("os");
 const nodeOsUtils = require("node-os-utils");
 const diskUsage = require("diskusage");
 
-//////////////////////////////////
-// find cpu
-//////////////////////////////////
+/**
+ * CPU 사용량(%) 조회
+ */
 exports.findCPUUsage = (req, res) => {
   const cpu = nodeOsUtils.cpu;
   cpu
@@ -17,6 +17,9 @@ exports.findCPUUsage = (req, res) => {
     });
 };
 
+/**
+ * CPU 속도(Hz) 조회
+ */
 exports.findCPUSpeed = (req, res) => {
   const cpuData = os.cpus();
   if (cpuData) {
@@ -34,9 +37,9 @@ exports.findCPUSpeed = (req, res) => {
   }
 };
 
-//////////////////////////////////
-// find memory
-//////////////////////////////////
+/**
+ * 메모리 사용량(%) 조회
+ */
 exports.findMemoryUsage = (req, res) => {
   const mem = nodeOsUtils.mem;
   mem
@@ -50,6 +53,9 @@ exports.findMemoryUsage = (req, res) => {
     });
 };
 
+/**
+ * 메모리 남은 용량 조회
+ */
 exports.findMemoryFreeSpace = (req, res) => {
   const mem = nodeOsUtils.mem;
   mem
@@ -64,9 +70,9 @@ exports.findMemoryFreeSpace = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// find disk
-//////////////////////////////////
+/**
+ * 디스크 사용량(%) 조회
+ */
 exports.findDiskUsage = (req, res) => {
   diskUsage
     .check("/")
@@ -79,6 +85,9 @@ exports.findDiskUsage = (req, res) => {
     });
 };
 
+/**
+ * 디스크 남은 용량 조회
+ */
 exports.findDiskFreeSpace = (req, res) => {
   diskUsage
     .check("/")
@@ -92,9 +101,9 @@ exports.findDiskFreeSpace = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// util for find
-//////////////////////////////////
+/**
+ * 리턴을 위한 사이즈 변환
+ */
 function convertSize(bytes, decimals = 2) {
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;

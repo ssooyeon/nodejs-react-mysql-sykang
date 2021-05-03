@@ -2,6 +2,9 @@ import { CREATE_BOARD, RETRIEVE_BOARDS, RETRIEVE_BOARD, UPDATE_BOARD, DELETE_BOA
 
 import BoardService from "../services/BoardService";
 
+/**
+ * 게시판 생성
+ */
 export const createBoard = (data) => async (dispatch) => {
   try {
     const res = await BoardService.create(data);
@@ -18,6 +21,9 @@ export const createBoard = (data) => async (dispatch) => {
   }
 };
 
+/**
+ * 게시판 전체 조회 (+페이징)
+ */
 export const retrieveBoards = (params) => async (dispatch) => {
   try {
     const res = await BoardService.getAll(params);
@@ -32,6 +38,9 @@ export const retrieveBoards = (params) => async (dispatch) => {
   }
 };
 
+/**
+ * 게시판 상세보기
+ */
 export const retrieveBoard = (id) => async (dispatch) => {
   try {
     const res = await BoardService.get(id);
@@ -47,6 +56,9 @@ export const retrieveBoard = (id) => async (dispatch) => {
   }
 };
 
+/**
+ * 게시판 수정
+ */
 export const updateBoard = (id, data) => async (dispatch) => {
   try {
     const res = await BoardService.update(id, data);
@@ -61,6 +73,9 @@ export const updateBoard = (id, data) => async (dispatch) => {
   }
 };
 
+/**
+ * 게시판 삭제
+ */
 export const deleteBoard = (id) => async (dispatch) => {
   try {
     await BoardService.delete(id);
@@ -74,6 +89,9 @@ export const deleteBoard = (id) => async (dispatch) => {
   }
 };
 
+/**
+ * 게시판 전체 삭제
+ */
 export const deleteAllBoards = () => async (dispatch) => {
   try {
     const res = await BoardService.deleteAll();

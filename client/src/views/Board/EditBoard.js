@@ -53,6 +53,7 @@ export default function EditBoard(props) {
     getBoard(props.match.params.id);
   }, []);
 
+  // 현재 게시판 가져오기
   const getBoard = (id) => {
     BoardService.get(id)
       .then((res) => {
@@ -63,11 +64,13 @@ export default function EditBoard(props) {
       });
   };
 
+  // 게시판 input 변경 시 board에 설정
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentBoard({ ...currentBoard, [name]: value });
   };
 
+  // 게시판 수정
   const saveBoard = () => {
     const valid = validator.current.allValid();
     if (valid) {

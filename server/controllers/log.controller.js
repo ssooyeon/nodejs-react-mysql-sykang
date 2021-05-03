@@ -1,9 +1,9 @@
 const db = require("../models");
 const Log = db.logs;
 
-//////////////////////////////////
-// create
-//////////////////////////////////
+/**
+ * 로그 생성
+ */
 exports.create = (req, res) => {
   if (!req.body.message) {
     res.status(400).send({ message: "Message cannot be empty." });
@@ -19,9 +19,9 @@ exports.create = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// find
-//////////////////////////////////
+/**
+ * 로그 전체 조회
+ */
 exports.findAll = (req, res) => {
   Log.findAll({
     order: [["createdAt", "DESC"]],
@@ -36,6 +36,9 @@ exports.findAll = (req, res) => {
     });
 };
 
+/**
+ * 로그 조회
+ */
 exports.findOne = (req, res) => {
   const id = req.params.id;
   Log.findByPk(id)
@@ -47,10 +50,14 @@ exports.findOne = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// update
-//////////////////////////////////
+/**
+ * 로그 수정
+ */
 
-//////////////////////////////////
-// delete
-//////////////////////////////////
+/**
+ * 로그 삭제
+ */
+
+/**
+ * 로그 전체 삭제
+ */

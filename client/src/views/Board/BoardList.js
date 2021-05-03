@@ -97,6 +97,7 @@ export default function BoardList() {
     searchBoards();
   }, [currentPage]);
 
+  // 페이징을 위한 파라미터 가져오기
   const getReqParams = (searchTitle, page, pageSize) => {
     let params = {};
     if (searchTitle) {
@@ -111,16 +112,19 @@ export default function BoardList() {
     return params;
   };
 
+  // 페이징 넘버 변경
   const handleChangePage = (e, value) => {
     setCurrentPage(value);
   };
 
+  // 검색 input에서 enter 클릭 시 검색 수행
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       searchBoards();
     }
   };
 
+  // 게시판 검색
   const searchBoards = () => {
     const params = getReqParams(search, currentPage, pageSize);
     dispatch(retrieveBoards(params));

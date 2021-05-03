@@ -25,6 +25,6 @@ db.boards.belongsTo(db.users, {
   as: "user",
 });
 
-db.tutorials = require("./tutorial.model")(sequelize, Sequelize);
+db.tutorials = require("./tutorial.model")(sequelize, Sequelize); //TODO: remove
 
 module.exports = db;

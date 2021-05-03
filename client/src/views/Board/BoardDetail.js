@@ -81,6 +81,7 @@ export default function BoardDetail(props) {
     dispatch(retrieveBoard(id));
   }, []);
 
+  // 게시판 삭제 전 확인
   const confirmRemoveBoard = () => {
     alert.show("Are you sure delete this board?", {
       title: "",
@@ -95,6 +96,7 @@ export default function BoardDetail(props) {
     });
   };
 
+  // 게시판 삭제
   const removeBoard = () => {
     const id = props.match.params.id;
     dispatch(deleteBoard(id))

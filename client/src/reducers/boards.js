@@ -6,6 +6,7 @@ function boardReducer(boards = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
+    // 게시판 생성
     case CREATE_BOARD:
       // create 페이지에서 새로고침하고 업데이트하면 생성 OK, 다시 하면 boards 를 불러오지 못함: 페이징 때문(findAll)
       if (boards.rows !== undefined) {
@@ -14,12 +15,15 @@ function boardReducer(boards = initialState, action) {
         return [...boards, payload];
       }
 
+    // 게시판 전체 조회
     case RETRIEVE_BOARDS:
       return payload;
 
+    // 게시판 조회
     case RETRIEVE_BOARD:
       return payload;
 
+    // 게시판 수정
     case UPDATE_BOARD:
       // edit 페이지에서 새로고침하고 업데이트하면 boards가 list인데 한 번 더 업데이트하면 그냥 object가 됨
       let results = [];
@@ -39,10 +43,12 @@ function boardReducer(boards = initialState, action) {
         }
       });
 
+    // 게시판 삭제
     case DELETE_BOARD:
       return payload;
     // return boards.filter(({ id }) => id !== payload.id);
 
+    // 게시판 전체 삭제
     case DELETE_ALL_BOARDS:
       return [];
 

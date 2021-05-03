@@ -5,9 +5,9 @@ const Op = db.Sequelize.Op;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-//////////////////////////////////
-// create
-//////////////////////////////////
+/**
+ * 사용자 생성
+ */
 exports.create = (req, res) => {
   if (!req.body.account) {
     res.status(400).send({ message: "Account cannot be empty." });
@@ -31,9 +31,9 @@ exports.create = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// find
-//////////////////////////////////
+/**
+ * 사용자 전체 조회
+ */
 exports.findAll = (req, res) => {
   User.findAll()
     .then((data) => {
@@ -44,6 +44,9 @@ exports.findAll = (req, res) => {
     });
 };
 
+/**
+ * 사용자 조회
+ */
 exports.findOne = (req, res) => {
   const id = req.params.id;
   User.findByPk(id)
@@ -55,6 +58,9 @@ exports.findOne = (req, res) => {
     });
 };
 
+/**
+ * 사용자 계정으로 조회
+ */
 exports.findByAccount = (req, res) => {
   const account = req.params.account;
   User.findOne({ where: { account: account } })
@@ -66,15 +72,16 @@ exports.findByAccount = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// update
-//////////////////////////////////
+/**
+ * 사용자 현재 비밀번호 일치여부 확인
+ */
 exports.compareCurrentPassword = (req, res) => {
   const id = req.body.id;
   const password = req.body.password;
   if (password) {
     User.findByPk(id)
       .then((data) => {
+        // 저장되어있는 사용자의 비밀번호와 request.body의 비밀번호가 일치하면 true를 리턴
         const compare = bcrypt.compareSync(password, data.password);
         res.send(compare);
       })
@@ -84,8 +91,13 @@ exports.compareCurrentPassword = (req, res) => {
   }
 };
 
+/**
+ * 사용자 수정
+ */
 exports.update = (req, res) => {
   const id = req.params.id;
+  // request.body의 비밀번호가 모두 존재하면 비밀번호 해시를 생성
+  // :공백도 해시로 생성될 수 있기 때문
   if (req.body.password !== undefined && req.body.password !== "") {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
@@ -103,9 +115,9 @@ exports.update = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// delete
-//////////////////////////////////
+/**
+ * 사용자 삭제
+ */
 exports.delete = (req, res) => {
   const id = req.params.id;
   User.destroy({ where: { id: id } })
@@ -123,6 +135,9 @@ exports.delete = (req, res) => {
     });
 };
 
+/**
+ * 사용자 전체 삭제
+ */
 exports.deleteAll = (req, res) => {
   User.destroy({ where: {}, truncate: false })
     .then((nums) => {
@@ -135,15 +150,17 @@ exports.deleteAll = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// login
-//////////////////////////////////
+/**
+ * 사용자 로그인
+ */
 exports.authLogin = (req, res) => {
   const account = req.body.account;
   const password = req.body.password;
   if (account && password) {
+    // request.body의 account를 가지는 사용자가 존재하면
     User.findOne({ where: { account: account } })
       .then((data) => {
+        // request.body의 password와 조회한 사용자의 비밀번호가 일치하면
         const compare = bcrypt.compareSync(password, data.password);
         if (compare) {
           const userInfo = {
@@ -151,6 +168,7 @@ exports.authLogin = (req, res) => {
             account: account,
             email: data.email,
           };
+          // jwt 토큰을 생성
           const token = jwt.sign({ userInfo }, "the_secret_key");
           const user = {
             token,

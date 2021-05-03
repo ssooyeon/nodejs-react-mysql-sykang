@@ -11,6 +11,9 @@ import {
 
 import UserService from "../services/UserService";
 
+/**
+ * 사용자 생성
+ */
 export const createUser = (data) => async (dispatch) => {
   try {
     const res = await UserService.create(data);
@@ -26,6 +29,9 @@ export const createUser = (data) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 전체 조회 (+페이징)
+ */
 export const retrieveUsers = (params) => async (dispatch) => {
   try {
     const res = await UserService.getAll(params);
@@ -40,6 +46,9 @@ export const retrieveUsers = (params) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 조회
+ */
 export const retrieveUser = (id) => async (dispatch) => {
   try {
     const res = await UserService.get(id);
@@ -55,6 +64,9 @@ export const retrieveUser = (id) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 계정으로 조회
+ */
 export const retrieveByAccount = (account) => async (dispatch) => {
   try {
     const res = await UserService.findByAccount(account);
@@ -70,6 +82,9 @@ export const retrieveByAccount = (account) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 수정 시 현재 비밀번호 확인
+ */
 export const compareCurrentPassword = (data) => async (dispatch) => {
   try {
     const res = await UserService.compareCurrentPassword(data);
@@ -85,6 +100,9 @@ export const compareCurrentPassword = (data) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 수정
+ */
 export const updateUser = (id, data) => async (dispatch) => {
   try {
     const res = await UserService.update(id, data);
@@ -100,6 +118,9 @@ export const updateUser = (id, data) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 삭제
+ */
 export const deleteUser = (id) => async (dispatch) => {
   try {
     await UserService.delete(id);
@@ -113,6 +134,9 @@ export const deleteUser = (id) => async (dispatch) => {
   }
 };
 
+/**
+ * 사용자 모두 삭제
+ */
 export const deleteAllUsers = () => async (dispatch) => {
   try {
     const res = await UserService.deleteAll();

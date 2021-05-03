@@ -69,33 +69,38 @@ export default function Register(props) {
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const [user, setUser] = useState(initialUserstate);
-  const [checkDoneAccount, setCheckDoneAccount] = useState("");
-  const [isValidAccount, setIsValidAccount] = useState(false);
+  const [checkDoneAccount, setCheckDoneAccount] = useState(""); // 중복확인을 완료한 계정 이름
+  const [isValidAccount, setIsValidAccount] = useState(false); // 계정을 중복확인 했는지의 여부
   const dispatch = useDispatch();
 
+  // input 값 변경 시 user state 업데이트
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
+  // password check input에서 엔터 클릭 시 회원가입 수행
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       register();
     }
   };
 
+  // 계정 중복확인
   const checkAccount = () => {
     const account = user.account;
     if (account !== "") {
       dispatch(retrieveByAccount(account))
         .then((res) => {
           console.log(res);
+          // 이미 존재하는 계정일 때
           if (res !== "" && res !== undefined) {
             alert.show("This account already exist.", {
               title: "",
               type: "error",
             });
           } else {
+            // 계정 중복 여부 확인 완료
             alert.show("This account is available.", {
               title: "",
               type: "success",
@@ -110,9 +115,11 @@ export default function Register(props) {
     }
   };
 
+  // 회원가입
   const register = () => {
     const valid = validator.current.allValid();
     if (valid) {
+      // 중복확인을 완료한 계정과 현재 input의 계정명이 같을 때
       if (checkDoneAccount === user.account) {
         dispatch(createUser(user))
           .then(() => {
@@ -128,6 +135,7 @@ export default function Register(props) {
             console.log(e);
           });
       } else {
+        // 중복확인을 완료한 후 다른 계정명을 다시 작성했을 때, 중복확인을 재요청
         alert.show("Please duplicate check an account.", {
           title: "",
           type: "error",

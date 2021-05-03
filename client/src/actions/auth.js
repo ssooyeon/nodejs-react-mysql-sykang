@@ -2,6 +2,9 @@ import { LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, UPDATE_LOGGED_USER } from "./types";
 
 import UserService from "services/UserService";
 
+/**
+ * 로그인
+ */
 export const authLogin = (data) => async (dispatch) => {
   try {
     const res = await UserService.getAuthLogin(data);
@@ -16,6 +19,9 @@ export const authLogin = (data) => async (dispatch) => {
   }
 };
 
+/**
+ * 로그아웃
+ */
 export const logout = () => (dispatch) => {
   localStorage.removeItem("user");
   dispatch({
@@ -23,6 +29,9 @@ export const logout = () => (dispatch) => {
   });
 };
 
+/**
+ * 회원정보 수정 시 현재 로그인 사용자 정보 업데이트
+ */
 export const updateLoggedUser = (id) => async (dispatch) => {
   try {
     const res = await UserService.get(id);

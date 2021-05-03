@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -7,7 +7,6 @@ import { useAlert } from "react-alert-17";
 import SimpleReactValidator from "simple-react-validator";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { ArrowBack } from "@material-ui/icons";
 
 import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
@@ -43,7 +42,6 @@ const useStyles = makeStyles(styles);
 
 export default function Login(props) {
   const classes = useStyles();
-  const alert = useAlert();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
 
   const initialUserstate = {
@@ -52,28 +50,33 @@ export default function Login(props) {
     password: "",
   };
 
+  // form validation 에러 메세지 자동 표출
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const [user, setUser] = useState(initialUserstate);
   const dispatch = useDispatch();
 
+  // input 입력 시 user state 업데이트
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
+  // 패스워드 input에서 enter 누르면 로그인 수행
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       login();
     }
   };
 
+  // 로그인
   const login = () => {
     const valid = validator.current.allValid();
     if (valid) {
       dispatch(authLogin(user))
         .then((res) => {
+          // local storage 설정
           axios.defaults.headers.common["Authorization"] = `Bearer ${res.user.token}`;
           localStorage.setItem("user", JSON.stringify(res.user));
           props.history.push("/");
@@ -82,6 +85,7 @@ export default function Login(props) {
           console.log(e);
         });
     } else {
+      // validation 실패 시 오류 표출
       validator.current.showMessages();
       forceUpdate();
     }

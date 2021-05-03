@@ -48,11 +48,13 @@ export default function AddBoard(props) {
   const [board, setBoard] = useState(initialBoardstate);
   const dispatch = useDispatch();
 
+  // input 값 입력 시 board에 설정
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBoard({ ...board, [name]: value });
   };
 
+  // 게시판 생성
   const saveBoard = () => {
     const valid = validator.current.allValid();
     if (valid) {
@@ -71,6 +73,7 @@ export default function AddBoard(props) {
           console.log(e);
         });
     } else {
+      // validation 실패 시 오류 표출
       validator.current.showMessages();
       forceUpdate();
     }

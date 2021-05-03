@@ -4,15 +4,18 @@ const User = db.users;
 const Log = db.logs;
 const Op = db.Sequelize.Op;
 
+/**
+ * 몇 행부터 몇 행까지 가져올지 설정
+ */
 const getPagination = (page, size) => {
   const limit = size ? +size : 3;
   const offset = page ? page * limit : 0;
   return { limit, offset };
 };
 
-//////////////////////////////////
-// create
-//////////////////////////////////
+/**
+ * 게시판 생성
+ */
 exports.create = (req, res) => {
   if (!req.body.title) {
     res.status(400).send({ message: "Content cannot be empty." });
@@ -30,9 +33,9 @@ exports.create = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// find
-//////////////////////////////////
+/**
+ * 게시판 전체 조회 (+페이징)
+ */
 exports.findAll = (req, res) => {
   const { page, size, title } = req.query;
   const { limit, offset } = getPagination(page, size);
@@ -58,6 +61,9 @@ exports.findAll = (req, res) => {
     });
 };
 
+/**
+ * 게시판 조회
+ */
 exports.findOne = (req, res) => {
   const id = req.params.id;
   Board.findByPk(id, {
@@ -76,9 +82,9 @@ exports.findOne = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// update
-//////////////////////////////////
+/**
+ * 게시판 수정
+ */
 exports.update = (req, res) => {
   const id = req.params.id;
   Board.update(req.body, { where: { id: id } })
@@ -92,9 +98,9 @@ exports.update = (req, res) => {
     });
 };
 
-//////////////////////////////////
-// delete
-//////////////////////////////////
+/**
+ * 게시판 삭제
+ */
 exports.delete = (req, res) => {
   const id = req.params.id;
   Board.destroy({ where: { id: id } })
@@ -112,6 +118,9 @@ exports.delete = (req, res) => {
     });
 };
 
+/**
+ * 게시판 전체 삭제
+ */
 exports.deleteAll = (req, res) => {
   Board.destroy({ where: {}, truncate: false })
     .then((nums) => {

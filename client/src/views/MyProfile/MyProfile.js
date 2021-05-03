@@ -75,26 +75,33 @@ export default function MyProfile(props) {
   const [isPasswordChange, setIsPasswordChange] = useState(false);
   const dispatch = useDispatch();
 
+  // input 값 변경시 user state 업데이트
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
+  // 비밀번호 변경 화면을 펼칠때마다 form validation field를 초기화
+  // :비밀번호 변경 화면을 펼쳤다가 다시 닫아도 validation field에 password가 남아있기 떄문
   const handlePasswordChange = (e) => {
     validator.current.fields = {};
     setIsPasswordChange(!isPasswordChange);
   };
 
+  // 내 정보 변경 전 확인
   const comparePassword = () => {
     const valid = validator.current.allValid();
     if (valid) {
+      // 비밀번호 변경 화면이 열려있으면
       if (isPasswordChange) {
         const comparePassword = {
           id: user.id,
           password: user.currentPassword,
         };
+        // 새 비밀번호와 재입력 비밀번호가 일치하는지 확인
         dispatch(compareCurrentPassword(comparePassword)).then((compare) => {
           if (compare) {
+            // 정보 수정
             edit(user);
           } else {
             alert.show("The current password does not match.", {
@@ -104,6 +111,7 @@ export default function MyProfile(props) {
           }
         });
       } else {
+        // 비밀번호 변경 화면이 열려있지 않으면 email 정보만 업데이트
         const paramsWithOutPassword = {
           id: user.id,
           email: user.email,
@@ -116,10 +124,13 @@ export default function MyProfile(props) {
     }
   };
 
+  // 내 정보 변경
   const edit = (user) => {
     dispatch(updateUser(user.id, user))
       .then(() => {
+        // 비밀번호가 변경되었으면
         if (currentUser.email !== user.email) {
+          // redux store currentUser 정보 업데이트
           dispatch(updateLoggedUser(currentUser.id))
             .then((res) => {
               axios.defaults.headers.common["Authorization"] = `Bearer ${res.token}`;
