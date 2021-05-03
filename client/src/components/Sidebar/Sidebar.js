@@ -1,8 +1,10 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -25,10 +27,14 @@ export default function Sidebar(props) {
   }
 
   const { color, logo, image, logoText, routes } = props;
+  const [routeList, setRouteList] = useState([]);
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
+        console.log(prop);
         var activePro = " ";
         var listItemClasses;
         listItemClasses = classNames({

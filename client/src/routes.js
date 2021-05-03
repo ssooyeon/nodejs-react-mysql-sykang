@@ -3,6 +3,7 @@ import DashboardPage from "views/Dashboard/Dashboard.js";
 import Board from "views/Board/Boards";
 import MyProfile from "views/MyProfile/MyProfile";
 import UserList from "views/Table/UserList";
+import Login from "views/Login/Login";
 
 const routes = [
   {
@@ -11,6 +12,8 @@ const routes = [
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin",
+    loggedOnly: false,
+    sideOnly: true,
   },
   {
     path: "/board",
@@ -18,6 +21,8 @@ const routes = [
     icon: "content_paste",
     component: Board,
     layout: "/admin",
+    loggedOnly: false,
+    sideOnly: true,
   },
   {
     path: "/table",
@@ -25,6 +30,8 @@ const routes = [
     icon: "content_paste",
     component: UserList,
     layout: "/admin",
+    loggedOnly: false,
+    sideOnly: true,
   },
   {
     path: "/myprofile",
@@ -32,6 +39,17 @@ const routes = [
     icon: "content_paste",
     component: MyProfile,
     layout: "/admin",
+    loggedOnly: true,
+    sideOnly: true,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    icon: "",
+    component: Login,
+    layout: "/admin",
+    loggedOnly: false,
+    sideOnly: false,
   },
 ];
 

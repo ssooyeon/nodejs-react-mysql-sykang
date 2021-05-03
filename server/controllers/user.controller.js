@@ -151,16 +151,17 @@ exports.authLogin = (req, res) => {
             email: data.email,
           };
           const token = jwt.sign({ userInfo }, "the_secret_key");
-          Log.create({ status: "SUCCESS", message: `User login successfully. User account is: ${account}` });
-          res.json({
+          const user = {
             token,
             id: userInfo.id,
             account: userInfo.account,
             email: userInfo.email,
-          });
+          };
+          Log.create({ status: "SUCCESS", message: `User login successfully. User account is: ${account}` });
+          res.send({ user: user });
         } else {
           Log.create({ status: "ERROR", message: `User login failed. User account is: ${account}` });
-          res.json(null);
+          res.send(null);
         }
       })
       .catch((e) => {
