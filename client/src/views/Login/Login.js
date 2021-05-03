@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { useAlert } from "react-alert-17";
@@ -27,6 +28,15 @@ const styles = {
     color: "red",
     margin: "auto",
   },
+  registerSummeryTextWrapper: {
+    textAlign: "center",
+  },
+  underlineLink: {
+    textDecoration: "underline",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -53,12 +63,17 @@ export default function Login(props) {
     setUser({ ...user, [name]: value });
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      login();
+    }
+  };
+
   const login = () => {
     const valid = validator.current.allValid();
     if (valid) {
       dispatch(authLogin(user))
         .then((res) => {
-          console.log(res);
           axios.defaults.headers.common["Authorization"] = `Bearer ${res.user.token}`;
           localStorage.setItem("user", JSON.stringify(res.user));
           props.history.push("/");
@@ -97,7 +112,7 @@ export default function Login(props) {
                       onBlur: () => validator.current.showMessageFor("account"),
                     }}
                   />
-                  <p className={classes.errorText}>{validator.current.message("account", user.account, "required")}</p>
+                  <div className={classes.errorText}>{validator.current.message("account", user.account, "required")}</div>
                 </GridItem>
               </GridContainer>
               <GridContainer>
@@ -111,12 +126,14 @@ export default function Login(props) {
                       fullWidth: true,
                     }}
                     inputProps={{
+                      type: "password",
                       name: "password",
                       onChange: (e) => handleInputChange(e),
                       onBlur: () => validator.current.showMessageFor("password"),
+                      onKeyPress: (e) => handleKeyPress(e),
                     }}
                   />
-                  <p className={classes.errorText}>{validator.current.message("password", user.password, "required")}</p>
+                  <div className={classes.errorText}>{validator.current.message("password", user.password, "required")}</div>
                 </GridItem>
               </GridContainer>
             </CardBody>
@@ -127,6 +144,14 @@ export default function Login(props) {
             </CardFooter>
           </form>
         </Card>
+      </GridItem>
+      <GridItem xs={12} sm={12} md={12}>
+        <div className={classes.registerSummeryTextWrapper}>
+          Don't have an account? &nbsp;
+          <Link className={classes.underlineLink} to={"/admin/register"}>
+            register
+          </Link>
+        </div>
       </GridItem>
     </GridContainer>
   );

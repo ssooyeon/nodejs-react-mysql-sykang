@@ -4,6 +4,7 @@ import Board from "views/Board/Boards";
 import MyProfile from "views/MyProfile/MyProfile";
 import UserList from "views/Table/UserList";
 import Login from "views/Login/Login";
+import Register from "views/Login/Register";
 
 const routes = [
   {
@@ -47,6 +48,15 @@ const routes = [
     name: "Login",
     icon: "",
     component: Login,
+    layout: "/admin",
+    loggedOnly: false,
+    sideOnly: false,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    icon: "",
+    component: Register,
     layout: "/admin",
     loggedOnly: false,
     sideOnly: false,

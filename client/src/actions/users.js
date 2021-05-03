@@ -19,9 +19,9 @@ export const createUser = (data) => async (dispatch) => {
       type: CREATE_USER,
       payload: res.data,
     });
-
     return Promise.resolve(res.data);
   } catch (err) {
+    console.log(err);
     return Promise.reject(err);
   }
 };
@@ -33,8 +33,10 @@ export const retrieveUsers = (params) => async (dispatch) => {
       type: RETRIEVE_USERS,
       payload: res.data,
     });
+    return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
+    return Promise.reject(err);
   }
 };
 
@@ -46,8 +48,10 @@ export const retrieveUser = (id) => async (dispatch) => {
       payload: res.data,
     });
     console.log(res.data);
+    return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
+    return Promise.reject(err);
   }
 };
 
@@ -59,8 +63,10 @@ export const retrieveByAccount = (account) => async (dispatch) => {
       payload: res.data,
     });
     console.log(res.data);
+    return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
+    return Promise.reject(err);
   }
 };
 
@@ -72,8 +78,10 @@ export const compareCurrentPassword = (data) => async (dispatch) => {
       payload: res.data,
     });
     console.log(res.data);
+    return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
+    return Promise.reject(err);
   }
 };
 
@@ -87,6 +95,7 @@ export const updateUser = (id, data) => async (dispatch) => {
 
     return Promise.resolve(res.data);
   } catch (err) {
+    console.log(err);
     return Promise.reject(err);
   }
 };
@@ -112,9 +121,9 @@ export const deleteAllUsers = () => async (dispatch) => {
       type: DELETE_ALL_USERS,
       payload: res.data,
     });
-
     return Promise.resolve(res.data);
   } catch (err) {
+    console.log(err);
     return Promise.reject(err);
   }
 };
