@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useAlert } from "react-alert-17";
 import SimpleReactValidator from "simple-react-validator";
@@ -34,11 +34,12 @@ export default function AddBoard(props) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const initialBoardstate = {
     title: "",
     content: "",
-    userId: 1, // TODO: binding current user (with store)
+    userId: currentUser.id,
   };
 
   const [, updateState] = useState();
@@ -61,6 +62,7 @@ export default function AddBoard(props) {
             title: "",
             type: "success",
             onClose: () => {
+              setBoard(initialBoardstate);
               props.history.push("/admin/board");
             },
           });
@@ -100,7 +102,7 @@ export default function AddBoard(props) {
                         onBlur: () => validator.current.showMessageFor("title"),
                       }}
                     />
-                    <p className={classes.errorText}>{validator.current.message("title", board.title, "required")}</p>
+                    <div className={classes.errorText}>{validator.current.message("title", board.title, "required")}</div>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -119,7 +121,7 @@ export default function AddBoard(props) {
                         onBlur: () => validator.current.showMessageFor("content"),
                       }}
                     />
-                    <p className={classes.errorText}>{validator.current.message("content", board.content, "required")}</p>
+                    <div className={classes.errorText}>{validator.current.message("content", board.content, "required")}</div>
                   </GridItem>
                 </GridContainer>
               </CardBody>

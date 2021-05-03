@@ -13,6 +13,7 @@ export const createBoard = (data) => async (dispatch) => {
 
     return Promise.resolve(res.data);
   } catch (err) {
+    console.log(err);
     return Promise.reject(err);
   }
 };
@@ -24,8 +25,10 @@ export const retrieveBoards = (params) => async (dispatch) => {
       type: RETRIEVE_BOARDS,
       payload: res.data,
     });
+    return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
+    return Promise.reject(err);
   }
 };
 
@@ -37,8 +40,10 @@ export const retrieveBoard = (id) => async (dispatch) => {
       payload: res.data,
     });
     console.log(res.data);
+    return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
+    return Promise.reject(err);
   }
 };
 
@@ -49,9 +54,9 @@ export const updateBoard = (id, data) => async (dispatch) => {
       type: UPDATE_BOARD,
       payload: data,
     });
-
     return Promise.resolve(res.data);
   } catch (err) {
+    console.log(err);
     return Promise.reject(err);
   }
 };

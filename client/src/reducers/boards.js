@@ -7,7 +7,12 @@ function boardReducer(boards = initialState, action) {
 
   switch (type) {
     case CREATE_BOARD:
-      return [...boards, payload];
+      // create 페이지에서 새로고침하고 업데이트하면 생성 OK, 다시 하면 boards 를 불러오지 못함: 페이징 때문(findAll)
+      if (boards.rows !== undefined) {
+        return [...boards.rows, payload];
+      } else {
+        return [...boards, payload];
+      }
 
     case RETRIEVE_BOARDS:
       return payload;
@@ -35,7 +40,8 @@ function boardReducer(boards = initialState, action) {
       });
 
     case DELETE_BOARD:
-      return boards.filter(({ id }) => id !== payload.id);
+      return payload;
+    // return boards.filter(({ id }) => id !== payload.id);
 
     case DELETE_ALL_BOARDS:
       return [];

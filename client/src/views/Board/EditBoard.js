@@ -116,7 +116,7 @@ export default function EditBoard(props) {
                         onBlur: () => validator.current.showMessageFor("title"),
                       }}
                     />
-                    <p className={classes.errorText}>{validator.current.message("title", currentBoard.title, "required")}</p>
+                    <div className={classes.errorText}>{validator.current.message("title", currentBoard.title, "required")}</div>
                   </GridItem>
                 </GridContainer>
                 <GridContainer>
@@ -134,7 +134,7 @@ export default function EditBoard(props) {
                         onBlur: () => validator.current.showMessageFor("content"),
                       }}
                     />
-                    <p className={classes.errorText}>{validator.current.message("content", currentBoard.content, "required")}</p>
+                    <div className={classes.errorText}>{validator.current.message("content", currentBoard.content, "required")}</div>
                   </GridItem>
                 </GridContainer>
               </CardBody>
