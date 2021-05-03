@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from "actions/types";
+import { LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, UPDATE_LOGGED_USER } from "actions/types";
 
 const user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null };
@@ -26,6 +26,13 @@ function authReducer(state = initialState, action) {
         ...state,
         isLoggedIn: false,
         user: null,
+      };
+
+    case UPDATE_LOGGED_USER:
+      return {
+        ...state,
+        isLoggedIn: true,
+        user: payload,
       };
     default:
       return state;

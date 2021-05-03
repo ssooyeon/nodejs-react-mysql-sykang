@@ -23,3 +23,4 @@ export const DELETE_ALL_USERS = "DELETE_ALL_USERS";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT = "LOGOUT";
+export const UPDATE_LOGGED_USER = "UPDATE_LOGGED_USER";

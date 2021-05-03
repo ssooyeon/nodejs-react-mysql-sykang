@@ -1,5 +1,4 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -15,7 +14,6 @@ const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
-  const { user: currentUser } = useSelector((state) => state.auth);
 
   return (
     <div>

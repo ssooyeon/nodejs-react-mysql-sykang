@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 import { useAlert } from "react-alert-17";
 import SimpleReactValidator from "simple-react-validator";
@@ -17,6 +18,7 @@ import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 import CardFooter from "components/Card/CardFooter";
 
+import { updateLoggedUser } from "actions/auth";
 import { compareCurrentPassword, updateUser } from "actions/users";
 
 const styles = {
@@ -117,6 +119,15 @@ export default function MyProfile(props) {
   const edit = (user) => {
     dispatch(updateUser(user.id, user))
       .then(() => {
+        if (currentUser.email !== user.email) {
+          dispatch(updateLoggedUser(currentUser.id))
+            .then((res) => {
+              axios.defaults.headers.common["Authorization"] = `Bearer ${res.token}`;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
         alert.show("Update successfully. Go to the main page.", {
           title: "",
           type: "success",
