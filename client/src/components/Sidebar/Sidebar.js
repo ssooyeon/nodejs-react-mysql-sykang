@@ -34,7 +34,6 @@ export default function Sidebar(props) {
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
-        console.log(prop);
         var activePro = " ";
         var listItemClasses;
         listItemClasses = classNames({
@@ -43,7 +42,7 @@ export default function Sidebar(props) {
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path),
         });
-        return (
+        const result = (
           <NavLink to={prop.layout + prop.path} className={activePro + classes.item} activeClassName="active" key={key}>
             <ListItem button className={classes.itemLink + listItemClasses}>
               {typeof prop.icon === "string" ? (
@@ -71,6 +70,15 @@ export default function Sidebar(props) {
             </ListItem>
           </NavLink>
         );
+        if (prop.sideOnly) {
+          if (prop.loggedOnly) {
+            if (currentUser) {
+              return result;
+            }
+          } else {
+            return result;
+          }
+        }
       })}
     </List>
   );

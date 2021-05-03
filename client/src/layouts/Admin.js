@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Switch, Route, Redirect } from "react-router-dom";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -17,18 +18,6 @@ import logo from "assets/img/test-logo.png";
 
 let ps;
 
-const switchRoutes = (
-  <Switch>
-    {routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
-        return <Route path={prop.layout + prop.path} component={prop.component} key={key} />;
-      }
-      return null;
-    })}
-    <Redirect from="/admin" to="/admin/dashboard" />
-  </Switch>
-);
-
 const useStyles = makeStyles(styles);
 
 export default function Admin({ ...rest }) {
@@ -37,6 +26,24 @@ export default function Admin({ ...rest }) {
   const [image, setImage] = React.useState(bgImage);
   const [color, setColor] = React.useState("blue");
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const { user: currentUser } = useSelector((state) => state.auth);
+
+  const switchRoutes = (
+    <Switch>
+      {routes.map((prop, key) => {
+        if (prop.loggedOnly) {
+          if (currentUser) {
+            return <Route path={prop.layout + prop.path} component={prop.component} key={key} />;
+          }
+        } else {
+          return <Route path={prop.layout + prop.path} component={prop.component} key={key} />;
+        }
+        return null;
+      })}
+      <Redirect from="/admin" to="/admin/dashboard" />
+    </Switch>
+  );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
