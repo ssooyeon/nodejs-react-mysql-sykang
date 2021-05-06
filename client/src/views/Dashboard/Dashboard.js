@@ -82,7 +82,6 @@ const defaultOptions = {
           },
         },
         realtime: {
-          // TODO: 시스템별 실제 값 표출하기
           onRefresh: function (chart) {},
           delay: 2000,
         },
@@ -277,7 +276,7 @@ export default function Dashboard() {
         setDiskPerCentage(disk.toFixed(4));
 
         // 디스크 차트 데이터 삽입
-        const x = memChartOptions.scales.xAxes;
+        const x = diskChartOptions.scales.xAxes;
         x[0].realtime.onRefresh = addChartData(diskData, disk);
         setDiskChartOptions((pre) => ({
           ...pre,
@@ -337,13 +336,13 @@ export default function Dashboard() {
     <div>
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
-          <LineChart data={cpuData} legend={legend} options={defaultOptions} />
+          <LineChart data={cpuData} legend={legend} options={cpuChartOptions} />
         </GridItem>
         <GridItem xs={12} sm={12} md={4}>
-          <LineChart data={memData} legend={legend} options={defaultOptions} />
+          <LineChart data={memData} legend={legend} options={memChartOptions} />
         </GridItem>
         <GridItem xs={12} sm={12} md={4}>
-          <LineChart data={diskData} legend={legend} options={defaultOptions} />
+          <LineChart data={diskData} legend={legend} options={diskChartOptions} />
         </GridItem>
       </GridContainer>
       <GridContainer>

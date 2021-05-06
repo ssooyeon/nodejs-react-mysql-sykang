@@ -2,6 +2,7 @@ import React, { useRef, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useAlert } from "react-alert-17";
 
 import SimpleReactValidator from "simple-react-validator";
 
@@ -42,6 +43,7 @@ const useStyles = makeStyles(styles);
 export default function Login(props) {
   const classes = useStyles();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
+  const alert = useAlert();
 
   const initialUserstate = {
     id: null,
@@ -82,6 +84,10 @@ export default function Login(props) {
         })
         .catch((e) => {
           console.log(e);
+          alert.show("Incorrect password.", {
+            title: "",
+            type: "error",
+          });
         });
     } else {
       // validation 실패 시 오류 표출
