@@ -67,7 +67,6 @@ const defaultOptions = {
   scales: {
     xAxes: [
       {
-        //   position: "top", //default는 bottom
         display: true,
         scaleLabel: {
           display: true,
@@ -84,14 +83,7 @@ const defaultOptions = {
         },
         realtime: {
           // TODO: 시스템별 실제 값 표출하기
-          onRefresh: function (chart) {
-            chart.data.datasets.forEach(function (dataset) {
-              dataset.data.push({
-                x: Date.now(),
-                y: parseInt(Math.random() * 100) + 1,
-              });
-            });
-          },
+          onRefresh: function (chart) {},
           delay: 2000,
         },
       },
@@ -184,6 +176,10 @@ export default function Dashboard() {
   const [memData, setMemData] = useState(defaultMemoryChartData);
   const [diskData, setDiskData] = useState(defaultDiskChartData);
 
+  const [cpuChartOptions, setCpuChartOptions] = useState(defaultOptions);
+  const [memChartOptions, setMemChartOptions] = useState(defaultOptions);
+  const [diskChartOptions, setDiskChartOptions] = useState(defaultOptions);
+
   const [logList, setLogList] = useState([]);
 
   useEffect(() => {
@@ -200,10 +196,30 @@ export default function Dashboard() {
       .then((res) => {
         const cpu = res.data;
         setCpuPerCentage(cpu.toFixed(4));
+
+        // CPU 차트 데이터 삽입
+        const x = cpuChartOptions.scales.xAxes;
+        x[0].realtime.onRefresh = addChartData(cpuData, cpu);
+        setCpuChartOptions((pre) => ({
+          ...pre,
+          scales: {
+            ...pre.scales,
+            xAxes: x,
+          },
+        }));
       })
       .catch((e) => {
         console.log(e);
       });
+  };
+
+  const addChartData = (chart, value) => {
+    chart.datasets.forEach(function (dataset) {
+      dataset.data.push({
+        x: Date.now(),
+        y: value,
+      });
+    });
   };
 
   // CPU 속도 조회
@@ -224,6 +240,17 @@ export default function Dashboard() {
       .then((res) => {
         const mem = res.data;
         setMemPerCentage(mem.toFixed(4));
+
+        // 메모리 차트 데이터 삽입
+        const x = memChartOptions.scales.xAxes;
+        x[0].realtime.onRefresh = addChartData(memData, mem);
+        setMemChartOptions((pre) => ({
+          ...pre,
+          scales: {
+            ...pre.scales,
+            xAxes: x,
+          },
+        }));
       })
       .catch((e) => {
         console.log(e);
@@ -248,6 +275,17 @@ export default function Dashboard() {
       .then((res) => {
         const disk = res.data;
         setDiskPerCentage(disk.toFixed(4));
+
+        // 디스크 차트 데이터 삽입
+        const x = memChartOptions.scales.xAxes;
+        x[0].realtime.onRefresh = addChartData(diskData, disk);
+        setDiskChartOptions((pre) => ({
+          ...pre,
+          scales: {
+            ...pre.scales,
+            xAxes: x,
+          },
+        }));
       })
       .catch((e) => {
         console.log(e);
