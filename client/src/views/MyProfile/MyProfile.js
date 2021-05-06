@@ -114,6 +114,7 @@ export default function MyProfile(props) {
         // 비밀번호 변경 화면이 열려있지 않으면 email 정보만 업데이트
         const paramsWithOutPassword = {
           id: user.id,
+          account: user.account,
           email: user.email,
         };
         edit(paramsWithOutPassword);
