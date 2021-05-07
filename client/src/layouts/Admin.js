@@ -14,7 +14,7 @@ import routes from "routes.js";
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
-import logo from "assets/img/test-logo.png";
+// import logo from "assets/img/test-logo.png";
 
 let ps;
 
@@ -81,7 +81,7 @@ export default function Admin({ ...rest }) {
       <Sidebar
         routes={routes}
         logoText={"❤❤❤"}
-        logo={logo}
+        // logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
