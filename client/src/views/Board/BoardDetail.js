@@ -140,10 +140,7 @@ export default function BoardDetail(props) {
               <div className={classes.stats}>
                 <Moment format="YYYY-MM-DD HH:mm:ss">{boards.createdAt}</Moment>
               </div>
-              <div className={classes.stats}>
-                {/* TODO: not working */}
-                {/* <strong>{boards.user.account}</strong> */}
-              </div>
+              <div className={classes.stats}>{boards.user && <strong>{boards.user.account}</strong>}</div>
             </CardFooter>
           </Card>
         </GridItem>
