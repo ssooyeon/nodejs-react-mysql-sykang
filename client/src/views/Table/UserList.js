@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "underscore";
+import { useAlert } from "react-alert-17";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
@@ -13,7 +15,7 @@ import CustomInput from "components/CustomInput/CustomInput";
 
 import AddUserForm from "./AddUserForm";
 
-import { retrieveUsers } from "actions/users";
+import { retrieveUsers, deleteUser } from "actions/users";
 import EditUserForm from "./EditUserForm";
 
 const styles = {
@@ -27,6 +29,7 @@ const useStyles = makeStyles(styles);
 
 export default function UserList() {
   const classes = useStyles();
+  const alert = useAlert();
 
   const defaultColumns = [
     { field: "id", headerName: "ID", type: "number", flex: 0.1 },
@@ -43,7 +46,19 @@ export default function UserList() {
           handleEditModalClick(true);
           setEditUser(params.row);
         };
-        const onRemoveClick = () => {};
+        const onRemoveClick = () => {
+          alert.show("Are you sure delete this user?", {
+            title: "",
+            closeCopy: "Cancel",
+            type: "success",
+            actions: [
+              {
+                copy: "YES",
+                onClick: () => removeUser(params.row.id),
+              },
+            ],
+          });
+        };
         return (
           <>
             <Button justIcon color="warning" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onEditClick}>
@@ -58,6 +73,9 @@ export default function UserList() {
     },
   ];
 
+  const users = useSelector((state) => state.users || []);
+  const dispatch = useDispatch();
+
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editUser, setEditUser] = useState([]);
@@ -65,12 +83,9 @@ export default function UserList() {
   const [search, setSearch] = useState("");
   const [columns, setColumns] = useState(defaultColumns);
 
-  const rows = useSelector((state) => state.users);
-  const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(retrieveUsers());
-  }, []);
+  }, [dispatch]);
 
   // 사용자 등록 버튼 클릭 및 child modal 컴포넌트에서 닫기 버튼 클릭
   const handleAddModalClick = (value) => {
@@ -82,10 +97,29 @@ export default function UserList() {
     setEditModalOpen(value);
   };
 
-  // 검색 입력 칸에서 엔터 버튼 클릭
-  const handleKeyPress = () => {};
+  // 사용자 삭제
+  const removeUser = (id) => {
+    dispatch(deleteUser(id))
+      .then(() => {
+        alert.show("The user was created successfully.", {
+          title: "",
+          type: "success",
+          onClose: () => {},
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
-  // 사용자 검색
+  // 검색 입력 칸에서 엔터 버튼 클릭
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      searchUsers();
+    }
+  };
+
+  // TODO: 사용자 검색
   const searchUsers = () => {};
 
   return (
@@ -123,7 +157,7 @@ export default function UserList() {
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <div className={classes.tableWrapper}>
-            <DataGrid rows={rows} columns={columns} pageSize={10} checkboxSelection />
+            <DataGrid rows={users} columns={columns} pageSize={10} checkboxSelection />
           </div>
         </GridItem>
       </GridContainer>

@@ -16,7 +16,8 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
-import { retrieveByAccount, createUser } from "actions/users";
+import { createUser } from "actions/users";
+import UserService from "services/UserService";
 
 const styles = {
   errorText: {
@@ -74,11 +75,10 @@ export default function AddUserForm({ open, handleCloseClick }) {
   const checkAccount = () => {
     const account = userForm.account;
     if (account !== "") {
-      dispatch(retrieveByAccount(account))
+      UserService.findByAccount(userForm.account)
         .then((res) => {
-          console.log(res);
           // 이미 존재하는 계정일 때
-          if (res !== "" && res !== undefined) {
+          if (res.data !== "" && res.data !== undefined) {
             alert.show("This account already exist.", {
               title: "",
               type: "error",

@@ -16,7 +16,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
-import { updateUser } from "actions/users";
+import { retrieveUsers, updateUser } from "actions/users";
 
 const styles = {
   errorText: {
@@ -110,13 +110,14 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
 
   // 사용자 수정
   const edit = (user) => {
-    dispatch(updateUser(user))
+    dispatch(updateUser(user.id, user))
       .then(() => {
         alert.show("User update successfully.", {
           title: "",
           type: "success",
           onClose: () => {
             handleClose();
+            dispatch(retrieveUsers());
           },
         });
       })
@@ -129,9 +130,9 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
         <form autoComplete="off">
-          <DialogTitle id="form-dialog-title">Add new user</DialogTitle>
+          <DialogTitle id="form-dialog-title">Edit user</DialogTitle>
           <DialogContent>
-            <DialogContentText>To register a new user, enter your account name, email, and password and click the Submit button.</DialogContentText>
+            <DialogContentText>To Edit a user, enter your email, and password and click the Submit button.</DialogContentText>
             <CardBody>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
