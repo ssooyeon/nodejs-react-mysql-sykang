@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Update } from "@material-ui/icons";
@@ -61,6 +61,7 @@ const initSystemInfo = {
 const defaultOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  events: ["click"],
   tooltips: {
     enabled: false,
   },
@@ -161,6 +162,7 @@ const defaultDiskChartData = {
 export default function Dashboard() {
   const classes = defaultStyles();
   const customClasses = useStyles();
+  const isMounted = useRef(true);
 
   const [cpuPerCentage, setCpuPerCentage] = useState(0);
   const [cpuSpeed, setCpuSpeed] = useState(initSystemInfo);
@@ -182,7 +184,12 @@ export default function Dashboard() {
   const [logList, setLogList] = useState([]);
 
   useEffect(() => {
-    timers();
+    if (isMounted) {
+      timers();
+    }
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   useInterval(() => {
