@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import _ from "underscore";
 import { useAlert } from "react-alert-17";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,7 +10,6 @@ import { Search, Edit, Delete } from "@material-ui/icons";
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
 import Button from "components/CustomButtons/Button";
-import CustomInput from "components/CustomInput/CustomInput";
 
 import AddUserForm from "./AddUserForm";
 
@@ -20,6 +18,7 @@ import EditUserForm from "./EditUserForm";
 
 const styles = {
   tableWrapper: {
+    marginTop: "20px",
     height: "700px",
     width: "100%",
   },
@@ -79,8 +78,6 @@ export default function UserList() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editUser, setEditUser] = useState([]);
-
-  const [search, setSearch] = useState("");
   const [columns, setColumns] = useState(defaultColumns);
 
   useEffect(() => {
@@ -112,16 +109,6 @@ export default function UserList() {
       });
   };
 
-  // 검색 입력 칸에서 엔터 버튼 클릭
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      searchUsers();
-    }
-  };
-
-  // TODO: 사용자 검색
-  const searchUsers = () => {};
-
   return (
     <>
       <GridContainer>
@@ -130,30 +117,6 @@ export default function UserList() {
             <Add />
             Add
           </Button>
-        </GridItem>
-
-        <GridItem xs={12} sm={12} md={11}>
-          <CustomInput
-            labelText="Search"
-            id="search"
-            name="search"
-            value={search}
-            formControlProps={{
-              fullWidth: true,
-            }}
-            inputProps={{
-              name: "search",
-              onChange: (e) => setSearch(e.target.value),
-              onKeyPress: (e) => handleKeyPress(e),
-            }}
-          />
-        </GridItem>
-        <GridItem xs={12} sm={12} md={1}>
-          <div className={classes.searchButtonWrapper}>
-            <Button justIcon onClick={searchUsers}>
-              <Search />
-            </Button>
-          </div>
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <div className={classes.tableWrapper}>

@@ -33,7 +33,6 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "simple-react-validator": "^1.6.0",
-    "underscore": "^1.13.1",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
