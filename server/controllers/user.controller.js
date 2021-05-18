@@ -160,27 +160,37 @@ exports.authLogin = (req, res) => {
     // request.body의 account를 가지는 사용자가 존재하면
     User.findOne({ where: { account: account } })
       .then((data) => {
-        // request.body의 password와 조회한 사용자의 비밀번호가 일치하면
-        const compare = bcrypt.compareSync(password, data.password);
-        if (compare) {
-          const userInfo = {
-            id: data.id,
-            account: account,
-            email: data.email,
-          };
-          // jwt 토큰을 생성
-          const token = jwt.sign({ userInfo }, "the_secret_key");
-          const user = {
-            token,
-            id: userInfo.id,
-            account: userInfo.account,
-            email: userInfo.email,
-          };
-          Log.create({ status: "SUCCESS", message: `User login successfully. User account is: ${account}` });
-          res.send({ user: user });
+        // 존재하는 account이면
+        if (data != null) {
+          // request.body의 password와 조회한 사용자의 비밀번호가 일치하면
+          const compare = bcrypt.compareSync(password, data.password);
+          if (compare) {
+            const userInfo = {
+              id: data.id,
+              account: account,
+              email: data.email,
+            };
+            // jwt 토큰을 생성
+            const token = jwt.sign({ userInfo }, "the_secret_key");
+            const user = {
+              token,
+              id: userInfo.id,
+              account: userInfo.account,
+              email: userInfo.email,
+            };
+            Log.create({ status: "SUCCESS", message: `User login successfully. User account is: ${account}` });
+            res.send({ user: user });
+          } else {
+            // 비밀번호가 일치하지 않으면
+            const message = "User login failed. Incorrect password.";
+            Log.create({ status: "ERROR", message: `${message} User account is: ${account}` });
+            res.send({ message: message });
+          }
         } else {
-          Log.create({ status: "ERROR", message: `User login failed. User account is: ${account}` });
-          res.send(null);
+          // 존재하지 않는 account이면
+          const message = "Not existed user.";
+          Log.create({ status: "ERROR", message: `${message} User account is: ${account}` });
+          res.send({ message: message });
         }
       })
       .catch((e) => {

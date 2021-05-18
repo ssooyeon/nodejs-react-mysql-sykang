@@ -12,10 +12,17 @@ export const authLogin = (data) => async (dispatch) => {
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
-    console.log(res.data);
-    return Promise.resolve(res.data);
+    console.log(res);
+    if (res.message != undefined) {
+      return Promise.resolve(res.message);
+    } else {
+      return Promise.resolve(res.data);
+    }
   } catch (err) {
     console.log(err);
+    dispatch({
+      type: LOGIN_FAIL,
+    });
     return Promise.reject(err);
   }
 };

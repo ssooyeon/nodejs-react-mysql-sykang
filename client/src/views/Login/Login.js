@@ -77,17 +77,20 @@ export default function Login(props) {
     if (valid) {
       dispatch(authLogin(user))
         .then((res) => {
-          // local storage 설정
-          axios.defaults.headers.common["Authorization"] = `Bearer ${res.user.token}`;
-          localStorage.setItem("user", JSON.stringify(res.user));
-          props.history.push("/");
+          if (res.message != undefined) {
+            alert.show(res.message, {
+              title: "",
+              type: "error",
+            });
+          } else {
+            // 로그인에 성공했을 때 local storage 설정
+            axios.defaults.headers.common["Authorization"] = `Bearer ${res.user.token}`;
+            localStorage.setItem("user", JSON.stringify(res.user));
+            props.history.push("/");
+          }
         })
         .catch((e) => {
           console.log(e);
-          alert.show("Incorrect password.", {
-            title: "",
-            type: "error",
-          });
         });
     } else {
       // validation 실패 시 오류 표출
