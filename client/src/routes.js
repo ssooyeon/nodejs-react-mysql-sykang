@@ -2,6 +2,7 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import Board from "views/Board/Boards";
 import MyProfile from "views/MyProfile/MyProfile";
+import MyTask from "views/MyTask/MyTask";
 import UserList from "views/Table/UserList";
 import Login from "views/Login/Login";
 import Register from "views/Login/Register";
@@ -39,6 +40,15 @@ const routes = [
     name: "My Profile",
     icon: "content_paste",
     component: MyProfile,
+    layout: "/admin",
+    loggedOnly: true,
+    sideOnly: true,
+  },
+  {
+    path: "/myTask",
+    name: "My Task",
+    icon: "content_paste",
+    component: MyTask,
     layout: "/admin",
     loggedOnly: true,
     sideOnly: true,
