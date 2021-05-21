@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
     ordering: {
       type: Sequelize.INTEGER,
     },
+    labelColor: {
+      type: Sequelize.STRING,
+    },
     dueDate: {
       type: Sequelize.DATE,
     },

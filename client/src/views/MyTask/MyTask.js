@@ -37,6 +37,12 @@ const customStyles = {
     display: "flex",
     height: "100%",
   },
+  circleLabel: {
+    width: "40px",
+    height: "10px",
+    marginBottom: "2px",
+    borderRadius: "5px",
+  },
   columns: {
     display: "flex",
     flexDirection: "column",
@@ -117,7 +123,6 @@ export default function MyTask() {
   const [editColumnForm, setEditColumnForm] = useState([]); // 수정할 컬럼
 
   const { user: currentUser } = useSelector((state) => state.auth);
-  // const folders = useSelector((state) => state.folders || []);
   const dispatch = useDispatch();
 
   // 컬럼 추가 시 기본 컬럼
@@ -268,9 +273,23 @@ export default function MyTask() {
     handleEditFolderModalClick(true);
   };
 
-  // 테스크 포함 컬럼 삭제
-  const deleteColumn = (id) => {
-    //TODO: confirm alert
+  // 컬럼 삭제 버튼 클릭
+  const confirmRemoveColumn = (id) => {
+    alert.show("Are you sure delete this column with all task?", {
+      title: "",
+      closeCopy: "Cancel",
+      type: "success",
+      actions: [
+        {
+          copy: "YES",
+          onClick: () => removeColumn(id),
+        },
+      ],
+    });
+  };
+
+  // 테스크 포험 컬럼 삭제
+  const removeColumn = (id) => {
     dispatch(deleteFolder(id))
       .then(() => {
         getFolder(currentFolder);
@@ -293,8 +312,22 @@ export default function MyTask() {
   };
 
   // 테스크 삭제 버튼 클릭
+  const confirmRemoveTask = (id) => {
+    alert.show("Are you sure delete this task?", {
+      title: "",
+      closeCopy: "Cancel",
+      type: "success",
+      actions: [
+        {
+          copy: "YES",
+          onClick: () => removeTask(id),
+        },
+      ],
+    });
+  };
+
+  // 테스크 삭제
   const removeTask = (id) => {
-    //TODO: confrim alert
     id = id.replace("task", "");
     dispatch(deleteTask(id))
       .then(() => {
@@ -342,7 +375,7 @@ export default function MyTask() {
                             <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => editColumn(column)}>
                               <Edit className={customClasses.icon} />
                             </Button>
-                            <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => deleteColumn(column.id)}>
+                            <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => confirmRemoveColumn(column.id)}>
                               <Delete className={customClasses.icon} />
                             </Button>
                           </p>
@@ -376,12 +409,20 @@ export default function MyTask() {
                                                   ...provided.draggableProps.style,
                                                 }}
                                               >
+                                                {item.labelColor && item.labelColor ? (
+                                                  <div className={customClasses.circleLabel} style={{ background: item.labelColor }}></div>
+                                                ) : null}
                                                 {item.title}
                                                 <div className={customClasses.right}>
                                                   <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => editTask(item)}>
                                                     <Edit className={customClasses.icon} />
                                                   </Button>
-                                                  <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => removeTask(item.id)}>
+                                                  <Button
+                                                    className={customClasses.iconButton}
+                                                    justIcon
+                                                    size="sm"
+                                                    onClick={() => confirmRemoveTask(item.id)}
+                                                  >
                                                     <Delete className={customClasses.icon} />
                                                   </Button>
                                                 </div>

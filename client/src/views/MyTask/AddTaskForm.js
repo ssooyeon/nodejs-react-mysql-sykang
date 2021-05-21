@@ -1,6 +1,11 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import SimpleReactValidator from "simple-react-validator";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState } from "draft-js";
+import { convertToHTML } from "draft-convert";
+import { CirclePicker } from "react-color";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,6 +13,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
 import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -23,6 +29,22 @@ const styles = {
     margin: "auto",
     fontSize: "14px",
   },
+  modalContentWrapper: {
+    height: "550px",
+  },
+  labelText: {
+    display: "flex",
+    fontSize: "14px",
+  },
+  labelDiv: {
+    width: "30px",
+    height: "15px",
+    marginTop: "2px",
+  },
+  textField: {
+    width: "100%",
+    marginTop: "10px",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -37,12 +59,15 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
     title: "",
     description: "",
     folderId: "",
+    labelColor: null,
     ordering: 0,
     createrId: currentUser.id,
   };
 
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
+
+  const [editorState, setEditorState] = useState(EditorState.createEmpty()); // description editor
 
   const [taskForm, setTaskForm] = useState(initialTaskstate);
   const dispatch = useDispatch();
@@ -72,12 +97,19 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
     const { name, value } = e.target;
     setTaskForm({ ...taskForm, [name]: value });
   };
+  const onEditorStateChange = (editorState) => {
+    setEditorState(editorState);
+  };
+  const onColorStateChange = (colorState) => {
+    setTaskForm({ ...taskForm, labelColor: colorState });
+  };
 
   // 테스크 등록 버튼 클릭
   const addTask = () => {
     const valid = validator.current.allValid();
     if (valid) {
-      dispatch(createTask(taskForm))
+      const data = { ...taskForm, description: convertToHTML(editorState.getCurrentContent()) };
+      dispatch(createTask(data))
         .then(() => {
           handleClose();
         })
@@ -94,9 +126,26 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
         <form autoComplete="off">
-          <DialogTitle id="form-dialog-title">Add new task</DialogTitle>
-          <DialogContent>
-            <DialogContentText>To register a new task, enter title and description and click the Submit button.</DialogContentText>
+          <DialogTitle id="form-dialog-title">
+            Add new task
+            <div className={classes.labelText}>
+              label: &nbsp; <div className={classes.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
+            </div>
+          </DialogTitle>
+          <DialogContent className={classes.modalContentWrapper}>
+            <DialogContentText>
+              To register a new task, enter title and description and click the Submit button.
+              <div>
+                <div className={classes.labelText}>
+                  Change label color: &nbsp;
+                  <CirclePicker
+                    colors={["#004de8", "#2ecc71", "#ff9300", "#62708b", "#ff003a", "#20396a"]}
+                    circleSize={20}
+                    onChangeComplete={(colore) => onColorStateChange(colore.hex)}
+                  />
+                </div>
+              </div>
+            </DialogContentText>
             <CardBody>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
@@ -117,26 +166,45 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
                   <div className={classes.errorText}>{validator.current.message("title", taskForm.title, "required")}</div>
                 </GridItem>
               </GridContainer>
-
               <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <CustomInput
-                    labelText="Description"
-                    id="description"
-                    name="description"
-                    value={taskForm.description}
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      name: "description",
-                      onChange: (e) => handleInputChange(e),
-                      onBlur: () => validator.current.showMessageFor("description"),
-                    }}
-                  />
-                  <div className={classes.errorText}>{validator.current.message("description", taskForm.description, "required")}</div>
-                </GridItem>
+                <Editor
+                  editorStyle={{ border: "1px solid #C0C0C0", height: "190px", padding: "5px" }}
+                  id="description"
+                  name="description"
+                  value={taskForm.description}
+                  wrapperClassName="wrapper-class"
+                  editorClassName="editor"
+                  toolbarClassName="toolbar-class"
+                  toolbar={{
+                    options: ["inline", "fontSize", "list", "colorPicker", "image", "remove", "history"],
+                    // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼 것인지
+                    list: { inDropdown: true },
+                    textAlign: { inDropdown: true },
+                    history: { inDropdown: false },
+                  }}
+                  placeholder="Description"
+                  // 한국어 설정
+                  localization={{
+                    locale: "ko",
+                  }}
+                  // 초기값 설정
+                  editorState={editorState}
+                  // 에디터의 값이 변경될 때마다 onEditorStateChange 호출
+                  onEditorStateChange={onEditorStateChange}
+                />
               </GridContainer>
+              {/* <GridContainer>
+                <TextField
+                  id="date"
+                  label="Due date"
+                  type="datetime-local"
+                  defaultValue="2017-05-24 00:12:12"
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </GridContainer> */}
             </CardBody>
           </DialogContent>
           <DialogActions>
