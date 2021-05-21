@@ -27,3 +27,21 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT = "LOGOUT";
 export const UPDATE_LOGGED_USER = "UPDATE_LOGGED_USER";
+
+/***************************************************
+ * Folder & Task
+ ***************************************************/
+export const CREATE_FOLDER = "CREATE_FOLDER";
+export const RETRIEVE_FOLDERS = "RETRIEVE_FOLDERS";
+export const RETRIEVE_PARENT_FOLDERS = "RETRIEVE_PARENT_FOLDERS";
+export const RETRIEVE_FOLDER = "RETRIEVE_FOLDER";
+export const UPDATE_FOLDER = "UPDATE_FOLDER";
+export const DELETE_FOLDER = "DELETE_FOLDER";
+export const DELETE_ALL_FOLDERS = "DELETE_ALL_FOLDERS";
+
+export const CREATE_TASK = "CREATE_TASK";
+export const RETRIEVE_TASKS = "RETRIEVE_TASKS";
+export const RETRIEVE_TASK = "RETRIEVE_TASK";
+export const UPDATE_TASK = "UPDATE_TASK";
+export const DELETE_TASK = "DELETE_TASK";
+export const DELETE_ALL_TASKS = "DELETE_ALL_TASKS";

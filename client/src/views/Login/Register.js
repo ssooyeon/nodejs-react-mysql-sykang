@@ -92,7 +92,6 @@ export default function Register(props) {
     if (account !== "") {
       dispatch(retrieveByAccount(account))
         .then((res) => {
-          console.log(res);
           // 이미 존재하는 계정일 때
           if (res !== "" && res !== undefined) {
             alert.show("This account already exist.", {

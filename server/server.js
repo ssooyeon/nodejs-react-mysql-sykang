@@ -32,6 +32,8 @@ require("./routes/user.routes")(app);
 require("./routes/monitoring.routes")(app);
 require("./routes/board.routes")(app);
 require("./routes/log.routes")(app);
+require("./routes/task.routes")(app);
+require("./routes/folder.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

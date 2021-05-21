@@ -25,4 +25,25 @@ db.boards.belongsTo(db.users, {
   as: "user",
 });
 
+db.folders = require("./folder.model")(sequelize, Sequelize);
+db.folders.belongsTo(db.users, {
+  foreignKey: "managerId",
+  as: "manager",
+});
+db.folders.belongsTo(db.folders, {
+  foreignKey: "parentId",
+  as: "parent",
+});
+
+db.tasks = require("./task.model")(sequelize, Sequelize);
+db.folders.hasMany(db.tasks, { as: "tasks" });
+db.tasks.belongsTo(db.folders, {
+  foreignKey: "folderId",
+  as: "folder",
+});
+db.tasks.belongsTo(db.users, {
+  foreignKey: "createrId",
+  as: "creater",
+});
+
 module.exports = db;
