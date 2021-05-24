@@ -17,6 +17,9 @@ module.exports = (sequelize, Sequelize) => {
     dueDate: {
       type: Sequelize.DATE,
     },
+    isDone: {
+      type: Sequelize.BOOLEAN,
+    },
   });
 
   return Task;

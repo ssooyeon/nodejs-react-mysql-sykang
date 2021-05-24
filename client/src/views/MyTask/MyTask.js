@@ -19,6 +19,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Menu } from "@material-ui/core";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import AddTaskForm from "./AddTaskForm";
@@ -134,6 +138,8 @@ const customStyles = {
 
 const defaultStyles = makeStyles(styles);
 const useStyles = makeStyles(customStyles);
+
+const today = new Date().toISOString().slice(0, 10);
 
 export default function MyTask() {
   /**
@@ -297,7 +303,6 @@ export default function MyTask() {
     setAnchorEl(event.currentTarget);
     const taskStr = event.currentTarget.dataset.task;
     const task = JSON.parse(taskStr);
-    console.log(task);
     setEditTaskForm(task);
   };
   // 테스크 액션(수정/삭제) 버튼 닫기
@@ -386,8 +391,8 @@ export default function MyTask() {
   const removeColumn = (id) => {
     dispatch(deleteFolder(id))
       .then(() => {
+        setCurrentFolder(1);
         getParentFolders();
-        //TODO: 관련 컬럼/테스크 모두 삭제(현재는 null이 됨)
       })
       .catch((err) => {
         console.log(err);
@@ -438,6 +443,19 @@ export default function MyTask() {
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  // 테스크 체크박스 클릭
+  const handleCheckbox = (e, task) => {
+    const id = task.id.replace("task", "");
+    const data = { ...task, id: id, isDone: e.target.checked };
+    dispatch(updateTask(data.id, data))
+      .then(() => {
+        getFolder(currentFolder);
+      })
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -562,11 +580,35 @@ export default function MyTask() {
                                                   }}
                                                 >
                                                   {item.title}
-                                                  <br />
+                                                </span>
+                                                <br />
+                                                <span>
                                                   {item.dueDate ? (
-                                                    <Moment format="YYYY-MM-DD HH:mm:ss" className={customClasses.dueDateStr}>
-                                                      {item.dueDate}
-                                                    </Moment>
+                                                    <>
+                                                      <FormControlLabel
+                                                        style={{ marginRight: "-5px" }}
+                                                        control={
+                                                          <Checkbox
+                                                            checked={item.isDone}
+                                                            onChange={(e) => handleCheckbox(e, item)}
+                                                            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                                                            checkedIcon={<CheckBoxIcon fontSize="small" />}
+                                                          />
+                                                        }
+                                                      />
+                                                      <Moment
+                                                        format="YYYY-MM-DD HH:mm:ss"
+                                                        className={customClasses.dueDateStr}
+                                                        style={{
+                                                          color:
+                                                            item.dueDate && today == new Date(item.dueDate).toISOString().slice(0, 10)
+                                                              ? "#bda926"
+                                                              : null,
+                                                        }}
+                                                      >
+                                                        {item.dueDate}
+                                                      </Moment>
+                                                    </>
                                                   ) : null}
                                                 </span>
                                               </div>

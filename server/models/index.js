@@ -33,6 +33,7 @@ db.folders.belongsTo(db.users, {
 db.folders.belongsTo(db.folders, {
   foreignKey: "parentId",
   as: "parent",
+  onDelete: "CASCADE",
 });
 
 db.tasks = require("./task.model")(sequelize, Sequelize);
@@ -40,10 +41,12 @@ db.folders.hasMany(db.tasks, { as: "tasks" });
 db.tasks.belongsTo(db.folders, {
   foreignKey: "folderId",
   as: "folder",
+  onDelete: "CASCADE",
 });
 db.tasks.belongsTo(db.users, {
   foreignKey: "createrId",
   as: "creater",
+  onDelete: "CASCADE",
 });
 
 module.exports = db;

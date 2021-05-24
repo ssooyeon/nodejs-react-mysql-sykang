@@ -137,19 +137,25 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Folder.destroy({ where: { id: id } })
-    .then((num) => {
-      if (num === 1) {
-        Log.create({ status: "SUCCESS", message: `Folder delete successfully. New folder id is: ${id}` });
-        res.send({ message: "Folder was deleted successfully." });
-      } else {
-        res.send({ message: `Cannot delete Folder with id=${id}. maybe Folder was not found.` });
-      }
-    })
-    .catch((err) => {
-      Log.create({ status: "ERROR", message: `Folder delete failed. Folder id is: ${id}` });
-      res.status(500).send({ message: err.message || `Could not delete Folder with id=${id}` });
-    });
+  Folder.destroy({
+    where: { parentId: id },
+  }).then(() => {});
+
+  Task.destroy({ where: { folderId: id } }).then(() => {
+    Folder.destroy({ where: { id: id } })
+      .then((num) => {
+        if (num === 1) {
+          Log.create({ status: "SUCCESS", message: `Folder delete successfully. New folder id is: ${id}` });
+          res.send({ message: "Folder was deleted successfully." });
+        } else {
+          res.send({ message: `Cannot delete Folder with id=${id}. maybe Folder was not found.` });
+        }
+      })
+      .catch((err) => {
+        Log.create({ status: "ERROR", message: `Folder delete failed. Folder id is: ${id}` });
+        res.status(500).send({ message: err.message || `Could not delete Folder with id=${id}` });
+      });
+  });
 };
 
 /**

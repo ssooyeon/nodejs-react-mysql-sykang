@@ -190,7 +190,11 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                 <div className={classes.dueDatePickerWrapper}>
                   <br />
                   <span className={classes.labelText}>Due date</span>
-                  <DateTimePicker className={classes.dueDatePicker} onChange={onDateChange} value={taskForm.dueDate} />
+                  <DateTimePicker
+                    className={classes.dueDatePicker}
+                    onChange={onDateChange}
+                    value={taskForm.dueDate ? new Date(taskForm.dueDate) : null}
+                  />
                 </div>
               </GridContainer>
             </CardBody>
