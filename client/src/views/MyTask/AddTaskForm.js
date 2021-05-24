@@ -7,11 +7,10 @@ import { convertToHTML } from "draft-convert";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "react-datetime-picker/dist/DateTimePicker.css";
-import "react-calendar/dist/Calendar.css";
-import "react-clock/dist/Clock.css";
 
 import { makeStyles } from "@material-ui/core/styles";
+import { Close } from "@material-ui/icons";
+
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -53,6 +52,19 @@ const styles = {
   },
   dueDatePicker: {
     width: "100%",
+  },
+  iconButton: {
+    background: "none !important",
+    boxShadow: "none !important",
+    width: "20px !important",
+    minWidth: "20px !important",
+    height: "20px !important",
+  },
+  icon: {
+    width: "20px !important",
+    height: "20px !important",
+    marginBottom: "10px !important",
+    color: "#000",
   },
 };
 
@@ -144,6 +156,9 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
             Add new task
             <div className={classes.labelText}>
               label: &nbsp; <div className={classes.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
+              <Button className={classes.iconButton} justIcon size="sm" onClick={() => onColorStateChange(null)}>
+                <Close className={classes.icon} />
+              </Button>
             </div>
           </DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>

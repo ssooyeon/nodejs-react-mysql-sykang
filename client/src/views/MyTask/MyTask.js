@@ -5,7 +5,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Add, Person, Edit, Delete } from "@material-ui/icons";
+import { Add, Person, Edit, Delete, Menu as MenuIcon } from "@material-ui/icons";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -17,6 +17,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Menu } from "@material-ui/core";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import AddTaskForm from "./AddTaskForm";
@@ -121,6 +122,8 @@ export default function MyTask() {
 
   const [editColumnModalOpen, setEditColumnModalOpen] = useState(false); // 컬럼 수정 모달 오픈
   const [editColumnForm, setEditColumnForm] = useState([]); // 수정할 컬럼
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -236,6 +239,17 @@ export default function MyTask() {
     getFolder(currentFolder);
   };
 
+  // 테스크 액션(수정/삭제) 버튼 클릭
+  const handleTaskMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    const task = event.currentTarget.dataset.task;
+    setEditTaskForm(JSON.parse(task));
+  };
+  // 테스크 액션(수정/삭제) 버튼 닫기
+  const handleTaskMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   // 테스트 수정 버튼 클릭 및 EditTaskForm.js 에서 닫기 버튼 클릭
   const handleEditTaskModalClick = (value) => {
     setEditTaskModalOpen(value);
@@ -305,14 +319,22 @@ export default function MyTask() {
     handleAddTaskModalClick(true);
   };
 
-  // 테스크 수정 버튼 클릭
-  const editTask = (task) => {
+  // 테스크 제목 클릭 시 상세보기 모달 표출
+  const taskTitleClick = (task) => {
     setEditTaskForm(task);
     handleEditTaskModalClick(true);
   };
 
+  // 테스크 수정 버튼 클릭
+  const editTask = () => {
+    console.log(editTaskForm);
+    handleTaskMenuClose();
+    handleEditTaskModalClick(true);
+  };
+
   // 테스크 삭제 버튼 클릭
-  const confirmRemoveTask = (id) => {
+  const confirmRemoveTask = () => {
+    handleTaskMenuClose();
     alert.show("Are you sure delete this task?", {
       title: "",
       closeCopy: "Cancel",
@@ -320,7 +342,7 @@ export default function MyTask() {
       actions: [
         {
           copy: "YES",
-          onClick: () => removeTask(id),
+          onClick: () => removeTask(editTaskForm.id),
         },
       ],
     });
@@ -412,20 +434,36 @@ export default function MyTask() {
                                                 {item.labelColor && item.labelColor ? (
                                                   <div className={customClasses.circleLabel} style={{ background: item.labelColor }}></div>
                                                 ) : null}
-                                                {item.title}
                                                 <div className={customClasses.right}>
-                                                  <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => editTask(item)}>
-                                                    <Edit className={customClasses.icon} />
-                                                  </Button>
                                                   <Button
                                                     className={customClasses.iconButton}
                                                     justIcon
                                                     size="sm"
-                                                    onClick={() => confirmRemoveTask(item.id)}
+                                                    aria-controls="simple-menu"
+                                                    aria-haspopup="true"
+                                                    data-task={JSON.stringify(item)}
+                                                    onClick={handleTaskMenuClick}
                                                   >
-                                                    <Delete className={customClasses.icon} />
+                                                    <MenuIcon className={customClasses.icon} />
                                                   </Button>
+                                                  <Menu
+                                                    id="simple-menu"
+                                                    anchorEl={anchorEl}
+                                                    keepMounted
+                                                    open={Boolean(anchorEl)}
+                                                    onClose={handleTaskMenuClose}
+                                                  >
+                                                    <MenuItem onClick={editTask}>Edit</MenuItem>
+                                                    <MenuItem onClick={confirmRemoveTask}>Delete</MenuItem>
+                                                  </Menu>
                                                 </div>
+                                                <span
+                                                  onClick={() => {
+                                                    taskTitleClick(item);
+                                                  }}
+                                                >
+                                                  {item.title}
+                                                </span>
                                               </div>
                                             );
                                           }}

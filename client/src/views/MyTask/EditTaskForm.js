@@ -73,7 +73,6 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
       const data = EditorState.createWithContent(convertFromHTML(task.description));
       setEditorState(data);
     }
-    console.log(taskForm);
   }, [task]);
 
   // 부모에게 완료사항 전달
