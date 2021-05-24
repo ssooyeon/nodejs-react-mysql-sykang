@@ -2,9 +2,10 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import SimpleReactValidator from "simple-react-validator";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState, ContentState } from "draft-js";
+import { EditorState } from "draft-js";
 import { convertToHTML, convertFromHTML } from "draft-convert";
 import { CirclePicker } from "react-color";
+import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -43,6 +44,12 @@ const styles = {
     width: "100%",
     marginTop: "10px",
   },
+  dueDatePickerWrapper: {
+    width: "100%",
+  },
+  dueDatePicker: {
+    width: "100%",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -54,7 +61,6 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  // const [editorState, setEditorState] = useState(convertFromHTML("<strong>123</strong>"));
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [taskForm, setTaskForm] = useState([]);
@@ -63,9 +69,11 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
   useEffect(() => {
     setTaskForm({ ...task });
     if (task.description != undefined) {
+      // 에디터에 html 바인딩
       const data = EditorState.createWithContent(convertFromHTML(task.description));
       setEditorState(data);
     }
+    console.log(taskForm);
   }, [task]);
 
   // 부모에게 완료사항 전달
@@ -83,6 +91,9 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
   };
   const onColorStateChange = (colorState) => {
     setTaskForm({ ...taskForm, labelColor: colorState });
+  };
+  const onDateChange = (date) => {
+    setTaskForm({ ...taskForm, dueDate: date });
   };
 
   // 테스크 수정 버튼 클릭
@@ -175,6 +186,13 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                   // 에디터의 값이 변경될 때마다 onEditorStateChange 호출
                   onEditorStateChange={onEditorStateChange}
                 />
+              </GridContainer>
+              <GridContainer>
+                <div className={classes.dueDatePickerWrapper}>
+                  <br />
+                  <span className={classes.labelText}>Due date</span>
+                  <DateTimePicker className={classes.dueDatePicker} onChange={onDateChange} value={taskForm.dueDate} />
+                </div>
               </GridContainer>
             </CardBody>
           </DialogContent>

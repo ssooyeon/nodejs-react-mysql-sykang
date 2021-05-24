@@ -440,8 +440,8 @@ export default function MyTask() {
                         </div>
                         <CardFooter stats>
                           <div className={classes.stats}>
-                            <Person />
-                            created by sykang
+                            <Person /> created by
+                            {column.manager ? column.manager.account : null}
                           </div>
                         </CardFooter>
                       </Card>

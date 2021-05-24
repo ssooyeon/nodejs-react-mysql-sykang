@@ -5,7 +5,11 @@ import { Editor } from "react-draft-wysiwyg";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import { CirclePicker } from "react-color";
+import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,7 +17,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
 import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -45,6 +48,12 @@ const styles = {
     width: "100%",
     marginTop: "10px",
   },
+  dueDatePickerWrapper: {
+    width: "100%",
+  },
+  dueDatePicker: {
+    width: "100%",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -62,6 +71,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
     labelColor: null,
     ordering: 0,
     createrId: currentUser.id,
+    dueDate: null,
   };
 
   const [, updateState] = useState();
@@ -90,6 +100,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
   // 부모에게 완료사항 전달
   const handleClose = () => {
     handleCloseClick(false);
+    setEditorState(EditorState.createEmpty());
   };
 
   // input 값 변경 시 taskForm state 업데이트
@@ -102,6 +113,9 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
   };
   const onColorStateChange = (colorState) => {
     setTaskForm({ ...taskForm, labelColor: colorState });
+  };
+  const onDateChange = (date) => {
+    setTaskForm({ ...taskForm, dueDate: date });
   };
 
   // 테스크 등록 버튼 클릭
@@ -193,18 +207,13 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
                   onEditorStateChange={onEditorStateChange}
                 />
               </GridContainer>
-              {/* <GridContainer>
-                <TextField
-                  id="date"
-                  label="Due date"
-                  type="datetime-local"
-                  defaultValue="2017-05-24 00:12:12"
-                  className={classes.textField}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </GridContainer> */}
+              <GridContainer>
+                <div className={classes.dueDatePickerWrapper}>
+                  <br />
+                  <span className={classes.labelText}>Due date</span>
+                  <DateTimePicker className={classes.dueDatePicker} onChange={onDateChange} value={taskForm.dueDate} />
+                </div>
+              </GridContainer>
             </CardBody>
           </DialogContent>
           <DialogActions>
