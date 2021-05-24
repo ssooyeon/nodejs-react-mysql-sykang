@@ -81,7 +81,7 @@ export default function EditColumnForm({ open, handleCloseClick, column }) {
         <form autoComplete="off">
           <DialogTitle id="form-dialog-title">Edit Column</DialogTitle>
           <DialogContent>
-            <DialogContentText>To Edit a column, enter column name and click the Submit button.</DialogContentText>
+            <DialogContentText>To Edit a folder (or column), enter name and click the Submit button.</DialogContentText>
             <CardBody>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>

@@ -24,7 +24,7 @@ import AddTaskForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 import EditColumnForm from "./EditColumnForm";
 
-import { retrieveFolders, retrieveParentFolders, createFolder, deleteFolder } from "actions/folders";
+import { retrieveFolders, retrieveFolder, retrieveParentFolders, createFolder, deleteFolder } from "actions/folders";
 import { updateTask, deleteTask } from "actions/tasks";
 
 const customStyles = {
@@ -33,6 +33,9 @@ const customStyles = {
   },
   addButton: {
     marginLeft: "10px",
+  },
+  addNewParentFolderButton: {
+    color: "darkgray",
   },
   wrapper: {
     display: "flex",
@@ -76,6 +79,23 @@ const customStyles = {
     marginBottom: "10px !important",
     color: "#263B4A",
   },
+  iconButtonLarge: {
+    background: "none !important",
+    boxShadow: "none !important",
+    width: "100px",
+    fontSize: "15px",
+    marginTop: "12px",
+    marginLeft: "5px",
+    color: "darkgray",
+    textTransform: "none",
+    "&:hover,&:focus": {
+      color: "#263B4A",
+    },
+  },
+  colorIcon: {
+    color: "#263B4A",
+    marginTop: "-2px",
+  },
   iconButton: {
     background: "none !important",
     boxShadow: "none !important",
@@ -97,6 +117,14 @@ const customStyles = {
   },
   right: {
     float: "right",
+  },
+  titleSpan: {
+    "&:hover,&:focus": {
+      color: "#263B4A",
+    },
+  },
+  mt20: {
+    marginTop: "20px",
   },
 };
 
@@ -136,16 +164,20 @@ export default function MyTask() {
   };
 
   useEffect(() => {
-    // parent가 null인 폴더 조회 (셀렉트박스에 표출)
+    getParentFolders();
+  }, [dispatch]);
+
+  // parent가 null인 폴더 조회 (셀렉트박스에 표출)
+  const getParentFolders = () => {
     dispatch(retrieveParentFolders())
       .then((res) => {
         setFolders(res);
+        getFolder(currentFolder);
       })
       .catch((err) => {
         console.log(err);
       });
-    getFolder(currentFolder);
-  }, [dispatch]);
+  };
 
   // 드래그 이벤트
   const onDragEnd = (result, columns, setColumns) => {
@@ -176,10 +208,22 @@ export default function MyTask() {
         },
       });
 
+      const destLength = destItems.length;
+      let mapLength = 0;
       destItems.map((task, i) => {
         const id = task.id.replace("task", "");
         const data = { ...task, id: id, folderId: destColumnId, ordering: i };
-        dispatch(updateTask(data.id, data));
+        dispatch(updateTask(data.id, data))
+          .then(() => {
+            mapLength++;
+            // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
+            if (mapLength === destLength) {
+              getFolder(currentFolder);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       });
     } else {
       // 같은 컬럼에서 움직이는 경우: ordering 변경
@@ -239,13 +283,15 @@ export default function MyTask() {
     getFolder(currentFolder);
   };
 
-  // 테스크 액션(수정/삭제) 버튼 클릭
+  // 테스크 액션(수정/삭제) 아이콘 버튼 클릭
   const handleTaskMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
-    const task = event.currentTarget.dataset.task;
-    setEditTaskForm(JSON.parse(task));
+    const taskStr = event.currentTarget.dataset.task;
+    const task = JSON.parse(taskStr);
+    console.log(task);
+    setEditTaskForm(task);
   };
-  // 테스크 액션(수정/삭제) 버튼 닫기
+  // 테스크 액션(수정/삭제) 아이콘 버튼 닫기
   const handleTaskMenuClose = () => {
     setAnchorEl(null);
   };
@@ -256,10 +302,10 @@ export default function MyTask() {
     getFolder(currentFolder);
   };
 
-  // 컬럼 이름 수정 버튼 클릭 및 EditFolderForm.js 에서 닫기 버튼 클릭
+  // 폴더/컬럼 이름 수정 버튼 클릭 및 EditFolderForm.js 에서 닫기 버튼 클릭
   const handleEditFolderModalClick = (value) => {
     setEditColumnModalOpen(value);
-    getFolder(currentFolder);
+    getParentFolders();
   };
 
   // 셀렉트 박스 변경 이벤트
@@ -267,6 +313,32 @@ export default function MyTask() {
     const id = e.target.value;
     setCurrentFolder(id);
     getFolder(id);
+  };
+
+  // 최상위 폴더 추가
+  const addParentFolder = () => {
+    const data = { ...defaultCreatedColumn, ordering: 0, parentId: null };
+    dispatch(createFolder(data))
+      .then((res) => {
+        getParentFolders();
+        //TODO: load creating folder
+        // setCurrentFolder(res.id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // 최상위 폴더 수정
+  const editParentFolder = (id) => {
+    dispatch(retrieveFolder(id))
+      .then((res) => {
+        setEditColumnForm(res);
+        handleEditFolderModalClick(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   // 컬럼 추가
@@ -289,7 +361,7 @@ export default function MyTask() {
 
   // 컬럼 삭제 버튼 클릭
   const confirmRemoveColumn = (id) => {
-    alert.show("Are you sure delete this column with all task?", {
+    alert.show("Are you sure delete this folder(or column) with all task?", {
       title: "",
       closeCopy: "Cancel",
       type: "success",
@@ -302,11 +374,11 @@ export default function MyTask() {
     });
   };
 
-  // 테스크 포험 컬럼 삭제
+  // 테스크 포함 컬럼 삭제
   const removeColumn = (id) => {
     dispatch(deleteFolder(id))
       .then(() => {
-        getFolder(currentFolder);
+        getParentFolders();
       })
       .catch((err) => {
         console.log(err);
@@ -319,15 +391,15 @@ export default function MyTask() {
     handleAddTaskModalClick(true);
   };
 
-  // 테스크 제목 클릭 시 상세보기 모달 표출
+  // 테스크 제목 클릭 시 editTaskForm 설정 및 상세보기 모달 표출
   const taskTitleClick = (task) => {
+    console.log(task);
     setEditTaskForm(task);
     handleEditTaskModalClick(true);
   };
 
   // 테스크 수정 버튼 클릭
   const editTask = () => {
-    console.log(editTaskForm);
     handleTaskMenuClose();
     handleEditTaskModalClick(true);
   };
@@ -375,9 +447,26 @@ export default function MyTask() {
                 ))}
             </Select>
           </FormControl>
-          <Button className={customClasses.addButton} color="primary" onClick={addColumn}>
-            <Add />
-            Add
+          <Button className={`${customClasses.iconButton} ${customClasses.mt20}`} justIcon size="sm" onClick={() => editParentFolder(currentFolder)}>
+            <Edit className={`${customClasses.titleSpan} ${customClasses.icon}`} />
+          </Button>
+          <Button
+            className={`${customClasses.iconButton} ${customClasses.mt20}`}
+            justIcon
+            size="sm"
+            onClick={() => {
+              confirmRemoveColumn(currentFolder);
+            }}
+          >
+            <Delete className={`${customClasses.titleSpan} ${customClasses.icon}`} />
+          </Button>
+          <Button className={customClasses.iconButtonLarge} justIcon onClick={addParentFolder}>
+            <Add className={customClasses.colorIcon} />
+            Folder
+          </Button>
+          <Button className={customClasses.iconButtonLarge} justIcon onClick={addColumn}>
+            <Add className={customClasses.colorIcon} />
+            Column
           </Button>
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
@@ -458,6 +547,7 @@ export default function MyTask() {
                                                   </Menu>
                                                 </div>
                                                 <span
+                                                  className={customClasses.titleSpan}
                                                   onClick={() => {
                                                     taskTitleClick(item);
                                                   }}
