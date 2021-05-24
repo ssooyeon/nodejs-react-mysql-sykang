@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "react-alert-17";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
+import Moment from "react-moment";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Add, Person, Edit, Delete, Menu as MenuIcon } from "@material-ui/icons";
@@ -126,12 +127,20 @@ const customStyles = {
   mt20: {
     marginTop: "20px",
   },
+  dueDateStr: {
+    fontSize: "11px",
+  },
 };
 
 const defaultStyles = makeStyles(styles);
 const useStyles = makeStyles(customStyles);
 
 export default function MyTask() {
+  /**
+   * 셀렉트 박스에서 선택하는 폴더: (최상위)폴더
+   * 하나의 폴더 안의 여러 폴더들: 컬럼
+   * 컬럼 안의 draggabled: 테스크
+   */
   const classes = defaultStyles();
   const customClasses = useStyles();
   const alert = useAlert();
@@ -143,13 +152,13 @@ export default function MyTask() {
   const [columns, setColumns] = useState([]); // 현재 선택된 폴더의 컬럼 리스트
 
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false); // 테스크 생성 모달 오픈
-  const [addColumnForm, setAddColumnForm] = useState([]); // 새로운 테스크를 추가할 컬럼
+  const [addColumnForm, setAddColumnForm] = useState([]); // 새로운 테스크를 추가할 컬럼 정보
 
   const [editTaskModalOpen, setEditTaskModalOpen] = useState(false); // 테스크 수정 모달 오픈
-  const [editTaskForm, setEditTaskForm] = useState([]); // 수정할 테스크
+  const [editTaskForm, setEditTaskForm] = useState([]); // 수정할 테스크 정보
 
   const [editColumnModalOpen, setEditColumnModalOpen] = useState(false); // 컬럼 수정 모달 오픈
-  const [editColumnForm, setEditColumnForm] = useState([]); // 수정할 컬럼
+  const [editColumnForm, setEditColumnForm] = useState([]); // 수정할 컬럼 정보
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -165,7 +174,7 @@ export default function MyTask() {
 
   useEffect(() => {
     getParentFolders();
-  }, [dispatch]);
+  }, []);
 
   // parent가 null인 폴더 조회 (셀렉트박스에 표출)
   const getParentFolders = () => {
@@ -283,7 +292,7 @@ export default function MyTask() {
     getFolder(currentFolder);
   };
 
-  // 테스크 액션(수정/삭제) 아이콘 버튼 클릭
+  // 테스크 액션(수정/삭제) 버튼 클릭
   const handleTaskMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
     const taskStr = event.currentTarget.dataset.task;
@@ -291,7 +300,7 @@ export default function MyTask() {
     console.log(task);
     setEditTaskForm(task);
   };
-  // 테스크 액션(수정/삭제) 아이콘 버튼 닫기
+  // 테스크 액션(수정/삭제) 버튼 닫기
   const handleTaskMenuClose = () => {
     setAnchorEl(null);
   };
@@ -309,8 +318,7 @@ export default function MyTask() {
   };
 
   // 셀렉트 박스 변경 이벤트
-  const handleSelectChange = (e) => {
-    const id = e.target.value;
+  const handleSelectChange = (id) => {
     setCurrentFolder(id);
     getFolder(id);
   };
@@ -320,9 +328,9 @@ export default function MyTask() {
     const data = { ...defaultCreatedColumn, ordering: 0, parentId: null };
     dispatch(createFolder(data))
       .then((res) => {
-        getParentFolders();
-        //TODO: load creating folder
+        //TODO: 생성한 folder 보여주기
         // setCurrentFolder(res.id);
+        getParentFolders();
       })
       .catch((err) => {
         console.log(err);
@@ -359,7 +367,7 @@ export default function MyTask() {
     handleEditFolderModalClick(true);
   };
 
-  // 컬럼 삭제 버튼 클릭
+  // 폴더/컬럼 삭제 버튼 클릭
   const confirmRemoveColumn = (id) => {
     alert.show("Are you sure delete this folder(or column) with all task?", {
       title: "",
@@ -379,6 +387,7 @@ export default function MyTask() {
     dispatch(deleteFolder(id))
       .then(() => {
         getParentFolders();
+        //TODO: 관련 컬럼/테스크 모두 삭제(현재는 null이 됨)
       })
       .catch((err) => {
         console.log(err);
@@ -438,7 +447,7 @@ export default function MyTask() {
         <GridItem xs={12} sm={12} md={12}>
           <FormControl className={`${classes.formControl} ${customClasses.selectBox}`}>
             <InputLabel id="demo-simple-select-label"></InputLabel>
-            <Select labelId="demo-simple-select-label" value={currentFolder} onChange={handleSelectChange}>
+            <Select labelId="demo-simple-select-label" value={currentFolder} onChange={(e) => handleSelectChange(e.target.value)}>
               {folders &&
                 folders.map((folder, index) => (
                   <MenuItem value={folder.id} key={folder.id}>
@@ -553,6 +562,12 @@ export default function MyTask() {
                                                   }}
                                                 >
                                                   {item.title}
+                                                  <br />
+                                                  {item.dueDate ? (
+                                                    <Moment format="YYYY-MM-DD HH:mm:ss" className={customClasses.dueDateStr}>
+                                                      {item.dueDate}
+                                                    </Moment>
+                                                  ) : null}
                                                 </span>
                                               </div>
                                             );
