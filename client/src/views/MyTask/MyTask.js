@@ -61,13 +61,13 @@ const customStyles = {
   droppableZone: {
     padding: 4,
     width: 250,
-    minHeight: 300,
+    minHeight: 100,
   },
   droppableItem: {
     userSelect: "none",
     padding: 16,
     margin: "0 0 8px 0",
-    minHeight: "50px",
+    minHeight: "30px",
     color: "white",
   },
   plusIconButton: {
@@ -116,8 +116,8 @@ const customStyles = {
   },
   droppableWrapper: {
     margin: 8,
-    minHeight: "320px",
-    maxHeight: "700px",
+    minHeight: "100px",
+    maxHeight: "525px",
     overflowY: "auto",
   },
   right: {
@@ -126,6 +126,7 @@ const customStyles = {
   titleSpan: {
     "&:hover,&:focus": {
       color: "#263B4A",
+      // fontWeight: 600,
     },
   },
   mt20: {
@@ -133,6 +134,10 @@ const customStyles = {
   },
   dueDateStr: {
     fontSize: "11px",
+  },
+  cardNoMargin: {
+    marginTop: "0px",
+    marginBottom: "0px",
   },
 };
 
@@ -258,8 +263,8 @@ export default function MyTask() {
         setFolders(res);
         getFolder(currentFolder);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -287,8 +292,8 @@ export default function MyTask() {
         });
         setColumns(resultColumns);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -341,12 +346,12 @@ export default function MyTask() {
             setCurrentFolder(folder.id);
             getFolder(folder.id);
           })
-          .catch((err) => {
-            console.log(err);
+          .catch((e) => {
+            console.log(e);
           });
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -357,8 +362,8 @@ export default function MyTask() {
         setEditColumnForm(res);
         handleEditFolderModalClick(true);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -388,12 +393,12 @@ export default function MyTask() {
             setCurrentFolder(1);
             getFolder(1);
           })
-          .catch((err) => {
-            console.log(err);
+          .catch((e) => {
+            console.log(e);
           });
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -404,8 +409,8 @@ export default function MyTask() {
       .then(() => {
         getFolder(currentFolder);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -436,8 +441,8 @@ export default function MyTask() {
       .then(() => {
         getFolder(currentFolder);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -483,8 +488,8 @@ export default function MyTask() {
       .then(() => {
         getFolder(currentFolder);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -503,7 +508,7 @@ export default function MyTask() {
 
   return (
     <>
-      <GridContainer>
+      <GridContainer style={{ overflowX: "auto" }}>
         <GridItem xs={12} sm={12} md={12}>
           <FormControl className={`${classes.formControl} ${customClasses.selectBox}`}>
             <InputLabel id="demo-simple-select-label"></InputLabel>
@@ -545,7 +550,7 @@ export default function MyTask() {
                 Object.entries(columns).map(([columnId, column], index) => {
                   return (
                     <div className={customClasses.columns} key={columnId}>
-                      <Card>
+                      <Card className={customClasses.cardNoMargin}>
                         <CardHeader color="warning" stats icon>
                           <p className={classes.cardCategory}>
                             <Button className={customClasses.plusIconButton} justIcon size="sm" onClick={() => addTask(column)}>
@@ -667,7 +672,7 @@ export default function MyTask() {
                         </div>
                         <CardFooter stats>
                           <div className={classes.stats}>
-                            <Person /> created by
+                            <Person /> created by&nbsp;
                             {column.manager ? column.manager.account : null}
                           </div>
                         </CardFooter>

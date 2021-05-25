@@ -43,6 +43,10 @@ exports.findAll = (req, res) => {
           },
         ],
       },
+      {
+        model: User,
+        as: "manager",
+      },
     ],
     where: condition,
     order: [
