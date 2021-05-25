@@ -333,10 +333,17 @@ export default function MyTask() {
   const addParentFolder = () => {
     const data = { ...defaultCreatedColumn, ordering: 0, parentId: null };
     dispatch(createFolder(data))
-      .then((res) => {
-        //TODO: 생성한 folder 보여주기
-        // setCurrentFolder(res.id);
-        getParentFolders();
+      .then((folder) => {
+        // 생성한 folder 보여주기
+        dispatch(retrieveParentFolders())
+          .then((res) => {
+            setFolders(res);
+            setCurrentFolder(folder.id);
+            getFolder(folder.id);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -349,6 +356,41 @@ export default function MyTask() {
       .then((res) => {
         setEditColumnForm(res);
         handleEditFolderModalClick(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // 최상위 폴더 삭제 버튼 클릭
+  const confirmRemoveFolder = (id) => {
+    alert.show("Are you sure delete this folder with all column?", {
+      title: "",
+      closeCopy: "Cancel",
+      type: "success",
+      actions: [
+        {
+          copy: "YES",
+          onClick: () => removeFolder(id),
+        },
+      ],
+    });
+  };
+
+  // 최상위 폴더 삭제
+  const removeFolder = (id) => {
+    dispatch(deleteFolder(id))
+      .then(() => {
+        // 처음 folder 보여주기
+        dispatch(retrieveParentFolders())
+          .then((res) => {
+            setFolders(res);
+            setCurrentFolder(1);
+            getFolder(1);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -373,9 +415,9 @@ export default function MyTask() {
     handleEditFolderModalClick(true);
   };
 
-  // 폴더/컬럼 삭제 버튼 클릭
+  // 컬럼 삭제 버튼 클릭
   const confirmRemoveColumn = (id) => {
-    alert.show("Are you sure delete this folder(or column) with all task?", {
+    alert.show("Are you sure delete this column with all task?", {
       title: "",
       closeCopy: "Cancel",
       type: "success",
@@ -392,8 +434,7 @@ export default function MyTask() {
   const removeColumn = (id) => {
     dispatch(deleteFolder(id))
       .then(() => {
-        setCurrentFolder(1);
-        getParentFolders();
+        getFolder(currentFolder);
       })
       .catch((err) => {
         console.log(err);
@@ -483,7 +524,7 @@ export default function MyTask() {
             justIcon
             size="sm"
             onClick={() => {
-              confirmRemoveColumn(currentFolder);
+              confirmRemoveFolder(currentFolder);
             }}
           >
             <Delete className={`${customClasses.titleSpan} ${customClasses.icon}`} />
