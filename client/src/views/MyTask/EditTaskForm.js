@@ -9,6 +9,7 @@ import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { makeStyles } from "@material-ui/core/styles";
+import { Close } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -50,6 +51,19 @@ const styles = {
   dueDatePicker: {
     width: "100%",
   },
+  iconButton: {
+    background: "none !important",
+    boxShadow: "none !important",
+    width: "20px !important",
+    minWidth: "20px !important",
+    height: "20px !important",
+  },
+  icon: {
+    width: "20px !important",
+    height: "20px !important",
+    marginBottom: "10px !important",
+    color: "#000",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -78,6 +92,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
   // 부모에게 완료사항 전달
   const handleClose = () => {
     handleCloseClick(false);
+    setTaskForm({ ...taskForm, labelColor: null });
   };
 
   // input 값 변경 시 taskForm state 업데이트
@@ -96,7 +111,8 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
   };
 
   // 테스크 수정 버튼 클릭
-  const editTask = () => {
+  const editTask = (e) => {
+    e.preventDefault();
     const valid = validator.current.allValid();
     if (valid) {
       const id = task.id.replace("task", "");
@@ -117,11 +133,14 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
   return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={editTask}>
           <DialogTitle id="form-dialog-title">
             Edit Task
             <div className={classes.labelText}>
               label: &nbsp; <div className={classes.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
+              <Button className={classes.iconButton} justIcon size="sm" onClick={() => onColorStateChange(null)}>
+                <Close className={classes.icon} />
+              </Button>
             </div>
           </DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
@@ -131,7 +150,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                 <div className={classes.labelText}>
                   Change label color: &nbsp;
                   <CirclePicker
-                    colors={["#004de8", "#2ecc71", "#ff9300", "#62708b", "#ff003a", "#20396a"]}
+                    colors={["red", "orange", "yellow", "green", "blue", "navy", "purple"]}
                     circleSize={20}
                     onChangeComplete={(colore) => onColorStateChange(colore.hex)}
                   />

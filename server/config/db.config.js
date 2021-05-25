@@ -4,6 +4,7 @@ module.exports = {
   PASSWORD: "1234",
   DB: "my_blog",
   dialect: "mysql",
+  //TODO: not working
   dialectOptions: { charset: "utf8mb4", dateStrings: true, typeCast: true },
   timezone: "+09:00",
   pool: {

@@ -50,7 +50,8 @@ export default function EditColumnForm({ open, handleCloseClick, column }) {
   };
 
   // 컬럼 수정 버튼 클릭
-  const editColumn = () => {
+  const editColumn = (e) => {
+    e.preventDefault();
     const valid = validator.current.allValid();
     if (valid) {
       const data = {
@@ -78,7 +79,7 @@ export default function EditColumnForm({ open, handleCloseClick, column }) {
   return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={editColumn}>
           <DialogTitle id="form-dialog-title">Edit Column</DialogTitle>
           <DialogContent>
             <DialogContentText>To Edit a folder (or column), enter name and click the Submit button.</DialogContentText>

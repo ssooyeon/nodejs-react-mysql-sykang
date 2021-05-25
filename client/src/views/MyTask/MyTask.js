@@ -178,22 +178,6 @@ export default function MyTask() {
     managerId: currentUser.id,
   };
 
-  useEffect(() => {
-    getParentFolders();
-  }, []);
-
-  // parent가 null인 폴더 조회 (셀렉트박스에 표출)
-  const getParentFolders = () => {
-    dispatch(retrieveParentFolders())
-      .then((res) => {
-        setFolders(res);
-        getFolder(currentFolder);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   // 드래그 이벤트
   const onDragEnd = (result, columns, setColumns) => {
     if (!result.destination) {
@@ -263,6 +247,22 @@ export default function MyTask() {
     }
   };
 
+  useEffect(() => {
+    getParentFolders();
+  }, []);
+
+  // parent가 null인 폴더 조회 (셀렉트박스에 표출)
+  const getParentFolders = () => {
+    dispatch(retrieveParentFolders())
+      .then((res) => {
+        setFolders(res);
+        getFolder(currentFolder);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   // 선택된 셀렉트 박스의 폴더에 대한 컬럼 목록(테스크 포함) 조회
   const getFolder = (id) => {
     let params = {
@@ -305,12 +305,13 @@ export default function MyTask() {
     const task = JSON.parse(taskStr);
     setEditTaskForm(task);
   };
+
   // 테스크 액션(수정/삭제) 버튼 닫기
   const handleTaskMenuClose = () => {
     setAnchorEl(null);
   };
 
-  // 테스트 수정 버튼 클릭 및 EditTaskForm.js 에서 닫기 버튼 클릭
+  // 테스크 수정 버튼 클릭 및 EditTaskForm.js 에서 닫기 버튼 클릭
   const handleEditTaskModalClick = (value) => {
     setEditTaskModalOpen(value);
     getFolder(currentFolder);

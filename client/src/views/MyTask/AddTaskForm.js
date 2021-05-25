@@ -112,6 +112,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
   // 부모에게 완료사항 전달
   const handleClose = () => {
     handleCloseClick(false);
+    setTaskForm({ ...taskForm, labelColor: null });
     setEditorState(EditorState.createEmpty());
   };
 
@@ -131,7 +132,8 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
   };
 
   // 테스크 등록 버튼 클릭
-  const addTask = () => {
+  const addTask = (e) => {
+    e.preventDefault();
     const valid = validator.current.allValid();
     if (valid) {
       const data = { ...taskForm, description: convertToHTML(editorState.getCurrentContent()) };
@@ -151,7 +153,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
   return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={addTask}>
           <DialogTitle id="form-dialog-title">
             Add new task
             <div className={classes.labelText}>
@@ -168,7 +170,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
                 <div className={classes.labelText}>
                   Change label color: &nbsp;
                   <CirclePicker
-                    colors={["#004de8", "#2ecc71", "#ff9300", "#62708b", "#ff003a", "#20396a"]}
+                    colors={["red", "orange", "yellow", "green", "blue", "navy", "purple"]}
                     circleSize={20}
                     onChangeComplete={(colore) => onColorStateChange(colore.hex)}
                   />
