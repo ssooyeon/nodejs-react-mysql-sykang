@@ -454,7 +454,6 @@ export default function MyTask() {
 
   // 테스크 제목 클릭 시 editTaskForm 설정 및 상세보기 모달 표출
   const taskTitleClick = (task) => {
-    console.log(task);
     setEditTaskForm(task);
     handleEditTaskModalClick(true);
   };

@@ -14,7 +14,6 @@ import { Close } from "@material-ui/icons";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
@@ -164,19 +163,15 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
             </div>
           </DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
-            <DialogContentText>
-              To register a new task, enter title and description and click the Submit button.
-              <div>
-                <div className={classes.labelText}>
-                  Change label color: &nbsp;
-                  <CirclePicker
-                    colors={["red", "orange", "yellow", "green", "blue", "navy", "purple"]}
-                    circleSize={20}
-                    onChangeComplete={(colore) => onColorStateChange(colore.hex)}
-                  />
-                </div>
-              </div>
-            </DialogContentText>
+            To add a new task, enter title and description and click the Submit button.
+            <div className={classes.labelText}>
+              Change label color: &nbsp;
+              <CirclePicker
+                colors={["red", "orange", "yellow", "green", "blue", "navy", "purple"]}
+                circleSize={20}
+                onChangeComplete={(colore) => onColorStateChange(colore.hex)}
+              />
+            </div>
             <CardBody>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
