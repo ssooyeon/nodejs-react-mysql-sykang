@@ -7,6 +7,9 @@ import { convertToHTML, convertFromHTML } from "draft-convert";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Close } from "@material-ui/icons";
@@ -205,6 +208,13 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                   <br />
                   <span className={classes.labelText}>Due date</span>
                   <DateTimePicker
+                    locale="en"
+                    format="yyyy-MM-dd h:mm a"
+                    minutePlaceholder="mm"
+                    hourPlaceholder="hh"
+                    dayPlaceholder="dd"
+                    monthPlaceholder="MM"
+                    yearPlaceholder="yyyy"
                     className={classes.dueDatePicker}
                     onChange={onDateChange}
                     value={taskForm.dueDate ? new Date(taskForm.dueDate) : null}
