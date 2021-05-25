@@ -63,6 +63,16 @@ const styles = {
     marginBottom: "10px !important",
     color: "#000",
   },
+  createrLabel: {
+    paddingLeft: "10px",
+    paddingRight: "10px",
+    background: "#b774c3",
+    float: "right",
+    textAlign: "center",
+    borderRadius: "50px",
+    color: "#fff",
+    fontSize: "15px",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -135,6 +145,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
         <form autoComplete="off" onSubmit={editTask}>
           <DialogTitle id="form-dialog-title">
             Edit Task
+            <div className={classes.createrLabel}>by @{taskForm.creater ? taskForm.creater.account : "N/A"}</div>
             <div className={classes.labelText}>
               label: &nbsp; <div className={classes.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
               <Button className={classes.iconButton} justIcon size="sm" onClick={() => onColorStateChange(null)}>
