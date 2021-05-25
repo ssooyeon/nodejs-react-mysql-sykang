@@ -4,6 +4,7 @@ import { useAlert } from "react-alert-17";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import Moment from "react-moment";
+import { CirclePicker } from "react-color";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Add, Person, Edit, Delete, Menu as MenuIcon } from "@material-ui/icons";
@@ -33,6 +34,10 @@ import { retrieveFolders, retrieveFolder, retrieveParentFolders, createFolder, d
 import { updateTask, deleteTask } from "actions/tasks";
 
 const customStyles = {
+  themeColorPicker: {
+    float: "right",
+    marginTop: "15px",
+  },
   selectBox: {
     width: "100px",
   },
@@ -144,6 +149,7 @@ const customStyles = {
 const defaultStyles = makeStyles(styles);
 const useStyles = makeStyles(customStyles);
 
+const colorList = ["#456C86", "#B8A8A2", "#546B68", "#A2B8A8", "#D19C4F", "#B89B8F", "#7DA0B8"];
 const today = new Date().toISOString().slice(0, 10);
 
 export default function MyTask() {
@@ -155,6 +161,8 @@ export default function MyTask() {
   const classes = defaultStyles();
   const customClasses = useStyles();
   const alert = useAlert();
+
+  const [themeColor, setThemeColor] = useState(colorList[0]);
 
   const [folders, setFolders] = useState([]); // 최상위 폴더 리스트
   const [columnLastOrderNum, setColumnLastOrderNum] = useState(0); // 현재 선택된 폴더의 컬럼 리스트의 마지막 정렬 넘버
@@ -175,6 +183,11 @@ export default function MyTask() {
 
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  // 테스크 테마 색상 변경
+  const onColorStateChange = (colorState) => {
+    setThemeColor(colorState);
+  };
 
   // 컬럼 추가 시 기본 컬럼
   const defaultCreatedColumn = {
@@ -541,6 +554,9 @@ export default function MyTask() {
             <Add className={customClasses.colorIcon} />
             Column
           </Button>
+          <div className={customClasses.themeColorPicker}>
+            <CirclePicker colors={colorList} circleSize={20} onChangeComplete={(colore) => onColorStateChange(colore.hex)} />
+          </div>
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
           <div className={customClasses.wrapper}>
@@ -589,7 +605,7 @@ export default function MyTask() {
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
                                                 style={{
-                                                  backgroundColor: snapshot.isDragging ? "#263B4A" : "#456C86",
+                                                  backgroundColor: snapshot.isDragging ? "#263B4A" : themeColor,
                                                   ...provided.draggableProps.style,
                                                 }}
                                               >
