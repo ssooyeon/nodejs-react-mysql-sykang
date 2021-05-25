@@ -91,7 +91,9 @@ export default function Sidebar(props) {
           [classes.logoLinkRTL]: props.rtlActive,
         })}
       >
-        <div className={classes.logoImage}>{/* <img src={logo} alt="logo" className={classes.img} /> */}</div>
+        <div className={classes.logoImage}>
+          <img src={logo} alt="logo" className={classes.img} />
+        </div>
         {logoText}
       </a>
     </div>
@@ -145,7 +147,7 @@ export default function Sidebar(props) {
 Sidebar.propTypes = {
   rtlActive: PropTypes.bool,
   handleDrawerToggle: PropTypes.func,
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
+  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red", "beige"]),
   logo: PropTypes.string,
   image: PropTypes.string,
   logoText: PropTypes.string,

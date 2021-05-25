@@ -7,9 +7,6 @@ import { convertToHTML } from "draft-convert";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-// import "react-datetime-picker/dist/DateTimePicker.css";
-// import "react-calendar/dist/Calendar.css";
-// import "react-clock/dist/Clock.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Close } from "@material-ui/icons";
@@ -197,7 +194,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
               </GridContainer>
               <GridContainer>
                 <Editor
-                  editorStyle={{ border: "1px solid #C0C0C0", height: "190px", padding: "5px" }}
+                  editorStyle={{ border: "1px solid #C0C0C0", height: "190px", padding: "5px", fontSize: "14px", lineHeight: "5px" }}
                   id="description"
                   name="description"
                   value={taskForm.description}

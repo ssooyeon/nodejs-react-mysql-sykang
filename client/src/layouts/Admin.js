@@ -13,8 +13,8 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import routes from "routes.js";
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
-import bgImage from "assets/img/sidebar-2.jpg";
-// import logo from "assets/img/test-logo.png";
+import bgImage from "assets/img/sidebar-1.jpeg";
+import logo from "assets/img/logo.png";
 
 let ps;
 
@@ -24,7 +24,7 @@ export default function Admin({ ...rest }) {
   const classes = useStyles();
   const mainPanel = React.createRef();
   const [image, setImage] = React.useState(bgImage);
-  const [color, setColor] = React.useState("blue");
+  const [color, setColor] = React.useState("beige");
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -80,8 +80,8 @@ export default function Admin({ ...rest }) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"❤❤❤"}
-        // logo={logo}
+        logoText={"'s Story"}
+        logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
