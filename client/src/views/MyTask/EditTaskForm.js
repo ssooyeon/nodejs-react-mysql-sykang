@@ -29,7 +29,7 @@ const styles = {
     fontSize: "14px",
   },
   modalContentWrapper: {
-    height: "550px",
+    height: "650px",
   },
   labelText: {
     display: "flex",
@@ -131,7 +131,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
         <form autoComplete="off" onSubmit={editTask}>
           <DialogTitle id="form-dialog-title">
             Edit Task
@@ -175,7 +175,14 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
               </GridContainer>
               <GridContainer>
                 <Editor
-                  editorStyle={{ border: "1px solid #C0C0C0", height: "190px", padding: "5px", fontSize: "14px", lineHeight: "5px" }}
+                  editorStyle={{
+                    border: "1px solid #C0C0C0",
+                    height: "330px",
+                    padding: "5px",
+                    fontSize: "14px",
+                    lineHeight: "5px",
+                    minWidth: "890px",
+                  }}
                   id="description"
                   name="description"
                   value={taskForm.description}
