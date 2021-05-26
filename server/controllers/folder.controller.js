@@ -51,7 +51,7 @@ exports.findAll = (req, res) => {
     where: condition,
     order: [
       ["ordering", "ASC"],
-      [{ model: Task, as: "tasks" }, "ordering", "ASC"],
+      [{ model: Task, as: "tasks" }, "ordering", "DESC"],
     ],
   })
     .then((data) => {

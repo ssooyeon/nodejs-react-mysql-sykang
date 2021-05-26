@@ -227,27 +227,52 @@ export default function MyTask() {
 
       const destLength = destItems.length;
       let mapLength = 0;
-      destItems.map((task, i) => {
+
+      // 다른 column의 첫 번째에 옮기면
+      if (destItems[0] === removed) {
+        const task = destItems[0];
         const id = task.id.replace("task", "");
-        const data = { ...task, id: id, folderId: destColumnId, ordering: i };
+        let data = {};
+        // 옮긴 column에 다른 task가 이미 존재하면 맨 마지막 task의 ordering+1을 삽입
+        if (destItems[1] != undefined) {
+          data = { ...task, id: id, folderId: destColumnId, ordering: destItems[1].ordering + 1 };
+        } else {
+          data = { ...task, id: id, folderId: destColumnId, ordering: 0 };
+        }
         dispatch(updateTask(data.id, data))
           .then(() => {
-            mapLength++;
             // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
-            if (mapLength === destLength) {
-              getFolder(currentFolder);
-            }
+            getFolder(currentFolder);
           })
           .catch((e) => {
             console.log(e);
           });
-      });
+      } else {
+        // 다른 column의 첫 번째가 아닌 다른 위치로 옮기면 해당 column의 tasks들의 ordering을 전부 업데이트
+        destItems.map((task, i) => {
+          const id = task.id.replace("task", "");
+          const order = destLength - (i + 1);
+          const data = { ...task, id: id, folderId: destColumnId, ordering: order };
+          dispatch(updateTask(data.id, data))
+            .then(() => {
+              mapLength++;
+              // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
+              if (mapLength === destLength) {
+                getFolder(currentFolder);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
+      }
     } else {
       // 같은 컬럼에서 움직이는 경우: ordering 변경
       const column = columns[source.droppableId];
       const copiedItems = [...column.tasks];
       const [removed] = copiedItems.splice(source.index, 1);
       copiedItems.splice(destination.index, 0, removed);
+      const copiedLength = copiedItems.length;
 
       setColumns({
         ...columns,
@@ -257,9 +282,11 @@ export default function MyTask() {
         },
       });
 
+      // 컬럼의 모든 task들의 ordering을 역순으로 업데이트
       copiedItems.map((task, i) => {
         const id = task.id.replace("task", "");
-        const data = { ...task, id: id, ordering: i };
+        const order = copiedLength - (i + 1);
+        const data = { ...task, id: id, ordering: order };
         dispatch(updateTask(data.id, data));
       });
     }
