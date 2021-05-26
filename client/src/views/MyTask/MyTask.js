@@ -8,6 +8,8 @@ import { CirclePicker } from "react-color";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Add, Person, Edit, Delete, Menu as MenuIcon } from "@material-ui/icons";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -30,7 +32,7 @@ import AddTaskForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 import EditColumnForm from "./EditColumnForm";
 
-import { retrieveFolders, retrieveFolder, retrieveParentFolders, createFolder, deleteFolder } from "actions/folders";
+import { retrieveFolders, retrieveFolder, retrieveParentFolders, createFolder, updateFolder, deleteFolder } from "actions/folders";
 import { updateTask, deleteTask } from "actions/tasks";
 
 const customStyles = {
@@ -119,6 +121,12 @@ const customStyles = {
     marginBottom: "10px !important",
     color: "lightgray",
   },
+  arrowIcon: {
+    width: "20px !important",
+    height: "20px !important",
+    marginBottom: "10px !important",
+    color: "lightgray",
+  },
   droppableWrapper: {
     margin: 8,
     minHeight: "100px",
@@ -131,7 +139,6 @@ const customStyles = {
   titleSpan: {
     "&:hover,&:focus": {
       color: "#263B4A",
-      // fontWeight: 600,
     },
   },
   mt20: {
@@ -318,6 +325,8 @@ export default function MyTask() {
         const columns = res;
         if (columns.length > 0) {
           setColumnLastOrderNum(columns[columns.length - 1].ordering);
+        } else {
+          setColumnLastOrderNum(0);
         }
         let resultColumns = [];
         columns.map((column, i) => {
@@ -486,6 +495,60 @@ export default function MyTask() {
       });
   };
 
+  // 컬럼 ordering 변경 (back)
+  const columnOrderingBack = (column) => {
+    let data = {};
+    // 첫 번째 컬럼이 아니면
+    if (column.ordering > 0) {
+      // 클릭한 컬럼의 ordering에 1을 뺌
+      data = { ...column, ordering: column.ordering - 1 };
+      dispatch(updateFolder(data.id, data))
+        .then(() => {
+          // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
+          const updateAwaitColumn = Object.values(columns).find((x) => x.ordering == data.ordering && x.id != data.id);
+          // 조회한 컬럼의 ordering에 1을 더함 (위치 변경)
+          const d = { ...updateAwaitColumn, ordering: updateAwaitColumn.ordering + 1 };
+          dispatch(updateFolder(d.id, d))
+            .then(() => {
+              getFolder(currentFolder);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
+
+  // 컬럼 ordering 변경 (forward))
+  const columnOrderingForward = (column) => {
+    let data = {};
+    // 마지막 컬럼이 아니면
+    // if (column.ordering > 0) {
+    // 클릭한 컬럼의 ordering에 1을 더함
+    data = { ...column, ordering: column.ordering + 1 };
+    dispatch(updateFolder(data.id, data))
+      .then(() => {
+        // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
+        const updateAwaitColumn = Object.values(columns).find((x) => x.ordering == data.ordering && x.id != data.id);
+        // 조회한 컬럼의 ordering에 1을 뺌 (위치 변경)
+        const d = { ...updateAwaitColumn, ordering: updateAwaitColumn.ordering - 1 };
+        dispatch(updateFolder(d.id, d))
+          .then(() => {
+            getFolder(currentFolder);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    // }
+  };
+
   // 테스크 추가 버튼 클릭
   const addTask = (column) => {
     setAddColumnForm(column);
@@ -589,7 +652,7 @@ export default function MyTask() {
           <div className={customClasses.wrapper}>
             <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
               {columns &&
-                Object.entries(columns).map(([columnId, column], index) => {
+                Object.entries(columns).map(([columnId, column], index, { length }) => {
                   return (
                     <div className={customClasses.columns} key={columnId}>
                       <Card className={customClasses.cardNoMargin}>
@@ -598,6 +661,11 @@ export default function MyTask() {
                             <Button className={customClasses.plusIconButton} justIcon size="sm" onClick={() => addTask(column)}>
                               <Add className={customClasses.plusIcon} />
                             </Button>
+                            {index > 0 ? ( // 첫 번째 컬럼이면
+                              <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => columnOrderingBack(column)}>
+                                <ArrowBackIosIcon className={customClasses.arrowIcon} />
+                              </Button>
+                            ) : null}
                             {column.name}
                             <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => editColumn(column)}>
                               <Edit className={customClasses.icon} />
@@ -605,6 +673,11 @@ export default function MyTask() {
                             <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => confirmRemoveColumn(column.id)}>
                               <Delete className={customClasses.icon} />
                             </Button>
+                            {index + 1 < length ? ( // 마지막 컬럼이면
+                              <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => columnOrderingForward(column)}>
+                                <ArrowForwardIosIcon className={customClasses.arrowIcon} />
+                              </Button>
+                            ) : null}
                           </p>
                           <h3 className={classes.cardTitle}></h3>
                         </CardHeader>
