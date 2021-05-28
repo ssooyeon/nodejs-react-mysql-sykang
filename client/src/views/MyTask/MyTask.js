@@ -32,6 +32,7 @@ import AddTaskForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 import EditColumnForm from "./EditColumnForm";
 
+import useLocalStorage from "utils/useLocalStorage";
 import { retrieveFolders, retrieveFolder, retrieveParentFolders, createFolder, updateFolder, deleteFolder } from "actions/folders";
 import { updateTask, deleteTask } from "actions/tasks";
 
@@ -169,12 +170,12 @@ export default function MyTask() {
   const customClasses = useStyles();
   const alert = useAlert();
 
-  const [themeColor, setThemeColor] = useState(colorList[0]);
+  const [themeColor, setThemeColor] = useLocalStorage("themeColor", colorList[0]);
 
   const [folders, setFolders] = useState([]); // 최상위 폴더 리스트
   const [columnLastOrderNum, setColumnLastOrderNum] = useState(0); // 현재 선택된 폴더의 컬럼 리스트의 마지막 정렬 넘버
 
-  const [currentFolder, setCurrentFolder] = useState(1); // 현재 선택된 최상위 폴더
+  const [currentFolder, setCurrentFolder] = useLocalStorage("currentFolder", "1"); // 현재 선택된 최상위 폴더
   const [columns, setColumns] = useState([]); // 현재 선택된 폴더의 컬럼 리스트
 
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false); // 테스크 생성 모달 오픈
@@ -392,6 +393,7 @@ export default function MyTask() {
         dispatch(retrieveParentFolders())
           .then((res) => {
             setFolders(res);
+            debugger;
             setCurrentFolder(folder.id);
             getFolder(folder.id);
           })
