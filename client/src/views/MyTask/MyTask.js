@@ -219,7 +219,6 @@ export default function MyTask() {
       const [removed] = sourceItems.splice(source.index, 1);
       destItems.splice(destination.index, 0, removed);
       const destColumnId = destColumn.id;
-      const id = removed.id.replace("task", "");
 
       setColumns({
         ...columns,
@@ -242,7 +241,7 @@ export default function MyTask() {
         const id = task.id.replace("task", "");
         let data = {};
         // 옮긴 column에 다른 task가 이미 존재하면 맨 마지막 task의 ordering+1을 삽입
-        if (destItems[1] != undefined) {
+        if (destItems[1] !== undefined) {
           data = { ...task, id: id, folderId: destColumnId, ordering: destItems[1].ordering + 1 };
         } else {
           data = { ...task, id: id, folderId: destColumnId, ordering: 0 };
@@ -257,7 +256,7 @@ export default function MyTask() {
           });
       } else {
         // 다른 column의 첫 번째가 아닌 다른 위치로 옮기면 해당 column의 tasks들의 ordering을 전부 업데이트
-        destItems.map((task, i) => {
+        destItems.forEach((task, i) => {
           const id = task.id.replace("task", "");
           const order = destLength - (i + 1);
           const data = { ...task, id: id, folderId: destColumnId, ordering: order };
@@ -291,7 +290,7 @@ export default function MyTask() {
       });
 
       // 컬럼의 모든 task들의 ordering을 역순으로 업데이트
-      copiedItems.map((task, i) => {
+      copiedItems.forEach((task, i) => {
         const id = task.id.replace("task", "");
         const order = copiedLength - (i + 1);
         const data = { ...task, id: id, ordering: order };
@@ -330,8 +329,8 @@ export default function MyTask() {
           setColumnLastOrderNum(0);
         }
         let resultColumns = [];
-        columns.map((column, i) => {
-          column.tasks.map((task, j) => {
+        columns.forEach((column, i) => {
+          column.tasks.forEach((task, j) => {
             // 테스크 아이디 앞에 string 삽입
             task.id = "task" + task.id;
           });
@@ -507,7 +506,7 @@ export default function MyTask() {
       dispatch(updateFolder(data.id, data))
         .then(() => {
           // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
-          const updateAwaitColumn = Object.values(columns).find((x) => x.ordering == data.ordering && x.id != data.id);
+          const updateAwaitColumn = Object.values(columns).find((x) => x.ordering === data.ordering && x.id !== data.id);
           // 조회한 컬럼의 ordering에 1을 더함 (위치 변경)
           const d = { ...updateAwaitColumn, ordering: updateAwaitColumn.ordering + 1 };
           dispatch(updateFolder(d.id, d))
@@ -534,7 +533,7 @@ export default function MyTask() {
     dispatch(updateFolder(data.id, data))
       .then(() => {
         // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
-        const updateAwaitColumn = Object.values(columns).find((x) => x.ordering == data.ordering && x.id != data.id);
+        const updateAwaitColumn = Object.values(columns).find((x) => x.ordering === data.ordering && x.id !== data.id);
         // 조회한 컬럼의 ordering에 1을 뺌 (위치 변경)
         const d = { ...updateAwaitColumn, ordering: updateAwaitColumn.ordering - 1 };
         dispatch(updateFolder(d.id, d))
@@ -765,7 +764,7 @@ export default function MyTask() {
                                                         className={customClasses.dueDateStr}
                                                         style={{
                                                           color:
-                                                            item.dueDate && today == new Date(item.dueDate).toISOString().slice(0, 10)
+                                                            item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
                                                               ? "#bda926"
                                                               : null,
                                                         }}

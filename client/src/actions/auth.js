@@ -13,7 +13,7 @@ export const authLogin = (data) => async (dispatch) => {
       payload: res.data,
     });
     console.log(res);
-    if (res.message != undefined) {
+    if (res.message !== undefined) {
       return Promise.resolve(res.message);
     } else {
       return Promise.resolve(res.data);

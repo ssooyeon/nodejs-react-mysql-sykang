@@ -77,7 +77,7 @@ export default function Login(props) {
     if (valid) {
       dispatch(authLogin(user))
         .then((res) => {
-          if (res.message != undefined) {
+          if (res.message !== undefined) {
             alert.show(res.message, {
               title: "",
               type: "error",

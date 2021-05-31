@@ -5,7 +5,7 @@ import { useAlert } from "react-alert-17";
 import { makeStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import { Add } from "@material-ui/icons";
-import { Search, Edit, Delete } from "@material-ui/icons";
+import { Edit, Delete } from "@material-ui/icons";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -30,7 +30,7 @@ export default function UserList() {
   const classes = useStyles();
   const alert = useAlert();
 
-  const defaultColumns = [
+  const columns = [
     { field: "id", headerName: "ID", type: "number", flex: 0.1 },
     { field: "account", headerName: "Account", flex: 0.2 },
     { field: "email", headerName: "Email", flex: 0.3 },
@@ -78,7 +78,6 @@ export default function UserList() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editUser, setEditUser] = useState([]);
-  const [columns, setColumns] = useState(defaultColumns);
 
   useEffect(() => {
     dispatch(retrieveUsers());

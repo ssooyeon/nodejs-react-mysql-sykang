@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useAlert } from "react-alert-17";
 import SimpleReactValidator from "simple-react-validator";
 
@@ -83,6 +83,7 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
   // 비밀번호 변경 화면을 펼칠때마다 form validation field를 초기화
   // :비밀번호 변경 화면을 펼쳤다가 다시 닫아도 validation field에 password가 남아있기 떄문
   const handlePasswordChange = (e) => {
+    e.preventDefault();
     validator.current.fields = {};
     setIsPasswordChange(!isPasswordChange);
   };
@@ -175,7 +176,7 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                   <div className={classes.registerSummeryTextWrapper}>
-                    <a className={classes.underlineLink} onClick={handlePasswordChange}>
+                    <a href="#!" className={classes.underlineLink} onClick={handlePasswordChange}>
                       password change
                       {isPasswordChange ? <ExpandLess /> : <ExpandMore />}
                     </a>

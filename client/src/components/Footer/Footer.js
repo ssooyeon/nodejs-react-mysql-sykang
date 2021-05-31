@@ -21,7 +21,7 @@ export default function Footer(props) {
               </a>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
-              <a href="https://www.creative-tim.com/license" target="_blank" className={classes.block}>
+              <a href="https://www.creative-tim.com/license" target="_blank" rel="noreferrer" className={classes.block}>
                 Licenses
               </a>
             </ListItem>
@@ -30,7 +30,7 @@ export default function Footer(props) {
         <p className={classes.right}>
           <span>
             &copy; {1900 + new Date().getYear()}{" "}
-            <a href="https://github.com/ssooyeon/nodejs-react-mysql-sykang" target="_blank" className={classes.a}>
+            <a href="https://github.com/ssooyeon/nodejs-react-mysql-sykang" target="_blank" rel="noreferrer" className={classes.a}>
               Sykang
             </a>
             , <i className="fa fa-heart heart"></i> 🙌🙌

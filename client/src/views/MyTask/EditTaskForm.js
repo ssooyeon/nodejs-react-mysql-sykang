@@ -91,7 +91,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
 
   useEffect(() => {
     setTaskForm({ ...task });
-    if (task.description != undefined) {
+    if (task.description !== undefined) {
       // 에디터에 html 바인딩
       const data = EditorState.createWithContent(convertFromHTML(task.description));
       setEditorState(data);

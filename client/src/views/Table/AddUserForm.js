@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useAlert } from "react-alert-17";
 import SimpleReactValidator from "simple-react-validator";
 

@@ -51,7 +51,7 @@ export default function EditBoard(props) {
 
   useEffect(() => {
     getBoard(props.match.params.id);
-  }, []);
+  }, [props.match.params.id]);
 
   // 현재 게시판 가져오기
   const getBoard = (id) => {

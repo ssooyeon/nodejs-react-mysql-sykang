@@ -82,12 +82,12 @@ const styles = {
 };
 
 const useStyles = makeStyles(styles);
+const pageSize = 9;
 
 export default function BoardList() {
   const classes = useStyles();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(9);
   const [search, setSearch] = useState("");
 
   const boards = useSelector((state) => state.boards);

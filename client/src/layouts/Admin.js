@@ -23,8 +23,10 @@ const useStyles = makeStyles(styles);
 export default function Admin({ ...rest }) {
   const classes = useStyles();
   const mainPanel = React.createRef();
-  const [image, setImage] = React.useState(bgImage);
-  const [color, setColor] = React.useState("beige");
+  const image = bgImage;
+  const color = "beige";
+  // const [image, setImage] = React.useState(bgImage);
+  // const [color, setColor] = React.useState("beige");
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const { user: currentUser } = useSelector((state) => state.auth);

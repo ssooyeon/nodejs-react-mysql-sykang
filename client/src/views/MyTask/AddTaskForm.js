@@ -98,7 +98,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
       .then((res) => {
         const tasks = res.tasks;
         let lastTaskNum = 0;
-        if (tasks != undefined && tasks.length > 0) {
+        if (tasks !== undefined && tasks.length > 0) {
           lastTaskNum = tasks[tasks.length - 1].ordering + 1;
         }
         setTaskForm({ ...taskForm, ordering: lastTaskNum, folderId: column.id });

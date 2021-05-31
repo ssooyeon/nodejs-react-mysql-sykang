@@ -30,7 +30,6 @@ export default function AdminNavbarLinks(props) {
   const dispatch = useDispatch();
 
   const [openNotification, setOpenNotification] = React.useState(null);
-  const [openProfile, setOpenProfile] = React.useState(null);
 
   const { user: currentUser } = useSelector((state) => state.auth);
 
@@ -144,7 +143,6 @@ export default function AdminNavbarLinks(props) {
                 color={window.innerWidth > 959 ? "transparent" : "white"}
                 justIcon={window.innerWidth > 959}
                 simple={!(window.innerWidth > 959)}
-                aria-owns={openProfile ? "profile-menu-list-grow" : null}
                 aria-haspopup="true"
                 className={classes.buttonLink}
               >

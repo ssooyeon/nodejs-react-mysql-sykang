@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { useAlert } from "react-alert-17";

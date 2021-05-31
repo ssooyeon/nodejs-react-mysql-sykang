@@ -115,7 +115,7 @@ const legend = {
 };
 
 // CPU 차트 데이터
-const defaultCpuChartData = {
+const cpuData = {
   datasets: [
     {
       label: "",
@@ -130,7 +130,7 @@ const defaultCpuChartData = {
 };
 
 // 메모리 차트 데이터
-const defaultMemoryChartData = {
+const memData = {
   datasets: [
     {
       label: "",
@@ -145,7 +145,7 @@ const defaultMemoryChartData = {
 };
 
 // 디스크 차트 데이터
-const defaultDiskChartData = {
+const diskData = {
   datasets: [
     {
       label: "",
@@ -172,10 +172,6 @@ export default function Dashboard() {
 
   const [diskPerCentage, setDiskPerCentage] = useState(0);
   const [diskFree, setDiskFree] = useState(initSystemInfo);
-
-  const [cpuData, setCpuData] = useState(defaultCpuChartData);
-  const [memData, setMemData] = useState(defaultMemoryChartData);
-  const [diskData, setDiskData] = useState(defaultDiskChartData);
 
   const [cpuChartOptions, setCpuChartOptions] = useState(defaultOptions);
   const [memChartOptions, setMemChartOptions] = useState(defaultOptions);

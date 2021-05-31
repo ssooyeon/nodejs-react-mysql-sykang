@@ -79,7 +79,7 @@ export default function BoardDetail(props) {
   useEffect(() => {
     const id = props.match.params.id;
     dispatch(retrieveBoard(id));
-  }, []);
+  }, [dispatch, props.match.params.id]);
 
   // 게시판 삭제 전 확인
   const confirmRemoveBoard = () => {
