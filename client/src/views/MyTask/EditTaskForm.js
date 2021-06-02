@@ -2,11 +2,13 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import SimpleReactValidator from "simple-react-validator";
 import { Editor } from "react-draft-wysiwyg";
-import { EditorState } from "draft-js";
-import { convertToHTML, convertFromHTML } from "draft-convert";
+import { EditorState, ContentState, convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import htmlToDraft from "html-to-draftjs";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "./style/Editor.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Close } from "@material-ui/icons";
@@ -20,49 +22,10 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
+import styles from "./style/TaskFormStyle";
 import { updateTask } from "actions/tasks";
 
-const styles = {
-  errorText: {
-    color: "red",
-    margin: "auto",
-    fontSize: "14px",
-  },
-  modalContentWrapper: {
-    height: "650px",
-  },
-  labelText: {
-    display: "flex",
-    fontSize: "14px",
-  },
-  labelDiv: {
-    width: "30px",
-    height: "15px",
-    marginTop: "2px",
-  },
-  textField: {
-    width: "100%",
-    marginTop: "10px",
-  },
-  dueDatePickerWrapper: {
-    width: "100%",
-  },
-  dueDatePicker: {
-    width: "100%",
-  },
-  iconButton: {
-    background: "none !important",
-    boxShadow: "none !important",
-    width: "20px !important",
-    minWidth: "20px !important",
-    height: "20px !important",
-  },
-  icon: {
-    width: "20px !important",
-    height: "20px !important",
-    marginBottom: "10px !important",
-    color: "#000",
-  },
+const customStyles = {
   createrLabel: {
     paddingLeft: "10px",
     paddingRight: "10px",
@@ -75,10 +38,12 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const defaultStyles = makeStyles(styles);
+const useStyles = makeStyles(customStyles);
 
 export default function EditTaskForm({ open, handleCloseClick, task }) {
-  const classes = useStyles();
+  const classes = defaultStyles();
+  const customClasses = useStyles();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
 
   const [, updateState] = useState();
@@ -93,7 +58,10 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
     setTaskForm({ ...task });
     if (task.description !== undefined) {
       // 에디터에 html 바인딩
-      const data = EditorState.createWithContent(convertFromHTML(task.description));
+      const blocksFromHtml = htmlToDraft(task.description);
+      const { contentBlocks, entityMap } = blocksFromHtml;
+      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+      const data = EditorState.createWithContent(contentState);
       setEditorState(data);
     }
   }, [task]);
@@ -119,13 +87,20 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
     setTaskForm({ ...taskForm, dueDate: date });
   };
 
+  // 이미지 업로드
+  const uploadImageCallBack = (file) => {
+    console.log(file);
+  };
+
   // 테스크 수정 버튼 클릭
   const editTask = (e) => {
     e.preventDefault();
     const valid = validator.current.allValid();
     if (valid) {
       const id = task.id.replace("task", "");
-      const data = { ...taskForm, description: convertToHTML(editorState.getCurrentContent()), id: id };
+      const rawContentState = convertToRaw(editorState.getCurrentContent());
+      const markup = draftToHtml(rawContentState);
+      const data = { ...taskForm, description: markup, id: id };
       dispatch(updateTask(data.id, data))
         .then(() => {
           handleClose();
@@ -145,7 +120,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
         <form autoComplete="off" onSubmit={editTask}>
           <DialogTitle id="form-dialog-title">
             Edit Task
-            <div className={classes.createrLabel}>by @{taskForm.creater ? taskForm.creater.account : "N/A"}</div>
+            <div className={customClasses.createrLabel}>by @{taskForm.creater ? taskForm.creater.account : "N/A"}</div>
             <div className={classes.labelText}>
               label: &nbsp; <div className={classes.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
               <Button className={classes.iconButton} justIcon size="sm" onClick={() => onColorStateChange(null)}>
@@ -189,9 +164,9 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                   editorStyle={{
                     border: "1px solid #C0C0C0",
                     height: "330px",
+                    margin: "0px",
                     padding: "5px",
                     fontSize: "14px",
-                    lineHeight: "5px",
                     minWidth: "890px",
                   }}
                   id="description"
@@ -201,10 +176,12 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                   editorClassName="editor"
                   toolbarClassName="toolbar-class"
                   toolbar={{
-                    options: ["inline", "fontSize", "list", "colorPicker", "image", "remove", "history"],
+                    options: ["inline", "fontSize", "list", "textAlign", "colorPicker", "image", "history"],
+                    inline: { options: ["bold", "italic", "underline"] },
                     // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼 것인지
                     list: { inDropdown: true },
                     textAlign: { inDropdown: true },
+                    image: { uploadCallback: uploadImageCallBack, alt: { present: true, mandatory: true } },
                     history: { inDropdown: false },
                   }}
                   placeholder="Description"
