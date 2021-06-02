@@ -129,7 +129,7 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md">
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
         <form autoComplete="off">
           <DialogTitle id="form-dialog-title">Edit user</DialogTitle>
           <DialogContent>

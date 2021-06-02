@@ -87,9 +87,17 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
     setTaskForm({ ...taskForm, dueDate: date });
   };
 
+  // 이미지 source to base64
+  const getFileBase64 = (file, callback) => {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => callback(reader.result);
+    reader.onerror = (error) => {};
+  };
+
   // 이미지 업로드
   const uploadImageCallBack = (file) => {
-    console.log(file);
+    return new Promise((resolve, reject) => getFileBase64(file, (data) => resolve({ data: { link: data } })));
   };
 
   // 테스크 수정 버튼 클릭
@@ -116,7 +124,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md" disableBackdropClick>
         <form autoComplete="off" onSubmit={editTask}>
           <DialogTitle id="form-dialog-title">
             Edit Task
@@ -181,7 +189,7 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
                     // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼 것인지
                     list: { inDropdown: true },
                     textAlign: { inDropdown: true },
-                    image: { uploadCallback: uploadImageCallBack, alt: { present: true, mandatory: true } },
+                    image: { uploadCallback: uploadImageCallBack, previewImage: true },
                     history: { inDropdown: false },
                   }}
                   placeholder="Description"

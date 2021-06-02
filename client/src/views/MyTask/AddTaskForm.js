@@ -89,6 +89,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
     setTaskForm({ ...taskForm, dueDate: date });
   };
 
+  // 이미지 source to base64
   const getFileBase64 = (file, callback) => {
     var reader = new FileReader();
     reader.readAsDataURL(file);
@@ -124,7 +125,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md" disableBackdropClick>
         <form autoComplete="off" onSubmit={addTask}>
           <DialogTitle id="form-dialog-title">
             Add new task
