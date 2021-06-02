@@ -70,7 +70,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
   // 부모에게 완료사항 전달
   const handleClose = () => {
     handleCloseClick(false);
-    setTaskForm({ ...taskForm, labelColor: null });
+    setTaskForm(initialTaskstate);
     setEditorState(EditorState.createEmpty());
   };
 
