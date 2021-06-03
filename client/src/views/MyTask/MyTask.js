@@ -40,7 +40,8 @@ import { updateTask, deleteTask } from "actions/tasks";
 const defaultStyles = makeStyles(styles);
 const useStyles = makeStyles(customStyles);
 
-const colorList = ["#456C86", "#B8A8A2", "#546B68", "#A2B8A8", "#D19C4F", "#B89B8F", "#7DA0B8"];
+const themeColorList = ["#456C86", "#B8A8A2", "#546B68", "#A2B8A8", "#D19C4F", "#B89B8F", "#7DA0B8"];
+const spanColorList = ["#D4B957", "#546B59", "#B8A4A3", "#6B546B", "#40857D", "#495D6B", "#6B623E"];
 const today = new Date().toISOString().slice(0, 10);
 
 export default function MyTask() {
@@ -53,7 +54,8 @@ export default function MyTask() {
   const customClasses = useStyles();
   const alert = useAlert();
 
-  const [themeColor, setThemeColor] = useLocalStorage("themeColor", colorList[0]);
+  const [themeColor, setThemeColor] = useLocalStorage("themeColor", themeColorList[0]);
+  const [spanColor, setSpanColor] = useLocalStorage("spanColor", spanColorList[0]);
 
   const [folders, setFolders] = useState([]); // 최상위 폴더 리스트
   const [columnLastOrderNum, setColumnLastOrderNum] = useState(0); // 현재 선택된 폴더의 컬럼 리스트의 마지막 정렬 넘버
@@ -77,7 +79,9 @@ export default function MyTask() {
 
   // 테스크 테마 색상 변경
   const onColorStateChange = (colorState) => {
+    const index = themeColorList.findIndex((x) => x.toLowerCase() === colorState.toLowerCase());
     setThemeColor(colorState);
+    setSpanColor(spanColorList[index]);
   };
 
   // 컬럼 추가 시 기본 컬럼
@@ -275,7 +279,6 @@ export default function MyTask() {
         dispatch(retrieveParentFolders())
           .then((res) => {
             setFolders(res);
-            debugger;
             setCurrentFolder(folder.id);
             getFolder(folder.id);
           })
@@ -529,7 +532,7 @@ export default function MyTask() {
             Column
           </Button>
           <div className={customClasses.themeColorPicker}>
-            <CirclePicker colors={colorList} circleSize={20} onChangeComplete={(colore) => onColorStateChange(colore.hex)} />
+            <CirclePicker colors={themeColorList} circleSize={20} onChangeComplete={(colore) => onColorStateChange(colore.hex)} />
           </div>
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
@@ -648,7 +651,7 @@ export default function MyTask() {
                                                         style={{
                                                           color:
                                                             item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
-                                                              ? "#bda926"
+                                                              ? spanColor
                                                               : null,
                                                         }}
                                                       >
