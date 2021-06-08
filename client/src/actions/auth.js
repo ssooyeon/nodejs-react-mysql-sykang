@@ -32,6 +32,7 @@ export const authLogin = (data) => async (dispatch) => {
  */
 export const logout = () => (dispatch) => {
   localStorage.removeItem("user");
+  localStorage.removeItem("currentFolder");
   dispatch({
     type: LOGOUT,
   });

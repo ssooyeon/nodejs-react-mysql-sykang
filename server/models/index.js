@@ -49,4 +49,7 @@ db.tasks.belongsTo(db.users, {
   onDelete: "CASCADE",
 });
 
+db.users.belongsToMany(db.folders, { through: "userFolder", as: "folders", foreignKey: "userId" });
+db.folders.belongsToMany(db.users, { through: "userFolder", as: "users", foreignKey: "folderId" });
+
 module.exports = db;

@@ -34,8 +34,17 @@ import EditColumnForm from "./EditColumnForm";
 
 import customStyles from "./style/MyTaskStyle";
 import useLocalStorage from "utils/useLocalStorage";
-import { retrieveFolders, retrieveFolder, retrieveParentFolders, createFolder, updateFolder, deleteFolder } from "actions/folders";
+import {
+  retrieveFolders,
+  retrieveFolder,
+  retrieveParentFolders,
+  retrieveAllWithSharedUsers,
+  createFolder,
+  updateFolder,
+  deleteFolder,
+} from "actions/folders";
 import { updateTask, deleteTask } from "actions/tasks";
+import SharedUsersForm from "./SharedUsersForm";
 
 const defaultStyles = makeStyles(styles);
 const useStyles = makeStyles(customStyles);
@@ -60,7 +69,7 @@ export default function MyTask() {
   const [folders, setFolders] = useState([]); // 최상위 폴더 리스트
   const [columnLastOrderNum, setColumnLastOrderNum] = useState(0); // 현재 선택된 폴더의 컬럼 리스트의 마지막 정렬 넘버
 
-  const [currentFolder, setCurrentFolder] = useLocalStorage("currentFolder", "1"); // 현재 선택된 최상위 폴더
+  const [currentFolder, setCurrentFolder] = useLocalStorage("currentFolder", "0"); // 현재 선택된 최상위 폴더
   const [columns, setColumns] = useState([]); // 현재 선택된 폴더의 컬럼 리스트
 
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false); // 테스크 생성 모달 오픈
@@ -71,6 +80,9 @@ export default function MyTask() {
 
   const [editColumnModalOpen, setEditColumnModalOpen] = useState(false); // 컬럼 수정 모달 오픈
   const [editColumnForm, setEditColumnForm] = useState([]); // 수정할 컬럼 정보
+
+  const [editSharedUserModalOpen, setEditSharedUserModalOpen] = useState(false); // 최상위 폴더의 공유 사용자 설정 모달 오픈
+  const [editUserFolder, setEditUserFolder] = useState([]); // 수정할 최상위 폴더와 공유 사용자 목록 정보
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -192,10 +204,15 @@ export default function MyTask() {
 
   // parent가 null인 폴더 조회 (셀렉트박스에 표출)
   const getParentFolders = () => {
-    dispatch(retrieveParentFolders())
+    dispatch(retrieveParentFolders(currentUser.id))
       .then((res) => {
         setFolders(res);
-        getFolder(currentFolder);
+        if (currentFolder === undefined || currentFolder === "0") {
+          setCurrentFolder(res[0].id);
+          getFolder(res[0].id);
+        } else {
+          getFolder(currentFolder);
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -264,6 +281,12 @@ export default function MyTask() {
     getParentFolders();
   };
 
+  // 최상위 폴더 공유 사용자 설정 버튼 클릭 및 SharedusersForm.js 에서 닫기 버튼 클릭
+  const handleEditSharedUserModalClick = (value) => {
+    setEditSharedUserModalOpen(value);
+    getParentFolders();
+  };
+
   // 셀렉트 박스 변경 이벤트
   const handleSelectChange = (id) => {
     setCurrentFolder(id);
@@ -272,19 +295,34 @@ export default function MyTask() {
 
   // 최상위 폴더 추가
   const addParentFolder = () => {
-    const data = { ...defaultCreatedColumn, ordering: 0, parentId: null };
+    const folder = { ...defaultCreatedColumn, ordering: 0, parentId: null };
+    const user = currentUser;
+    const data = { folder, user };
     dispatch(createFolder(data))
-      .then((folder) => {
+      .then((createdFolder) => {
+        console.log(createdFolder);
         // 생성한 folder 보여주기
-        dispatch(retrieveParentFolders())
+        dispatch(retrieveParentFolders(currentUser.id))
           .then((res) => {
             setFolders(res);
-            setCurrentFolder(folder.id);
-            getFolder(folder.id);
+            setCurrentFolder(createdFolder.id);
+            getFolder(createdFolder.id);
           })
           .catch((e) => {
             console.log(e);
           });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 최상위 폴더의 공유 유저 설정
+  const editSharedUser = (currentFolderId) => {
+    dispatch(retrieveAllWithSharedUsers(currentFolderId))
+      .then((res) => {
+        setEditUserFolder(res);
+        setEditSharedUserModalOpen(true);
       })
       .catch((e) => {
         console.log(e);
@@ -323,9 +361,10 @@ export default function MyTask() {
     dispatch(deleteFolder(id))
       .then(() => {
         // 처음 folder 보여주기
-        dispatch(retrieveParentFolders())
+        dispatch(retrieveParentFolders(currentUser.id))
           .then((res) => {
             setFolders(res);
+            //TODO:
             setCurrentFolder(1);
             getFolder(1);
           })
@@ -340,7 +379,8 @@ export default function MyTask() {
 
   // 컬럼 추가
   const addColumn = () => {
-    const data = { ...defaultCreatedColumn, ordering: columnLastOrderNum + 1 };
+    const folder = { ...defaultCreatedColumn, ordering: columnLastOrderNum + 1 };
+    const data = { folder };
     dispatch(createFolder(data))
       .then(() => {
         getFolder(currentFolder);
@@ -433,7 +473,6 @@ export default function MyTask() {
       .catch((e) => {
         console.log(e);
       });
-    // }
   };
 
   // 테스크 추가 버튼 클릭
@@ -510,6 +549,9 @@ export default function MyTask() {
                 ))}
             </Select>
           </FormControl>
+          <Button className={`${customClasses.iconButton} ${customClasses.mt20}`} justIcon size="sm" onClick={() => editSharedUser(currentFolder)}>
+            <Person className={`${customClasses.titleSpan} ${customClasses.icon}`} />
+          </Button>
           <Button className={`${customClasses.iconButton} ${customClasses.mt20}`} justIcon size="sm" onClick={() => editParentFolder(currentFolder)}>
             <Edit className={`${customClasses.titleSpan} ${customClasses.icon}`} />
           </Button>
@@ -688,6 +730,7 @@ export default function MyTask() {
         <AddTaskForm open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
         <EditTaskForm open={editTaskModalOpen} handleCloseClick={handleEditTaskModalClick} task={editTaskForm} />
         <EditColumnForm open={editColumnModalOpen} handleCloseClick={handleEditFolderModalClick} column={editColumnForm} />
+        <SharedUsersForm open={editSharedUserModalOpen} handleCloseClick={handleEditSharedUserModalClick} userFolder={editUserFolder} />
       </GridContainer>
     </>
   );

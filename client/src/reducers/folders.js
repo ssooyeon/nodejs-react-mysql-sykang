@@ -2,8 +2,10 @@ import {
   CREATE_FOLDER,
   RETRIEVE_FOLDERS,
   RETRIEVE_PARENT_FOLDERS,
+  RETRIEVE_FOLDER_WITH_USERS,
   RETRIEVE_FOLDER,
   UPDATE_FOLDER,
+  UPDATE_FOLDER_WITH_USERS,
   DELETE_FOLDER,
   DELETE_ALL_FOLDERS,
 } from "actions/types";
@@ -24,6 +26,10 @@ function folderReducer(folders = initialState, action) {
 
     // 최상위 폴더 전체 조회
     case RETRIEVE_PARENT_FOLDERS:
+      return payload;
+
+    // 최상위 폴더를 공유 유저들과 함께 조회
+    case RETRIEVE_FOLDER_WITH_USERS:
       return payload;
 
     // 폴더 조회
@@ -49,6 +55,10 @@ function folderReducer(folders = initialState, action) {
           return folder;
         }
       });
+
+    // 폴더의 공유 사용자 수정
+    case UPDATE_FOLDER_WITH_USERS:
+      return payload;
 
     // 폴더 삭제
     case DELETE_FOLDER:

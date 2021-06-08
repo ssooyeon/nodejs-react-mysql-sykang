@@ -7,8 +7,17 @@ class FolderService {
   }
 
   // 테스트 폴더에서 가장 상위 폴더 리스트 조회
-  getParentAll() {
-    return http.get("/folders/parents");
+  // getParentAll() {
+  //   return http.get("/folders/parents");
+  // }
+
+  getParentAllByCurrentUser(id) {
+    return http.get(`/folders/parents/${id}`);
+  }
+
+  // 테스크 폴더에서 가장 상위 폴더 리스트와 공유 사용자 함께 조회
+  getAllWithSharedUsers(id) {
+    return http.get(`/folders/users/${id}`);
   }
 
   // 테스크 폴더 조회
@@ -24,6 +33,11 @@ class FolderService {
   // 테스크 폴더 수정
   update(id, data) {
     return http.put(`/folders/${id}`, data);
+  }
+
+  // 테스크 폴더의 공유 사용자 수정
+  updateSharedUsers(id, data) {
+    return http.put(`/folders/users/${id}`, data);
   }
 
   // 테스크 폴더 삭제

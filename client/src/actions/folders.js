@@ -1,4 +1,14 @@
-import { CREATE_FOLDER, RETRIEVE_FOLDERS, RETRIEVE_PARENT_FOLDERS, RETRIEVE_FOLDER, UPDATE_FOLDER, DELETE_FOLDER, DELETE_ALL_FOLDERS } from "./types";
+import {
+  CREATE_FOLDER,
+  RETRIEVE_FOLDERS,
+  RETRIEVE_PARENT_FOLDERS,
+  RETRIEVE_FOLDER_WITH_USERS,
+  RETRIEVE_FOLDER,
+  UPDATE_FOLDER,
+  UPDATE_FOLDER_WITH_USERS,
+  DELETE_FOLDER,
+  DELETE_ALL_FOLDERS,
+} from "./types";
 
 import FolderService from "../services/FolderService";
 
@@ -41,11 +51,30 @@ export const retrieveFolders = (params) => async (dispatch) => {
 /**
  * 최상위 폴더 전체 조회
  */
-export const retrieveParentFolders = () => async (dispatch) => {
+export const retrieveParentFolders = (id) => async (dispatch) => {
   try {
-    const res = await FolderService.getParentAll();
+    // const res = await FolderService.getParentAll();
+    const res = await FolderService.getParentAllByCurrentUser(id);
     dispatch({
       type: RETRIEVE_PARENT_FOLDERS,
+      payload: res.data,
+    });
+    console.log(res);
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 최상위 폴더를 공유 사용자와 함께 조회
+ */
+export const retrieveAllWithSharedUsers = (id) => async (dispatch) => {
+  try {
+    const res = await FolderService.getAllWithSharedUsers(id);
+    dispatch({
+      type: RETRIEVE_FOLDER_WITH_USERS,
       payload: res.data,
     });
     return Promise.resolve(res.data);
@@ -80,6 +109,23 @@ export const updateFolder = (id, data) => async (dispatch) => {
     const res = await FolderService.update(id, data);
     dispatch({
       type: UPDATE_FOLDER,
+      payload: data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 폴더 공유 사용자 수정
+ */
+export const updateSharedUser = (id, data) => async (dispatch) => {
+  try {
+    const res = await FolderService.updateSharedUsers(id, data);
+    dispatch({
+      type: UPDATE_FOLDER_WITH_USERS,
       payload: data,
     });
     return Promise.resolve(res.data);

@@ -9,18 +9,23 @@ const Op = db.Sequelize.Op;
  * 테스크 폴더 생성
  */
 exports.create = (req, res) => {
-  if (!req.body.name) {
+  if (!req.body.folder) {
     res.status(400).send({ message: "Content cannot be empty." });
     return;
   }
-  const folder = req.body;
+  const folder = req.body.folder;
+  const user = req.body.user;
   Folder.create(folder)
-    .then((data) => {
-      Log.create({ status: "SUCCESS", message: `Folder create successfully. New folder name is: ${req.body.name}` });
-      res.send(data);
+    .then((createdFolder) => {
+      Log.create({ status: "SUCCESS", message: `Folder create successfully. New folder name is: ${req.body.folder.name}` });
+      console.log(user);
+      if (user !== undefined && user !== null) {
+        createdFolder.addUsers(user.id);
+      }
+      res.send(createdFolder);
     })
     .catch((err) => {
-      Log.create({ status: "ERROR", message: `Folder create failed. Folder name is: ${req.body.name}` });
+      Log.create({ status: "ERROR", message: `Folder create failed. Folder name is: ${req.body.folder.name}` });
       res.status(500).send({ message: err.message || "Some error occurred while creating the Folder." });
     });
 };
@@ -65,24 +70,77 @@ exports.findAll = (req, res) => {
 /**
  * 테스크 폴더에서 가장 상위 폴더 리스트 전체 조회
  */
-exports.findParentAll = (req, res) => {
+// exports.findParentAll = (req, res) => {
+//   Folder.findAll({
+//     include: [
+//       {
+//         model: Task,
+//         as: "tasks",
+//         include: [
+//           {
+//             model: User,
+//             as: "creater",
+//           },
+//         ],
+//       },
+//     ],
+//     where: { parentId: { [Op.eq]: null } },
+//     order: [
+//       ["ordering", "ASC"],
+//       [{ model: Task, as: "tasks" }, "ordering", "ASC"],
+//     ],
+//   })
+//     .then((data) => {
+//       res.send(data);
+//     })
+//     .catch((err) => {
+//       res.status(500).send({ message: err.message || "Some error occurred while retrieving folders." });
+//     });
+// };
+
+/**
+ * 테스크 폴더에서 현재 로그인 한 사용자의 가장 상위 폴더 리스트 전체 조회
+ */
+exports.findParentAllByCurrentUser = (req, res) => {
+  const id = req.params.id;
   Folder.findAll({
     include: [
       {
-        model: Task,
-        as: "tasks",
-        include: [
-          {
-            model: User,
-            as: "creater",
-          },
-        ],
+        model: User,
+        as: "users",
+        through: {
+          attributes: [],
+        },
+        where: {
+          id: id,
+        },
       },
     ],
     where: { parentId: { [Op.eq]: null } },
-    order: [
-      ["ordering", "ASC"],
-      [{ model: Task, as: "tasks" }, "ordering", "ASC"],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving folders." });
+    });
+};
+
+/**
+ * 테스크 폴더에서 가장 상위 폴더와 공유 사용자를 함께 조회
+ */
+exports.findAllWithSharedUsers = (req, res) => {
+  const id = req.params.id;
+  Folder.findByPk(id, {
+    include: [
+      {
+        model: User,
+        as: "users",
+        // attributes: ["id", "name"]
+        through: {
+          attributes: [],
+        },
+      },
     ],
   })
     .then((data) => {
@@ -133,6 +191,25 @@ exports.update = (req, res) => {
     .catch((err) => {
       Log.create({ status: "ERROR", message: `Folder update failed. Folder name is: ${req.body.name}` });
       res.status(500).send({ message: err.message || `Error updating Folder with id=${id}` });
+    });
+};
+
+/**
+ * 테스크 공유 사용자 수정
+ */
+exports.updateSharedUsers = (req, res) => {
+  const id = req.params.id;
+  const users = req.body.users;
+  Folder.findByPk(id)
+    .then((folder) => {
+      folder.setUsers(users).then((num) => {
+        Log.create({ status: "SUCCESS", message: `Folder's shared user update successfully. Foler id is: ${id}` });
+        res.send({ message: "Folder's shared users was updated successfully." });
+      });
+    })
+    .catch((err) => {
+      Log.create({ status: "ERROR", message: `Folder's shared user update failed. Folder id is: ${id}` });
+      res.status(500).send({ message: err.message || `Error updating Folder shared user with id=${id}` });
     });
 };
 
