@@ -47,7 +47,7 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
     UserService.getAll()
       .then((res) => {
         setUsers(res.data);
-        let currentUserIds = userFolder.users.map((obj) => obj.id);
+        let currentUserIds = userFolder.users && userFolder.users.map((obj) => obj.id);
         setSelectionModel(currentUserIds);
       })
       .catch((e) => {
