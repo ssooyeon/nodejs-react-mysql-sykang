@@ -364,9 +364,8 @@ export default function MyTask() {
         dispatch(retrieveParentFolders(currentUser.id))
           .then((res) => {
             setFolders(res);
-            //TODO:
-            setCurrentFolder(1);
-            getFolder(1);
+            setCurrentFolder(res[0].id);
+            getFolder(res[0].id);
           })
           .catch((e) => {
             console.log(e);
