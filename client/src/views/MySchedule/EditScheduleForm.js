@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useAlert } from "react-alert-17";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -30,9 +31,11 @@ const useStyles = makeStyles(styles);
 
 export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
   const classes = useStyles();
+  const alert = useAlert();
 
   const initialSchedulestate = {
-    title: schedule.title,
+    id: "",
+    title: "",
     description: "",
     start: "",
     end: "",
@@ -47,13 +50,6 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
 
   useEffect(() => {
     setScheduleForm(schedule);
-    // dispatch(retrieveSchedule(scheduleId))
-    //   .then((res) => {
-    //     setScheduleForm(res);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
   }, [schedule]);
 
   // 부모에게 완료사항 전달
@@ -85,20 +81,71 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
   };
 
   // 스케줄 삭제 버튼 클릭
-  const removeSchedule = (e) => {
+  const removeScheduleClick = (e) => {
     e.preventDefault();
+    alert.show("Are you sure delete this schedule?", {
+      title: "",
+      closeCopy: "Cancel",
+      type: "success",
+      actions: [
+        {
+          copy: "YES",
+          onClick: () => removeSchedule(),
+        },
+      ],
+    });
+  };
+
+  // 스케줄 삭제
+  const removeSchedule = () => {
+    dispatch(deleteSchedule(scheduleForm.id))
+      .then(() => {
+        handleClose();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   // 스케줄 수정 버튼 클릭
-  const editSchedule = (e) => {
+  const editScheduleClick = (e) => {
     e.preventDefault();
-    console.log(scheduleForm);
+    if (scheduleForm.title === "") {
+      alert.show("There is no title. Do you want to edit 'nonamed' schedule?", {
+        title: "",
+        closeCopy: "Cancel",
+        type: "success",
+        actions: [
+          {
+            copy: "YES",
+            onClick: () => editSchedule(),
+          },
+        ],
+      });
+    } else {
+      editSchedule();
+    }
+  };
+
+  // 스케줄 수정
+  const editSchedule = () => {
+    let data = scheduleForm;
+    if (scheduleForm.title === "") {
+      data.title = "nonamed";
+    }
+    dispatch(updateSchedule(data.id, data))
+      .then(() => {
+        handleClose();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
-        <form autoComplete="off" onSubmit={editSchedule}>
+        <form autoComplete="off" onSubmit={editScheduleClick}>
           <DialogTitle id="form-dialog-title">Add new schedule</DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
             To add a new schedule, enter title and description and click the Submit button.
@@ -202,10 +249,10 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
             </CardBody>
           </DialogContent>
           <DialogActions>
-            <Button color="danger" justIcon className={classes.deleteIconButton} onClick={removeSchedule}>
+            <Button color="danger" justIcon className={classes.deleteIconButton} onClick={removeScheduleClick}>
               <Delete />
             </Button>
-            <Button onClick={editSchedule} color="primary">
+            <Button onClick={editScheduleClick} color="primary">
               Submit
             </Button>
             <Button onClick={handleClose}>Cancel</Button>

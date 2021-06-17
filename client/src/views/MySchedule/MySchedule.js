@@ -14,9 +14,10 @@ import GridContainer from "components/Grid/GridContainer";
 import "./style/CustomCalendar.css";
 
 import AddScheduleForm from "./AddScheduleForm";
+import EditScheduleForm from "./EditScheduleForm";
 
 import { retrieveSchedules, retrieveSchedule } from "actions/schedules";
-import EditScheduleForm from "./EditScheduleForm";
+import ScheduleService from "services/ScheduleService";
 
 const styles = {};
 
@@ -40,36 +41,20 @@ export default function MySchedule() {
 
   // 스케줄 클릭
   const handleEventClick = (e) => {
-    dispatch(retrieveSchedule(e.event.id))
+    ScheduleService.get(e.event.id)
       .then((res) => {
-        setEditSchedule(res);
+        setEditSchedule(res.data);
         setEditScheduleModalOpen(true);
       })
       .catch((e) => {
         console.log(e);
       });
-    // e.event.remove();
   };
 
   // 날짜 클릭 시 신규 스케줄 추가 팝업 오픈
   const handleDateSelect = (e) => {
     setClickedDate(e.start);
     setAddScheduleModalOpen(true);
-    // const calApi = e.view.calendar;
-    // const title = prompt("title 입력");
-    // calApi.unselect();
-    // if (title) {
-    //   calApi.addEvent(
-    //     // will call handleEventAdd
-    //     {
-    //       title,
-    //       start: e.startStr,
-    //       end: e.endStr,
-    //       allDay: e.allDay,
-    //     },
-    //     true // temporary=true, reducer가 새로운 event를 제공할 떄 덮어 씀
-    //   );
-    // }
   };
 
   // 스케줄 신규 추가 후 콜백 함수

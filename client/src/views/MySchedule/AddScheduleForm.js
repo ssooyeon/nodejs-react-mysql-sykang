@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useAlert } from "react-alert-17";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -29,6 +30,7 @@ const useStyles = makeStyles(styles);
 
 export default function AddScheduleForm({ open, handleCloseClick, date }) {
   const classes = useStyles();
+  const alert = useAlert();
 
   const { user: currentUser } = useSelector((state) => state.auth);
 
@@ -79,28 +81,44 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
   };
 
   // 스케줄 등록 버튼 클릭
-  const addSchedule = (e) => {
+  const addScheduleClick = (e) => {
     e.preventDefault();
-    console.log(scheduleForm);
-    // const valid = validator.current.allValid();
-    // if (valid) {
-    //   dispatch(createSchedule(scheduleForm))
-    //     .then(() => {
-    //       handleClose();
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //     });
-    // } else {
-    //   validator.current.showMessages();
-    //   forceUpdate();
-    // }
+    if (scheduleForm.title === "") {
+      alert.show("There is no title. Do you want to add 'nonamed' schedule?", {
+        title: "",
+        closeCopy: "Cancel",
+        type: "success",
+        actions: [
+          {
+            copy: "YES",
+            onClick: () => addSchedule(),
+          },
+        ],
+      });
+    } else {
+      addSchedule();
+    }
+  };
+
+  // 스케줄 등록
+  const addSchedule = () => {
+    let data = scheduleForm;
+    if (scheduleForm.title === "") {
+      data.title = "nonamed";
+    }
+    dispatch(createSchedule(data))
+      .then(() => {
+        handleClose();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
-        <form autoComplete="off" onSubmit={addSchedule}>
+        <form autoComplete="off" onSubmit={addScheduleClick}>
           <DialogTitle id="form-dialog-title">Add new schedule</DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
             To add a new schedule, enter title and description and click the Submit button.
@@ -204,7 +222,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
             </CardBody>
           </DialogContent>
           <DialogActions>
-            <Button onClick={addSchedule} color="primary">
+            <Button onClick={addScheduleClick} color="primary">
               Submit
             </Button>
             <Button onClick={handleClose}>Cancel</Button>
