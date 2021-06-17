@@ -12,9 +12,9 @@ import GridContainer from "components/Grid/GridContainer";
 import Button from "components/CustomButtons/Button";
 
 import AddUserForm from "./AddUserForm";
+import EditUserForm from "./EditUserForm";
 
 import { retrieveUsers, deleteUser } from "actions/users";
-import EditUserForm from "./EditUserForm";
 
 const styles = {
   tableWrapper: {

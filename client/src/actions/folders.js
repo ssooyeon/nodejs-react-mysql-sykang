@@ -59,7 +59,6 @@ export const retrieveParentFolders = (id) => async (dispatch) => {
       type: RETRIEVE_PARENT_FOLDERS,
       payload: res.data,
     });
-    console.log(res);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);

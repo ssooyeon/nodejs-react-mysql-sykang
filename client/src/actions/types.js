@@ -47,3 +47,13 @@ export const RETRIEVE_TASK = "RETRIEVE_TASK";
 export const UPDATE_TASK = "UPDATE_TASK";
 export const DELETE_TASK = "DELETE_TASK";
 export const DELETE_ALL_TASKS = "DELETE_ALL_TASKS";
+
+/***************************************************
+ * Schedule
+ ***************************************************/
+export const CREATE_SCHEDULE = "CREATE_SCHEDULE";
+export const RETRIEVE_SCHEDULES = "RETRIEVE_SCHEDULES";
+export const RETRIEVE_SCHEDULE = "RETRIEVE_SCHEDULE";
+export const UPDATE_SCHEDULE = "UPDATE_SCHEDULE";
+export const DELETE_SCHEDULE = "DELETE_SCHEDULE";
+export const DELETE_ALL_SCHEDULES = "DELETE_ALL_SCHEDULES";

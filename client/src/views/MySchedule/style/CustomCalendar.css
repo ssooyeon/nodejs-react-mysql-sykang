@@ -1,0 +1,9 @@
+a {
+  color: #000 !important;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end,
+.fc-direction-rtl .fc-daygrid-event.fc-event-start,
+.fc-v-event {
+  border: none;
+}

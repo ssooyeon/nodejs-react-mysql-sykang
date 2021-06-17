@@ -1,0 +1,7 @@
+.MuiInputBase-input.MuiOutlinedInput-input {
+  padding: 7px 14px;
+}
+
+.MuiOutlinedInput-multiline {
+  padding: 0 !important;
+}

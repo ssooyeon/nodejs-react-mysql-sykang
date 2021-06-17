@@ -4,6 +4,7 @@ import users from "./users";
 import auth from "./auth";
 import folder from "./folders";
 import task from "./tasks";
+import schedules from "./schedules";
 
 export default combineReducers({
   boards,
@@ -11,4 +12,5 @@ export default combineReducers({
   auth,
   folder,
   task,
+  schedules,
 });
