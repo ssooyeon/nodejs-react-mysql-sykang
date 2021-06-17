@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "@babel/core": "^7.13.16",
+    "@fullcalendar/core": "^5.8.0",
     "@fullcalendar/daygrid": "^5.7.2",
     "@fullcalendar/interaction": "^5.7.2",
     "@fullcalendar/react": "^5.7.2",
@@ -20,6 +21,7 @@
     "chart.js": "^2.8.0",
     "chartjs-plugin-streaming": "^1.8.0",
     "classnames": "^2.3.1",
+    "dateformat": "^4.5.1",
     "draft-convert": "^2.1.11",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
@@ -37,6 +39,7 @@
     "react-chartjs-2": "^2.11.1",
     "react-clock": "^3.0.0",
     "react-color": "^2.19.3",
+    "react-date-picker": "^8.2.0",
     "react-datetime-picker": "^3.2.1",
     "react-dom": "^17.0.2",
     "react-draft-wysiwyg": "^1.14.7",

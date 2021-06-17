@@ -9,10 +9,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.TEXT,
     },
     start: {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
     },
     end: {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
     },
     backgroundColor: {
       type: Sequelize.STRING,

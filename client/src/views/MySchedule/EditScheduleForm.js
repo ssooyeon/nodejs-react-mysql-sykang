@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAlert } from "react-alert-17";
 import { CirclePicker } from "react-color";
+import DatePicker from "react-date-picker";
 import DateTimePicker from "react-datetime-picker";
+import moment from "moment";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -25,7 +27,7 @@ import "./style/TextField.css";
 
 import styles from "./style/ScheduleFormStyle";
 
-import { retrieveSchedule, updateSchedule, deleteSchedule } from "actions/schedules";
+import { updateSchedule, deleteSchedule } from "actions/schedules";
 
 const useStyles = makeStyles(styles);
 
@@ -80,33 +82,6 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
     setScheduleForm({ ...scheduleForm, backgroundColor: colorState });
   };
 
-  // 스케줄 삭제 버튼 클릭
-  const removeScheduleClick = (e) => {
-    e.preventDefault();
-    alert.show("Are you sure delete this schedule?", {
-      title: "",
-      closeCopy: "Cancel",
-      type: "success",
-      actions: [
-        {
-          copy: "YES",
-          onClick: () => removeSchedule(),
-        },
-      ],
-    });
-  };
-
-  // 스케줄 삭제
-  const removeSchedule = () => {
-    dispatch(deleteSchedule(scheduleForm.id))
-      .then(() => {
-        handleClose();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
   // 스케줄 수정 버튼 클릭
   const editScheduleClick = (e) => {
     e.preventDefault();
@@ -130,10 +105,60 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
   // 스케줄 수정
   const editSchedule = () => {
     let data = scheduleForm;
+    // 제목이 비어있으면 nonamed로 지정
     if (scheduleForm.title === "") {
       data.title = "nonamed";
     }
-    dispatch(updateSchedule(data.id, data))
+
+    const start = moment(data.start);
+    const end = moment(data.end);
+
+    // 날짜 범위 유효성 확인
+    if (start > end) {
+      alert.show("The end time must be later than the start time.", {
+        title: "",
+        type: "success",
+      });
+    } else {
+      // all day이면 yyyy-mm-dd를 삽입
+      if (scheduleForm.isAllDay) {
+        data.start = start.format("YYYY-MM-DD");
+        data.end = end.format("YYYY-MM-DD");
+      } else {
+        // all day가 아니면 hh:mm:ss까지 삽입
+        data.start = start.format("YYYY-MM-DD HH:mm:ss");
+        data.end = end.format("YYYY-MM-DD HH:mm:ss");
+      }
+
+      dispatch(updateSchedule(data.id, data))
+        .then(() => {
+          handleClose();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
+
+  // 스케줄 삭제 버튼 클릭
+  const removeScheduleClick = (e) => {
+    e.preventDefault();
+    alert.show("Are you sure delete this schedule?", {
+      title: "",
+      closeCopy: "Cancel",
+      type: "success",
+      actions: [
+        {
+          copy: "YES",
+          onClick: () => removeSchedule(),
+        },
+      ],
+    });
+  };
+
+  // 스케줄 삭제
+  const removeSchedule = () => {
+    dispatch(deleteSchedule(scheduleForm.id))
       .then(() => {
         handleClose();
       })
@@ -191,7 +216,42 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                   }
                 />
               </GridContainer>
-              {!scheduleForm.isAllDay ? (
+              {scheduleForm.isAllDay ? (
+                <>
+                  <GridContainer>
+                    <div className={classes.inputWrapper}>
+                      <br />
+                      <span className={classes.labelText}>Start date</span>
+                      <DatePicker
+                        locale="en"
+                        format="yyyy-MM-dd"
+                        dayPlaceholder="dd"
+                        monthPlaceholder="MM"
+                        yearPlaceholder="yyyy"
+                        className={classes.dueDatePicker}
+                        onChange={onStartDateChange}
+                        value={scheduleForm.start ? new Date(scheduleForm.start) : null}
+                      />
+                    </div>
+                  </GridContainer>
+                  <GridContainer>
+                    <div className={classes.inputWrapper}>
+                      <br />
+                      <span className={classes.labelText}>End date</span>
+                      <DatePicker
+                        locale="en"
+                        format="yyyy-MM-dd"
+                        dayPlaceholder="dd"
+                        monthPlaceholder="MM"
+                        yearPlaceholder="yyyy"
+                        className={classes.dueDatePicker}
+                        onChange={onEndDateChange}
+                        value={scheduleForm.end ? new Date(scheduleForm.end) : null}
+                      />
+                    </div>
+                  </GridContainer>
+                </>
+              ) : (
                 <>
                   <GridContainer>
                     <div className={classes.inputWrapper}>
@@ -207,7 +267,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         yearPlaceholder="yyyy"
                         className={classes.dueDatePicker}
                         onChange={onStartDateChange}
-                        value={scheduleForm.start}
+                        value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
                     </div>
                   </GridContainer>
@@ -225,12 +285,12 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         yearPlaceholder="yyyy"
                         className={classes.dueDatePicker}
                         onChange={onEndDateChange}
-                        value={scheduleForm.end}
+                        value={scheduleForm.end ? new Date(scheduleForm.end) : null}
                       />
                     </div>
                   </GridContainer>
                 </>
-              ) : null}
+              )}
 
               <GridContainer>
                 <div className={classes.inputWrapper}>

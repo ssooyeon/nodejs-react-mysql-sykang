@@ -1,9 +1,16 @@
+/* full calendar */
 a {
   color: #000 !important;
 }
 
 .fc-direction-ltr .fc-daygrid-event.fc-event-end,
 .fc-direction-rtl .fc-daygrid-event.fc-event-start,
-.fc-v-event {
-  border: none;
+.fc-v-event,
+.fc-h-event {
+  border: none !important;
+}
+
+/* datepicker */
+.react-date-picker__clear-button.react-date-picker__button {
+  display: none;
 }

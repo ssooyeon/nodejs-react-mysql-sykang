@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useAlert } from "react-alert-17";
 import { CirclePicker } from "react-color";
+import DatePicker from "react-date-picker";
 import DateTimePicker from "react-datetime-picker";
+import moment from "moment";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -65,7 +67,8 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
   };
   // all day 체크박스 클릭
   const handleCheckbox = (e) => {
-    setScheduleForm({ ...scheduleForm, isAllDay: e.target.checked });
+    const checked = e.target.checked;
+    setScheduleForm({ ...scheduleForm, isAllDay: checked });
   };
   // 시작 시간 변경
   const onStartDateChange = (date) => {
@@ -103,16 +106,39 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
   // 스케줄 등록
   const addSchedule = () => {
     let data = scheduleForm;
+    // 제목이 비어있으면 nonamed로 지정
     if (scheduleForm.title === "") {
       data.title = "nonamed";
     }
-    dispatch(createSchedule(data))
-      .then(() => {
-        handleClose();
-      })
-      .catch((e) => {
-        console.log(e);
+
+    const start = moment(data.start);
+    const end = moment(data.end);
+
+    // 날짜 범위 유효성 확인
+    if (start > end) {
+      alert.show("The end time must be later than the start time.", {
+        title: "",
+        type: "success",
       });
+    } else {
+      // all day이면 yyyy-mm-dd를 삽입
+      if (scheduleForm.isAllDay) {
+        data.start = start.format("YYYY-MM-DD");
+        data.end = end.format("YYYY-MM-DD");
+      } else {
+        // all day가 아니면 hh:mm:ss까지 삽입
+        data.start = start.format("YYYY-MM-DD HH:mm:ss");
+        data.end = end.format("YYYY-MM-DD HH:mm:ss");
+      }
+
+      dispatch(createSchedule(data))
+        .then(() => {
+          handleClose();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   return (
@@ -164,7 +190,42 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                   }
                 />
               </GridContainer>
-              {!scheduleForm.isAllDay ? (
+              {scheduleForm.isAllDay ? (
+                <>
+                  <GridContainer>
+                    <div className={classes.inputWrapper}>
+                      <br />
+                      <span className={classes.labelText}>Start date</span>
+                      <DatePicker
+                        locale="en"
+                        format="yyyy-MM-dd"
+                        dayPlaceholder="dd"
+                        monthPlaceholder="MM"
+                        yearPlaceholder="yyyy"
+                        className={classes.dueDatePicker}
+                        onChange={onStartDateChange}
+                        value={scheduleForm.start ? new Date(scheduleForm.start) : null}
+                      />
+                    </div>
+                  </GridContainer>
+                  <GridContainer>
+                    <div className={classes.inputWrapper}>
+                      <br />
+                      <span className={classes.labelText}>End date</span>
+                      <DatePicker
+                        locale="en"
+                        format="yyyy-MM-dd"
+                        dayPlaceholder="dd"
+                        monthPlaceholder="MM"
+                        yearPlaceholder="yyyy"
+                        className={classes.dueDatePicker}
+                        onChange={onEndDateChange}
+                        value={scheduleForm.end ? new Date(scheduleForm.end) : null}
+                      />
+                    </div>
+                  </GridContainer>
+                </>
+              ) : (
                 <>
                   <GridContainer>
                     <div className={classes.inputWrapper}>
@@ -180,7 +241,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                         yearPlaceholder="yyyy"
                         className={classes.dueDatePicker}
                         onChange={onStartDateChange}
-                        value={scheduleForm.start}
+                        value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
                     </div>
                   </GridContainer>
@@ -198,12 +259,12 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                         yearPlaceholder="yyyy"
                         className={classes.dueDatePicker}
                         onChange={onEndDateChange}
-                        value={scheduleForm.end}
+                        value={scheduleForm.end ? new Date(scheduleForm.end) : null}
                       />
                     </div>
                   </GridContainer>
                 </>
-              ) : null}
+              )}
 
               <GridContainer>
                 <div className={classes.inputWrapper}>
