@@ -49,6 +49,10 @@ const styles = {
   deleteIconButton: {
     float: "left",
   },
+  formControl: {
+    width: "100%",
+    paddingRight: "10px",
+  },
 };
 
 export default styles;

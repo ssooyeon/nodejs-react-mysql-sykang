@@ -17,7 +17,9 @@ import Button from "components/CustomButtons/Button";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import { TextField } from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
@@ -29,6 +31,7 @@ import { createSchedule } from "actions/schedules";
 
 const useStyles = makeStyles(styles);
 const colorList = ["#456C86", "#B8A8A2", "#546B68", "#A2B8A8", "#D19C4F", "#B89B8F", "#7DA0B8"];
+const weekList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Firday", "Saturday"];
 
 export default function AddScheduleForm({ open, handleCloseClick, date }) {
   const classes = useStyles();
@@ -44,15 +47,31 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
     backgroundColor: colorList[0],
     textColor: null,
     isAllDay: true,
+    isRepeat: false,
     createrId: currentUser.id,
   };
 
   const [scheduleForm, setScheduleForm] = useState(initialSchedulestate);
+  const [repeatValue, setRepeatValue] = useState(""); // 반복 일정 옵션 값
+  const [day, setDay] = useState(""); // 선택한 날짜의 day만 추출
+  const [week, setWeek] = useState(""); // 선택한 날짜의 요일만 추출
+  const [weekNum, setWeekNum] = useState(""); // 선택한 날짜가 몇 번쨰 주인지 추출
   const dispatch = useDispatch();
 
   useEffect(() => {
     setScheduleForm({ ...scheduleForm, start: date, end: date });
+    updateRepeatOption(date);
   }, [date]);
+
+  // 날짜 변경 시 반복 일정 select option 업데이트
+  const updateRepeatOption = (date) => {
+    const day = date.getDate();
+    const week = date.getDay();
+    const weekNum = Math.ceil((day + 6 - week) / 7);
+    setDay(day);
+    setWeek(week); // 0: 일요일
+    setWeekNum(weekNum);
+  };
 
   // 부모에게 완료사항 전달
   const handleClose = () => {
@@ -66,17 +85,27 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
     setScheduleForm({ ...scheduleForm, [name]: value });
   };
   // all day 체크박스 클릭
-  const handleCheckbox = (e) => {
+  const handleAllDayCheckbox = (e) => {
     const checked = e.target.checked;
     setScheduleForm({ ...scheduleForm, isAllDay: checked });
+  };
+  // repeat 체크박스 클릭
+  const handleRepeatCheckbox = (e) => {
+    const checked = e.target.checked;
+    setScheduleForm({ ...scheduleForm, isRepeat: checked });
   };
   // 시작 시간 변경
   const onStartDateChange = (date) => {
     setScheduleForm({ ...scheduleForm, start: date });
+    updateRepeatOption(date);
   };
   // 종료 시간 변경
   const onEndDateChange = (date) => {
     setScheduleForm({ ...scheduleForm, end: date });
+  };
+  // repeat 시간 변경
+  const handleRepeatOption = (e) => {
+    setRepeatValue(e.target.value);
   };
   // 배경 색 변경
   const onBackgroundColorStateChange = (colorState) => {
@@ -183,7 +212,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                   control={
                     <Checkbox
                       checked={scheduleForm.isAllDay}
-                      onChange={(e) => handleCheckbox(e)}
+                      onChange={(e) => handleAllDayCheckbox(e)}
                       icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                       checkedIcon={<CheckBoxIcon fontSize="small" />}
                     />
@@ -259,6 +288,40 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                   </GridContainer>
                 </>
               )}
+              <GridContainer>
+                <FormControlLabel
+                  style={{ marginRight: "-5px", color: "#000" }}
+                  label="Repeat"
+                  control={
+                    <Checkbox
+                      checked={scheduleForm.isRepeat}
+                      onChange={(e) => handleRepeatCheckbox(e)}
+                      icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                      checkedIcon={<CheckBoxIcon fontSize="small" />}
+                    />
+                  }
+                />
+              </GridContainer>
+              {scheduleForm.isRepeat ? (
+                <GridContainer>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <Select
+                      native
+                      value={repeatValue}
+                      onChange={handleRepeatOption}
+                      label=""
+                      inputProps={{
+                        name: "repeat",
+                        id: "outlined-age-native-simple",
+                      }}
+                    >
+                      <option value={"monthly"}>{`${day} of month`}</option>
+                      <option value={"weekly"}>{`Every ${weekList[week]}`}</option>
+                      <option value={"weekly-monthly"}>{`${weekNum}th ${weekList[week]} of every week`}</option>
+                    </Select>
+                  </FormControl>
+                </GridContainer>
+              ) : null}
               <GridContainer>
                 <div className={classes.inputWrapper}>
                   <br />

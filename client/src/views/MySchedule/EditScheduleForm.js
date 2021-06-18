@@ -172,7 +172,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
         <form autoComplete="off" onSubmit={editScheduleClick}>
-          <DialogTitle id="form-dialog-title">Add new schedule</DialogTitle>
+          <DialogTitle id="form-dialog-title">Edit schedule</DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
             To edit schedule, enter title and description and click the Submit button.
             <CardBody>

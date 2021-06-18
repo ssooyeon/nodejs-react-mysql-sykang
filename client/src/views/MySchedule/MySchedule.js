@@ -91,13 +91,13 @@ export default function MySchedule() {
   // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
   const handleAddScheduleModalClick = (value) => {
     setAddScheduleModalOpen(value);
-    dispatch(retrieveSchedules());
+    // dispatch(retrieveSchedules());
   };
 
   // 스케줄 수정 버튼 클릭 및 EditScheduleForm.js 에서 닫기 버튼 클릭
   const handleEditScheduleModalClick = (value) => {
     setEditScheduleModalOpen(value);
-    dispatch(retrieveSchedules());
+    // dispatch(retrieveSchedules());
   };
 
   return (
