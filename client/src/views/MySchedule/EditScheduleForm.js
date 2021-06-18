@@ -24,12 +24,13 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import { Delete } from "@material-ui/icons";
 
 import "./style/TextField.css";
-
 import styles from "./style/ScheduleFormStyle";
 
 import { updateSchedule, deleteSchedule } from "actions/schedules";
 
 const useStyles = makeStyles(styles);
+
+const colorList = ["#456C86", "#B8A8A2", "#546B68", "#A2B8A8", "#D19C4F", "#B89B8F", "#7DA0B8"];
 
 export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
   const classes = useStyles();
@@ -173,7 +174,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
         <form autoComplete="off" onSubmit={editScheduleClick}>
           <DialogTitle id="form-dialog-title">Add new schedule</DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
-            To add a new schedule, enter title and description and click the Submit button.
+            To edit schedule, enter title and description and click the Submit button.
             <CardBody>
               <GridContainer>
                 <div className={classes.inputWrapper}>
@@ -220,7 +221,6 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                 <>
                   <GridContainer>
                     <div className={classes.inputWrapper}>
-                      <br />
                       <span className={classes.labelText}>Start date</span>
                       <DatePicker
                         locale="en"
@@ -255,7 +255,6 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                 <>
                   <GridContainer>
                     <div className={classes.inputWrapper}>
-                      <br />
                       <span className={classes.labelText}>Start date</span>
                       <DateTimePicker
                         locale="en"
@@ -294,13 +293,14 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
 
               <GridContainer>
                 <div className={classes.inputWrapper}>
+                  <br />
                   <span className={classes.labelText}>
                     Background color: &nbsp;
                     <div className={classes.labelDiv} style={{ background: scheduleForm.backgroundColor ? scheduleForm.backgroundColor : "" }}></div>
                   </span>
                   <CirclePicker
                     className={classes.colorPicker}
-                    colors={["red", "orange", "yellow", "green", "blue", "navy", "purple", "grey"]}
+                    colors={colorList}
                     circleSize={25}
                     onChangeComplete={(colore) => onBackgroundColorStateChange(colore.hex)}
                   />

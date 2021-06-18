@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "react-alert-17";
+import moment from "moment";
 
-import { makeStyles } from "@material-ui/core/styles";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
-import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
+import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
-// import koLocale from "@fullcalendar/core/locales/ko";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -17,17 +15,10 @@ import "./style/CustomCalendar.css";
 import AddScheduleForm from "./AddScheduleForm";
 import EditScheduleForm from "./EditScheduleForm";
 
-import { retrieveSchedules } from "actions/schedules";
+import { retrieveSchedules, updateSchedule } from "actions/schedules";
 import ScheduleService from "services/ScheduleService";
 
-const styles = {};
-
-const useStyles = makeStyles(styles);
-
 export default function MySchedule() {
-  const classes = useStyles();
-  const alert = useAlert();
-
   const schedules = useSelector((state) => state.schedules || []);
   const dispatch = useDispatch();
 
@@ -65,7 +56,31 @@ export default function MySchedule() {
 
   // 스케줄 drag 및 resize 후 콜백 함수
   const handleEventChange = (e) => {
-    console.log("change");
+    const id = e.event.id;
+    const allDay = e.event.allDay;
+    let start = e.event.start;
+    let end = e.event.end;
+    // 1개의 칸에서 최초로 다른 칸으로 움직이면 end가 null이 됨
+    if (end === null) {
+      end = start;
+    }
+    if (allDay) {
+      start = moment(start).format("YYYY-MM-DD");
+      end = moment(end).format("YYYY-MM-DD");
+    } else {
+      start = moment(start).format("YYYY-MM-DD HH:mm:ss");
+      end = moment(end).format("YYYY-MM-DD HH:mm:ss");
+    }
+
+    let data = { id: id, start: start, end: end, allDay: allDay };
+    console.log(data);
+    dispatch(updateSchedule(data.id, data))
+      .then(() => {
+        dispatch(retrieveSchedules());
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   // 스케줄 삭제 후 콜백 함수
@@ -90,7 +105,6 @@ export default function MySchedule() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <FullCalendar
-            // locale={koLocale}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
               left: "prev,next today",
@@ -103,6 +117,7 @@ export default function MySchedule() {
             selectMirror={true}
             dayMaxEvents={true}
             weekends={true}
+            fixedWeekCount={false}
             select={handleDateSelect}
             events={schedules}
             eventClick={handleEventClick}

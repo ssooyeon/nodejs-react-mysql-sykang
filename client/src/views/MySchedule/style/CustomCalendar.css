@@ -1,4 +1,7 @@
 /* full calendar */
+.fc-view-harness.fc-view-harness-active {
+  height: 660px !important;
+}
 a {
   color: #000 !important;
 }
@@ -10,7 +13,13 @@ a {
   border: none !important;
 }
 
+.fc-daygrid-block-event .fc-event-time,
+.fc-daygrid-block-event .fc-event-title {
+  padding-left: 5px;
+}
+
 /* datepicker */
-.react-date-picker__clear-button.react-date-picker__button {
+.react-date-picker__clear-button.react-date-picker__button,
+.react-datetime-picker__clear-button.react-datetime-picker__button {
   display: none;
 }

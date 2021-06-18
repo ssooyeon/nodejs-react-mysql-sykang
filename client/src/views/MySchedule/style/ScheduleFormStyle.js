@@ -5,7 +5,7 @@ const styles = {
     fontSize: "14px",
   },
   modalContentWrapper: {
-    height: "650px",
+    height: "540px",
   },
   labelText: {
     display: "flex",
