@@ -220,7 +220,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
               {scheduleForm.isAllDay ? (
                 <>
                   <GridContainer>
-                    <div className={classes.inputWrapper}>
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>Start date</span>
                       <DatePicker
                         locale="en"
@@ -233,10 +233,8 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
                     </div>
-                  </GridContainer>
-                  <GridContainer>
-                    <div className={classes.inputWrapper}>
-                      <br />
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>End date</span>
                       <DatePicker
                         locale="en"
@@ -254,7 +252,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
               ) : (
                 <>
                   <GridContainer>
-                    <div className={classes.inputWrapper}>
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>Start date</span>
                       <DateTimePicker
                         locale="en"
@@ -269,10 +267,8 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
                     </div>
-                  </GridContainer>
-                  <GridContainer>
-                    <div className={classes.inputWrapper}>
-                      <br />
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>End date</span>
                       <DateTimePicker
                         locale="en"

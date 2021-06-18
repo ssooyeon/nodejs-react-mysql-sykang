@@ -24,6 +24,9 @@ const styles = {
   inputWrapper: {
     width: "100% !important",
   },
+  dateWrapper: {
+    width: "47%",
+  },
   dueDatePicker: {
     width: "100% !important",
   },

@@ -193,7 +193,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
               {scheduleForm.isAllDay ? (
                 <>
                   <GridContainer>
-                    <div className={classes.inputWrapper}>
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>Start date</span>
                       <DatePicker
                         locale="en"
@@ -206,10 +206,8 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
                     </div>
-                  </GridContainer>
-                  <GridContainer>
-                    <div className={classes.inputWrapper}>
-                      <br />
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>End date</span>
                       <DatePicker
                         locale="en"
@@ -227,7 +225,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
               ) : (
                 <>
                   <GridContainer>
-                    <div className={classes.inputWrapper}>
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>Start date</span>
                       <DateTimePicker
                         locale="en"
@@ -242,10 +240,8 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
                     </div>
-                  </GridContainer>
-                  <GridContainer>
-                    <div className={classes.inputWrapper}>
-                      <br />
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <div className={classes.dateWrapper}>
                       <span className={classes.labelText}>End date</span>
                       <DateTimePicker
                         locale="en"
