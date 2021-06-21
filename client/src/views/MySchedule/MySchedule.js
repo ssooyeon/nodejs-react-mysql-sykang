@@ -6,6 +6,7 @@ import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
+import rrulePlugin from "@fullcalendar/rrule";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -73,7 +74,6 @@ export default function MySchedule() {
     }
 
     let data = { id: id, start: start, end: end, allDay: allDay };
-    console.log(data);
     dispatch(updateSchedule(data.id, data))
       .then(() => {
         dispatch(retrieveSchedules());
@@ -105,7 +105,7 @@ export default function MySchedule() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            plugins={[dayGridPlugin, rrulePlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
               left: "prev,next today",
               center: "title",

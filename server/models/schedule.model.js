@@ -23,6 +23,9 @@ module.exports = (sequelize, Sequelize) => {
     isAllDay: {
       type: Sequelize.BOOLEAN,
     },
+    rrule: {
+      type: Sequelize.TEXT,
+    },
   });
 
   return Schedule;
