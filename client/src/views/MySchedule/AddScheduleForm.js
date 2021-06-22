@@ -54,10 +54,10 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
   };
 
   const [scheduleForm, setScheduleForm] = useState(initialScheduleState); // 스케줄
-  const [isRepeat, setIsRepeat] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false); // 반복 일정을 생성할지 여부 (체크박스)
   const [day, setDay] = useState(""); // 선택한 날짜의 day만 추출
   const [week, setWeek] = useState(""); // 선택한 날짜의 요일만 추출
-  const [weekNum, setWeekNum] = useState(""); // 선택한 날짜가 몇 번쨰 주인지 추출
+  const [weekNum, setWeekNum] = useState(""); // 선택한 날짜가 몇 번째 주인지 추출
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
     const week = date.getDay();
     let weekNum = Math.ceil((day + 6 - week) / 7);
 
-    // 마지막 주이면
+    // 마지막 주이면 weekNum을 -1로 설정
     let diffDay = new Date(date);
     diffDay.setDate(day + 7);
     if (new Date(diffDay).getMonth() !== date.getMonth()) {
@@ -87,6 +87,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
   const handleClose = () => {
     handleCloseClick(false);
     setScheduleForm(initialScheduleState);
+    setIsRepeat(false);
   };
 
   // input 값 변경 시 scheduleForm state 업데이트
@@ -113,7 +114,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
   const onEndDateChange = (date) => {
     setScheduleForm({ ...scheduleForm, end: date });
   };
-  // repeat 시간 변경
+  // repeat rrule 옵션 변경
   const handleRepeatOption = (e) => {
     setScheduleForm({ ...scheduleForm, rrule: e.target.value });
   };
@@ -149,13 +150,14 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
     if (scheduleForm.title === "") {
       data.title = "nonamed";
     }
-    if (!isRepeat) {
+    // Repeat 체크박스가 해제되어 있거나 NONE이 선택되어 있으면 rrule = null로 설정
+    if (!isRepeat || data.rrule === "NONE") {
       data.rrule = null;
     }
 
     const start = moment(data.start);
     const end = moment(data.end);
-    let dtStart = start; // rrule에 삽입할 dtStart option
+    let dtStart = start; // rrule에 삽입할 dtStart 옵션
 
     // 날짜 범위 유효성 확인
     if (start > end) {
@@ -175,9 +177,8 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
         data.end = end.format("YYYY-MM-DD HH:mm:ss");
         dtStart = start.format("YYYYMMDDTHHmmss");
       }
-
-      // 반복 옵션이 설정되어 있고, 반복 일정 중 매달 O일 옵션 일 경우, 옵션에 O일 명시
-      if (isRepeat && data.rrule.includes("INPUT_DATE_STR")) {
+      // 반복 옵션이 설정되어 있고, dtStart가 필요한 옵션인 경우, 옵션에 날짜를 명시
+      if (isRepeat && data.rrule !== null && data.rrule.includes("INPUT_DATE_STR")) {
         data.rrule = data.rrule.replace("INPUT_DATE_STR", dtStart);
       }
 
@@ -346,7 +347,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                         </option>
                       ) : (
                         <option value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY;BYDAY=+${weekNum}${weekAbbr[week]}`}>
-                          {`${weekOrder[weekNum]} ${weekList[week]} of every week`}
+                          {`${weekOrder[weekNum - 1]} ${weekList[week]} of every week`}
                         </option>
                       )}
                     </Select>
