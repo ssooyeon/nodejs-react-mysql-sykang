@@ -173,7 +173,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
         // all day가 아니면 hh:mm:ss까지 삽입
         data.start = start.format("YYYY-MM-DD HH:mm:ss");
         data.end = end.format("YYYY-MM-DD HH:mm:ss");
-        dtStart = start.format("YYYYMMDDTHHmmss") + "Z";
+        dtStart = start.format("YYYYMMDDTHHmmss");
       }
 
       // 반복 옵션이 설정되어 있고, 반복 일정 중 매달 O일 옵션 일 경우, 옵션에 O일 명시
