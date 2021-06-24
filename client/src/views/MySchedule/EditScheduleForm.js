@@ -32,7 +32,20 @@ import { updateSchedule, deleteSchedule } from "actions/schedules";
 
 const useStyles = makeStyles(styles);
 
-const colorList = ["#456C86", "#B8A8A2", "#546B68", "#A2B8A8", "#D19C4F", "#B89B8F", "#7DA0B8"];
+const colorList = [
+  "#456C86",
+  "#B8A8A2",
+  "#546B68",
+  "#A2B8A8",
+  "#D19C4F",
+  "#B89B8F",
+  "#7DA0B8",
+  "#ea4949",
+  "#c3c31f",
+  "#1fc31f",
+  "#0101c3",
+  "#c301c3",
+];
 const weekList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
 const weekOrder = ["1st", "2nd", "3rd", "4th", "5th"];
@@ -51,6 +64,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
     textColor: "",
     isAllDay: false,
     rrule: "NONE",
+    duration: null,
     createrId: "",
   };
 
@@ -167,14 +181,16 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
   // 스케줄 수정
   const editSchedule = () => {
     let data = scheduleForm;
+    let rrule = null;
+    let duration = null;
     // 제목이 비어있으면 nonamed로 지정
     if (scheduleForm.title === "") {
       data.title = "nonamed";
     }
     // Repeat 체크박스가 해제되어 있거나 NONE이 선택되어 있으면 rrule = null로 설정
-    if (!isRepeat || data.rrule === "NONE") {
-      data.rrule = null;
-    }
+    // if (!isRepeat || data.rrule === "NONE") {
+    //   data.rrule = null;
+    // }
 
     const start = moment(data.start);
     const end = moment(data.end);
@@ -202,12 +218,16 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
       // 반복 옵션이 설정되어 있고, 반복 일정 중 매달 O일 옵션 일 경우, 옵션에 O일 명시
       if (isRepeat && data.rrule !== null && data.rrule !== "NONE") {
         let rruleArr = data.rrule.split("\n");
-        data.rrule = "DTSTART:" + dtStart + "\n" + rruleArr[1];
-      } else {
-        data.rrule = null;
+        rrule = "DTSTART:" + dtStart + "\n" + rruleArr[1];
+        // duration 설정
+        const diffMillisec = Math.abs(end - start);
+        const diffHours = diffMillisec / 36e5;
+        // 24시간 이상일 경우만 설정 (days:1이 default)
+        if (diffHours > 24) {
+          duration = diffHours + ":00";
+        }
       }
-
-      console.log(data);
+      data = { ...data, rrule: rrule, duration: duration };
 
       dispatch(updateSchedule(data.id, data))
         .then(() => {
@@ -324,7 +344,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         dayPlaceholder="dd"
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
-                        className={classes.dueDatePicker}
+                        className={classes.scheduleDatePicker}
                         onChange={onStartDateChange}
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
@@ -338,7 +358,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         dayPlaceholder="dd"
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
-                        className={classes.dueDatePicker}
+                        className={classes.scheduleDatePicker}
                         onChange={onEndDateChange}
                         value={scheduleForm.end ? new Date(scheduleForm.end) : null}
                       />
@@ -358,7 +378,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         dayPlaceholder="dd"
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
-                        className={classes.dueDatePicker}
+                        className={classes.scheduleDatePicker}
                         onChange={onStartDateChange}
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
@@ -374,7 +394,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         dayPlaceholder="dd"
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
-                        className={classes.dueDatePicker}
+                        className={classes.scheduleDatePicker}
                         onChange={onEndDateChange}
                         value={scheduleForm.end ? new Date(scheduleForm.end) : null}
                       />

@@ -61,6 +61,7 @@ export default function MySchedule() {
   const handleEventChange = (e) => {
     let data = {};
     let rrule = null;
+    let duration = null;
 
     const id = e.event.id;
     const allDay = e.event.allDay;
@@ -98,6 +99,14 @@ export default function MySchedule() {
           weekNum = -1;
         }
 
+        // duration 설정
+        const diffMillisec = Math.abs(eEnd - eStart);
+        const diffHours = diffMillisec / 36e5;
+        // 24시간 이상일 경우만 설정 (days:1이 default)
+        if (diffHours > 24) {
+          duration = diffHours + ":00";
+        }
+
         const eRruleArr = eRrule.split("\n");
         const freq = eRruleArr[1];
 
@@ -120,7 +129,7 @@ export default function MySchedule() {
       }
     }
 
-    data = { ...data, id: id, allDay: allDay, rrule: rrule };
+    data = { ...data, id: id, allDay: allDay, rrule: rrule, duration: duration };
     dispatch(updateSchedule(data.id, data))
       .then(() => {
         dispatch(retrieveSchedules());
@@ -150,13 +159,11 @@ export default function MySchedule() {
   // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
   const handleAddScheduleModalClick = (value) => {
     setAddScheduleModalOpen(value);
-    // dispatch(retrieveSchedules());
   };
 
   // 스케줄 수정 버튼 클릭 및 EditScheduleForm.js 에서 닫기 버튼 클릭
   const handleEditScheduleModalClick = (value) => {
     setEditScheduleModalOpen(value);
-    // dispatch(retrieveSchedules());
   };
 
   return (

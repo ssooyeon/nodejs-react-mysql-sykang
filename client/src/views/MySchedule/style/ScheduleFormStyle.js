@@ -27,7 +27,7 @@ const styles = {
   dateWrapper: {
     width: "47%",
   },
-  dueDatePicker: {
+  scheduleDatePicker: {
     width: "100% !important",
   },
   iconButton: {

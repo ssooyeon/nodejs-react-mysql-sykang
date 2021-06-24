@@ -26,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
     rrule: {
       type: Sequelize.TEXT,
     },
+    duration: {
+      type: Sequelize.STRING,
+    },
   });
 
   return Schedule;
