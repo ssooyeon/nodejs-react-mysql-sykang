@@ -306,7 +306,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                       <span className={classes.labelText}>Start date</span>
                       <DateTimePicker
                         locale="en"
-                        format="yyyy-MM-dd h:mm a"
+                        format="yyyy-MM-dd HH:mm"
                         minutePlaceholder="mm"
                         hourPlaceholder="hh"
                         dayPlaceholder="dd"
@@ -323,7 +323,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
                       <span className={classes.labelText}>End date</span>
                       <DateTimePicker
                         locale="en"
-                        format="yyyy-MM-dd h:mm a"
+                        format="yyyy-MM-dd HH:mm"
                         minutePlaceholder="mm"
                         hourPlaceholder="hh"
                         dayPlaceholder="dd"

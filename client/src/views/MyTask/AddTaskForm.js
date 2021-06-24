@@ -207,7 +207,7 @@ export default function AddTaskForm({ open, handleCloseClick, column }) {
                   <span className={classes.labelText}>Due date</span>
                   <DateTimePicker
                     locale="en"
-                    format="yyyy-MM-dd h:mm a"
+                    format="yyyy-MM-dd HH:mm"
                     minutePlaceholder="mm"
                     hourPlaceholder="hh"
                     dayPlaceholder="dd"
