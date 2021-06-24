@@ -345,6 +345,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
                         className={classes.scheduleDatePicker}
+                        clearIcon={null}
                         onChange={onStartDateChange}
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
@@ -359,6 +360,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
                         className={classes.scheduleDatePicker}
+                        clearIcon={null}
                         onChange={onEndDateChange}
                         value={scheduleForm.end ? new Date(scheduleForm.end) : null}
                       />
@@ -379,6 +381,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
                         className={classes.scheduleDatePicker}
+                        clearIcon={null}
                         onChange={onStartDateChange}
                         value={scheduleForm.start ? new Date(scheduleForm.start) : null}
                       />
@@ -395,6 +398,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
                         monthPlaceholder="MM"
                         yearPlaceholder="yyyy"
                         className={classes.scheduleDatePicker}
+                        clearIcon={null}
                         onChange={onEndDateChange}
                         value={scheduleForm.end ? new Date(scheduleForm.end) : null}
                       />

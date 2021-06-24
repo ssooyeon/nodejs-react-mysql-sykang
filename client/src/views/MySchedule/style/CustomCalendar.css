@@ -17,9 +17,3 @@ a {
 .fc-daygrid-block-event .fc-event-title {
   padding-left: 5px;
 }
-
-/* datepicker */
-.react-date-picker__clear-button.react-date-picker__button,
-.react-datetime-picker__clear-button.react-datetime-picker__button {
-  display: none;
-}
