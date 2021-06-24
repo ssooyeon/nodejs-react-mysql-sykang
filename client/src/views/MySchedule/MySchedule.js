@@ -135,8 +135,8 @@ export default function MySchedule() {
     console.log("remove");
   };
 
+  // 스케줄 랜더링 전 호출 함수
   const handleEventContent = (e) => {
-    console.log(e);
     if (e.event._def.recurringDef !== null) {
       const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
       if (eRrule !== null) {
