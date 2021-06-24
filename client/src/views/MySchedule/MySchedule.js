@@ -135,6 +135,18 @@ export default function MySchedule() {
     console.log("remove");
   };
 
+  const handleEventContent = (e) => {
+    console.log(e);
+    if (e.event._def.recurringDef !== null) {
+      const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
+      if (eRrule !== null) {
+        return {
+          html: "&nbsp;<i class='fa fa-repeat' aria-hidden='true'></i>&nbsp;" + e.event.title,
+        };
+      }
+    }
+  };
+
   // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
   const handleAddScheduleModalClick = (value) => {
     setAddScheduleModalOpen(value);
@@ -171,6 +183,7 @@ export default function MySchedule() {
             eventAdd={handleEventAdd}
             eventChange={handleEventChange} // called for drag-n-drop/resize
             eventRemove={handleEventRemove}
+            eventContent={handleEventContent}
           />
         </GridItem>
       </GridContainer>
