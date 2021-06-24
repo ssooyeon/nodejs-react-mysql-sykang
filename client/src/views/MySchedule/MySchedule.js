@@ -19,6 +19,8 @@ import EditScheduleForm from "./EditScheduleForm";
 import { retrieveSchedules, updateSchedule } from "actions/schedules";
 import ScheduleService from "services/ScheduleService";
 
+const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+
 export default function MySchedule() {
   const schedules = useSelector((state) => state.schedules || []);
   const dispatch = useDispatch();
@@ -57,23 +59,68 @@ export default function MySchedule() {
 
   // 스케줄 drag 및 resize 후 콜백 함수
   const handleEventChange = (e) => {
+    let data = {};
+    let rrule = null;
+
     const id = e.event.id;
     const allDay = e.event.allDay;
-    let start = e.event.start;
-    let end = e.event.end;
-    // 1개의 칸에서 최초로 다른 칸으로 움직이면 end가 null이 됨
-    if (end === null) {
-      end = start;
+    let eStart = e.event.start;
+    let eEnd = e.event.end;
+    // 1개의 칸에서 최초로 다른 칸으로 움직이면 end가 null이 되므로 end를 start와 똑같이 설정
+    if (eEnd === null) {
+      eEnd = eStart;
     }
+    let dtStart = eStart; // rrule에 삽입할 dtStart
+
     if (allDay) {
-      start = moment(start).format("YYYY-MM-DD");
-      end = moment(end).format("YYYY-MM-DD");
+      data.start = moment(eStart).format("YYYY-MM-DD");
+      data.end = moment(eEnd).format("YYYY-MM-DD");
+      dtStart = moment(eStart).format("YYYYMMDD");
     } else {
-      start = moment(start).format("YYYY-MM-DD HH:mm:ss");
-      end = moment(end).format("YYYY-MM-DD HH:mm:ss");
+      data.start = moment(eStart).format("YYYY-MM-DD HH:mm:ss");
+      data.end = moment(eEnd).format("YYYY-MM-DD HH:mm:ss");
+      dtStart = moment(eStart).format("YYYYMMDDTHHmmss");
     }
 
-    let data = { id: id, start: start, end: end, allDay: allDay };
+    // recurring event이면
+    if (e.event._def.recurringDef !== null) {
+      const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
+
+      if (eRrule !== null) {
+        const day = eStart.getDate();
+        const week = eStart.getDay(); // MO, TU, WE, ...
+        let weekNum = Math.ceil((day + 6 - week) / 7); // -1(last), 1, 2, ...
+
+        // 마지막 주이면 weekNum을 -1로 설정
+        let diffDay = new Date(eStart);
+        diffDay.setDate(day + 7);
+        if (new Date(diffDay).getMonth() !== eStart.getMonth()) {
+          weekNum = -1;
+        }
+
+        const eRruleArr = eRrule.split("\n");
+        const freq = eRruleArr[1];
+
+        // 매달 O번째 O요일
+        if (freq.includes("MONTHLY") && freq.includes("BYDAY")) {
+          let byday = "+" + weekNum;
+          if (weekNum === -1) {
+            byday = weekNum;
+          }
+          rrule = `DTSTART:${dtStart}\nRRULE:FREQ=MONTHLY;BYDAY=${byday}${weekAbbr[week]}`;
+        }
+        // 매주 O요일
+        else if (freq.includes("WEEKLY")) {
+          rrule = `DTSTART:${dtStart}\nRRULE:FREQ=WEEKLY;BYDAY=${weekAbbr[week]}`;
+        }
+        // 매달 O일
+        else {
+          rrule = `DTSTART:${dtStart}\nRRULE:FREQ=MONTHLY`;
+        }
+      }
+    }
+
+    data = { ...data, id: id, allDay: allDay, rrule: rrule };
     dispatch(updateSchedule(data.id, data))
       .then(() => {
         dispatch(retrieveSchedules());
