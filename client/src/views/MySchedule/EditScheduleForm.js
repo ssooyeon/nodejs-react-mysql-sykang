@@ -16,7 +16,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "components/CustomButtons/Button";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
-import { TextField } from "@material-ui/core";
+import { MenuItem, TextField } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
@@ -63,7 +63,7 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
     backgroundColor: "",
     textColor: "",
     isAllDay: false,
-    rrule: "NONE",
+    rrule: "",
     duration: null,
     createrId: "",
   };
@@ -188,9 +188,9 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
       data.title = "nonamed";
     }
     // Repeat 체크박스가 해제되어 있거나 NONE이 선택되어 있으면 rrule = null로 설정
-    // if (!isRepeat || data.rrule === "NONE") {
-    //   data.rrule = null;
-    // }
+    if (!isRepeat || data.rrule === "") {
+      data.rrule = null;
+    }
 
     const start = moment(data.start);
     const end = moment(data.end);
@@ -216,7 +216,8 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
       }
 
       // 반복 옵션이 설정되어 있고, 반복 일정 중 매달 O일 옵션 일 경우, 옵션에 O일 명시
-      if (isRepeat && data.rrule !== null && data.rrule !== "NONE") {
+      if (isRepeat && data.rrule !== null && data.rrule !== "") {
+        // if (isRepeat && data.rrule !== null) {
         let rruleArr = data.rrule.split("\n");
         rrule = "DTSTART:" + dtStart + "\n" + rruleArr[1];
         // duration 설정
@@ -423,27 +424,20 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
               {isRepeat ? (
                 <GridContainer>
                   <FormControl variant="outlined" className={classes.formControl}>
-                    <Select
-                      native
-                      value={scheduleForm.rrule}
-                      onChange={handleRepeatOption}
-                      label=""
-                      inputProps={{
-                        name: "repeat",
-                        id: "outlined-repeat-select",
-                      }}
-                    >
-                      <option value="NONE">NONE</option>
-                      <option value={`DTSTART:${repeatDate}\nRRULE:FREQ=MONTHLY`}>{`${day} of month`}</option>
-                      <option value={`DTSTART:${repeatDate}\nRRULE:FREQ=WEEKLY;BYDAY=${weekAbbr[week]}`}>{`Every ${weekList[week]}`}</option>
+                    <Select value={scheduleForm.rrule || ""} onChange={handleRepeatOption} displayEmpty>
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      <MenuItem value={`DTSTART:${repeatDate}\nRRULE:FREQ=MONTHLY`}>{`${day} of month`}</MenuItem>
+                      <MenuItem value={`DTSTART:${repeatDate}\nRRULE:FREQ=WEEKLY;BYDAY=${weekAbbr[week]}`}>{`Every ${weekList[week]}`}</MenuItem>
                       {weekNum === -1 ? (
-                        <option value={`DTSTART:${repeatDate}\nRRULE:FREQ=MONTHLY;BYDAY=-1${weekAbbr[week]}`}>
+                        <MenuItem value={`DTSTART:${repeatDate}\nRRULE:FREQ=MONTHLY;BYDAY=-1${weekAbbr[week]}`}>
                           {`last ${weekList[week]} of every week`}
-                        </option>
+                        </MenuItem>
                       ) : (
-                        <option value={`DTSTART:${repeatDate}\nRRULE:FREQ=MONTHLY;BYDAY=+${weekNum}${weekAbbr[week]}`}>
+                        <MenuItem value={`DTSTART:${repeatDate}\nRRULE:FREQ=MONTHLY;BYDAY=+${weekNum}${weekAbbr[week]}`}>
                           {`${weekOrder[weekNum - 1]} ${weekList[week]} of every week`}
-                        </option>
+                        </MenuItem>
                       )}
                     </Select>
                   </FormControl>

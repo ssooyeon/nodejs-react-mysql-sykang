@@ -16,7 +16,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "components/CustomButtons/Button";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
-import { TextField } from "@material-ui/core";
+import { MenuItem, TextField } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
@@ -62,7 +62,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
     backgroundColor: colorList[0],
     textColor: null,
     isAllDay: true,
-    rrule: "NONE",
+    rrule: "",
     duration: null,
     createrId: currentUser.id,
   };
@@ -167,9 +167,9 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
       data.title = "nonamed";
     }
     // Repeat 체크박스가 해제되어 있거나 NONE이 선택되어 있으면 rrule = null로 설정
-    // if (!isRepeat || data.rrule === "NONE") {
-    //   data.rrule = null;
-    // }
+    if (!isRepeat || data.rrule === "") {
+      data.rrule = null;
+    }
 
     const start = moment(data.start);
     const end = moment(data.end);
@@ -355,27 +355,20 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
               {isRepeat ? (
                 <GridContainer>
                   <FormControl variant="outlined" className={classes.formControl}>
-                    <Select
-                      native
-                      value={scheduleForm.rrule}
-                      onChange={handleRepeatOption}
-                      label=""
-                      inputProps={{
-                        name: "repeat",
-                        id: "outlined-repeat-select",
-                      }}
-                    >
-                      <option value="NONE">NONE</option>
-                      <option value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY`}>{`${day} of month`}</option>
-                      <option value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=WEEKLY;BYDAY=${weekAbbr[week]}`}>{`Every ${weekList[week]}`}</option>
+                    <Select value={scheduleForm.rrule} onChange={handleRepeatOption} displayEmpty>
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      <MenuItem value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY`}>{`${day} of month`}</MenuItem>
+                      <MenuItem value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=WEEKLY;BYDAY=${weekAbbr[week]}`}>{`Every ${weekList[week]}`}</MenuItem>
                       {weekNum === -1 ? (
-                        <option value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY;BYDAY=-1${weekAbbr[week]}`}>
+                        <MenuItem value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY;BYDAY=-1${weekAbbr[week]}`}>
                           {`last ${weekList[week]} of every week`}
-                        </option>
+                        </MenuItem>
                       ) : (
-                        <option value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY;BYDAY=+${weekNum}${weekAbbr[week]}`}>
+                        <MenuItem value={`DTSTART:INPUT_DATE_STR\nRRULE:FREQ=MONTHLY;BYDAY=+${weekNum}${weekAbbr[week]}`}>
                           {`${weekOrder[weekNum - 1]} ${weekList[week]} of every week`}
-                        </option>
+                        </MenuItem>
                       )}
                     </Select>
                   </FormControl>
