@@ -89,7 +89,7 @@ exports.update = (req, res) => {
   const id = req.params.id;
   Board.update(req.body, { where: { id: id } })
     .then((num) => {
-      Log.create({ status: "SUCCESS", message: `Board update successfully. New board title is: ${req.body.title}` });
+      Log.create({ status: "SUCCESS", message: `Board update successfully. board title is: ${req.body.title}` });
       res.send({ message: "Board was updated successfully." });
     })
     .catch((err) => {
@@ -106,7 +106,7 @@ exports.delete = (req, res) => {
   Board.destroy({ where: { id: id } })
     .then((num) => {
       if (num === 1) {
-        Log.create({ status: "SUCCESS", message: `Board delete successfully. New board id is: ${id}` });
+        Log.create({ status: "SUCCESS", message: `Board delete successfully. board id is: ${id}` });
         res.send({ message: "Board was deleted successfully." });
       } else {
         res.send({ message: `Cannot delete Board with id=${id}. maybe Board was not found.` });

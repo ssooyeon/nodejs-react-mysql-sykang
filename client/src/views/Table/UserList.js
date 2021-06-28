@@ -32,9 +32,9 @@ export default function UserList() {
 
   const columns = [
     { field: "id", headerName: "ID", type: "number", flex: 0.1 },
-    { field: "account", headerName: "Account", flex: 0.2 },
-    { field: "email", headerName: "Email", flex: 0.3 },
-    { field: "createdAt", headerName: "Date", flex: 0.3 },
+    { field: "account", headerName: "Account", flex: 0.1 },
+    { field: "email", headerName: "Email", flex: 0.2 },
+    { field: "createdAt", headerName: "Date", flex: 0.2 },
     {
       field: "",
       headerName: "Action",
@@ -117,10 +117,13 @@ export default function UserList() {
             Add
           </Button>
         </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
+        <GridItem xs={12} sm={12} md={6}>
           <div className={classes.tableWrapper}>
             <DataGrid rows={users} columns={columns} pageSize={10} checkboxSelection />
           </div>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={6}>
+          <div className={classes.tableWrapper}></div>
         </GridItem>
       </GridContainer>
 

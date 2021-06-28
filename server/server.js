@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 
 // routes
 require("./routes/user.routes")(app);
+require("./routes/group.routes")(app);
 require("./routes/monitoring.routes")(app);
 require("./routes/board.routes")(app);
 require("./routes/log.routes")(app);

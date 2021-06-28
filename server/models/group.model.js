@@ -1,12 +1,12 @@
 module.exports = (sequelize, Sequelize) => {
-  const Folder = sequelize.define("folder", {
+  const Group = sequelize.define("group", {
     name: {
       type: Sequelize.STRING,
     },
-    ordering: {
-      type: Sequelize.INTEGER,
+    description: {
+      type: Sequelize.STRING,
     },
   });
 
-  return Folder;
+  return Group;
 };

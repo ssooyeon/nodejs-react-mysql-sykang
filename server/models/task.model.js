@@ -1,5 +1,3 @@
-const db = require(".");
-
 module.exports = (sequelize, Sequelize) => {
   const Task = sequelize.define("task", {
     title: {

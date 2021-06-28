@@ -15,10 +15,18 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.users = require("./user.model")(sequelize, Sequelize);
-db.boards = require("./board.model")(sequelize, Sequelize);
-db.logs = require("./log.model")(sequelize, Sequelize);
 
+db.logs = require("./log.model")(sequelize, Sequelize);
+db.users = require("./user.model")(sequelize, Sequelize);
+
+db.groups = require("./group.model")(sequelize, Sequelize);
+db.groups.belongsTo(db.users, {
+  foreignKey: "createrId",
+  as: "creater",
+  onDelete: "CASCADE",
+});
+
+db.boards = require("./board.model")(sequelize, Sequelize);
 db.users.hasMany(db.boards, { as: "boards" });
 db.boards.belongsTo(db.users, {
   foreignKey: "userId",
@@ -48,7 +56,6 @@ db.tasks.belongsTo(db.users, {
   as: "creater",
   onDelete: "CASCADE",
 });
-
 db.users.belongsToMany(db.folders, { through: "userFolder", as: "folders", foreignKey: "userId" });
 db.folders.belongsToMany(db.users, { through: "userFolder", as: "users", foreignKey: "folderId" });
 
