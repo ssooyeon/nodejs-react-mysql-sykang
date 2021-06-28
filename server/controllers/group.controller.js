@@ -7,7 +7,7 @@ const Log = db.logs;
  * 그룹 생성
  */
 exports.create = (req, res) => {
-  if (!req.body.title) {
+  if (!req.body.name) {
     res.status(400).send({ message: "Name cannot be empty." });
     return;
   }
@@ -49,6 +49,20 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({ message: err.message || `Error retrieving Group with id=${id}` });
+    });
+};
+
+/**
+ * 그룹 이름으로 조회
+ */
+exports.findByName = (req, res) => {
+  const name = req.params.name;
+  Group.findOne({ where: { name: name } })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred retrieving groups." });
     });
 };
 

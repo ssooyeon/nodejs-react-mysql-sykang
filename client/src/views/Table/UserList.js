@@ -43,8 +43,9 @@ export default function UserList() {
       field: "groupId",
       headerName: "Group",
       flex: 0.1,
+      //TODO
       // renderCell: (params) => {
-      //   return params.row.group.name;
+      //   return params.row.group.id;
       // },
     },
     { field: "createdAt", headerName: "Date", flex: 0.2 },
@@ -187,7 +188,19 @@ export default function UserList() {
   };
 
   // 그룹 삭제
-  const removeGroup = (id) => {};
+  const removeGroup = (id) => {
+    dispatch(deleteGroup(id))
+      .then(() => {
+        alert.show("The group was created successfully.", {
+          title: "",
+          type: "SUCCESS",
+          onClose: () => {},
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>

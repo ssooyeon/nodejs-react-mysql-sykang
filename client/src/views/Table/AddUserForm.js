@@ -119,7 +119,11 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
     if (valid) {
       // 중복확인을 완료한 계정과 현재 input의 계정명이 같을 때
       if (checkDoneAccount === userForm.account) {
-        dispatch(createUser(userForm))
+        let data = userForm;
+        if (data.groupId === "") {
+          data.groupId = null;
+        }
+        dispatch(createUser(data))
           .then(() => {
             alert.show("User create successfully.", {
               title: "",
@@ -227,7 +231,10 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
               </GridContainer>
               <GridContainer>
                 <FormControl variant="outlined" className={classes.formControl}>
-                  <Select id="group-select-helper" value={userForm.groupId} onChange={handleGroupOption} displayEmpty>
+                  <Select id="group-select-helper" value={userForm.groupId || ""} onChange={handleGroupOption} displayEmpty>
+                    <MenuItem value="">
+                      <em>Select Group</em>
+                    </MenuItem>
                     {groups &&
                       groups.map((item, index) => {
                         return (

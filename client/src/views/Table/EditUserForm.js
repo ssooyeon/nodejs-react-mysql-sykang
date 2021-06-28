@@ -105,15 +105,19 @@ export default function EditUserForm({ open, handleCloseClick, groups, user }) {
   const editUser = () => {
     const valid = validator.current.allValid();
     if (valid) {
+      let data = userForm;
+      if (data.groupId === "") {
+        data.groupId = null;
+      }
       if (isPasswordChange) {
-        edit(userForm);
+        edit(data);
       } else {
         // 비밀번호 변경 화면이 열려있지 않으면 email과 group 정보만 업데이트
         const paramsWithOutPassword = {
-          id: userForm.id,
-          account: userForm.account,
-          email: userForm.email,
-          groupId: userForm.groupId,
+          id: data.id,
+          account: data.account,
+          email: data.email,
+          groupId: data.groupId,
         };
         edit(paramsWithOutPassword);
       }
@@ -247,6 +251,9 @@ export default function EditUserForm({ open, handleCloseClick, groups, user }) {
               <GridContainer>
                 <FormControl variant="outlined" className={classes.formControl}>
                   <Select id="group-select-helper" value={userForm.groupId || ""} onChange={handleGroupOption} displayEmpty>
+                    <MenuItem value="">
+                      <em>Select Group</em>
+                    </MenuItem>
                     {groups &&
                       groups.map((item, index) => {
                         return (

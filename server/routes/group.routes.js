@@ -5,6 +5,7 @@ module.exports = (app) => {
   router.post("/", groups.create);
   router.get("/", groups.findAll);
   router.get("/:id", groups.findOne);
+  router.get("/name/:name", groups.findByName);
   router.put("/:id", groups.update);
   router.delete("/:id", groups.delete);
   router.delete("/", groups.deleteAll);

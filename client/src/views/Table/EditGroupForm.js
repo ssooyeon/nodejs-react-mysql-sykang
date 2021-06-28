@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
 import { retrieveGroups, updateGroup } from "actions/groups";
+import GroupService from "services/GroupService";
 
 const styles = {
   errorText: {
@@ -45,7 +46,7 @@ const styles = {
   },
   subTableWrapper: {
     marginTop: "20px",
-    height: "700px",
+    height: "300px",
     width: "100%",
   },
 };
@@ -81,6 +82,36 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
   const editGroup = () => {
     const valid = validator.current.allValid();
     if (valid) {
+      const name = groupForm.name;
+      if (name !== "") {
+        GroupService.findByName(name)
+          .then((res) => {
+            // 선택한 그룹의 기존 이름이 아니고, 다른 그룹의 이름일 때
+            if (res.data !== "" && res.data !== undefined && res.data.id !== groupForm.id) {
+              alert.show("This name already exist.", {
+                title: "",
+                type: "error",
+              });
+            } else {
+              dispatch(updateGroup(groupForm.id, groupForm))
+                .then(() => {
+                  alert.show("Group update successfully.", {
+                    title: "",
+                    type: "success",
+                    onClose: () => {
+                      handleClose();
+                    },
+                  });
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     } else {
       validator.current.showMessages();
       forceUpdate();

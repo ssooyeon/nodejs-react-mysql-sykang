@@ -64,6 +64,36 @@ export default function AddGroupForm({ open, handleCloseClick }) {
   const addGroup = () => {
     const valid = validator.current.allValid();
     if (valid) {
+      const name = groupForm.name;
+      if (name !== "") {
+        GroupService.findByName(name)
+          .then((res) => {
+            // 이미 존재하는 이름일 때
+            if (res.data !== "" && res.data !== undefined) {
+              alert.show("This name already exist.", {
+                title: "",
+                type: "error",
+              });
+            } else {
+              dispatch(createGroup(groupForm))
+                .then(() => {
+                  alert.show("Group create successfully.", {
+                    title: "",
+                    type: "success",
+                    onClose: () => {
+                      handleClose();
+                    },
+                  });
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     } else {
       validator.current.showMessages();
       forceUpdate();

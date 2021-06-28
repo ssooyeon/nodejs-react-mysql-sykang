@@ -11,6 +11,11 @@ class GroupService {
     return http.get(`/groups/${id}`);
   }
 
+  // 그룹 이름으로 조회
+  findByName(name) {
+    return http.get(`/groups/name/${name}`);
+  }
+
   // 그룹 생성
   create(data) {
     return http.post("/groups", data);

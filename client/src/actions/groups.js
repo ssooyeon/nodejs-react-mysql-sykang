@@ -13,7 +13,6 @@ export const createGroup = (data) => async (dispatch) => {
       type: CREATE_GROUP,
       payload: res.data,
     });
-
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
