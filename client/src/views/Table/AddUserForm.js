@@ -10,6 +10,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { InputLabel, MenuItem } from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -31,11 +34,17 @@ const styles = {
   checkDoneIcon: {
     marginTop: "25px",
   },
+  formControl: {
+    width: "100%",
+    paddingTop: "10px",
+    paddingRight: "10px",
+    paddingLeft: "10px",
+  },
 };
 
 const useStyles = makeStyles(styles);
 
-export default function AddUserForm({ open, handleCloseClick }) {
+export default function AddUserForm({ open, handleCloseClick, groups }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(
@@ -51,6 +60,7 @@ export default function AddUserForm({ open, handleCloseClick }) {
     account: "",
     email: "",
     password: "",
+    groupId: "",
   };
 
   const [, updateState] = useState();
@@ -69,6 +79,10 @@ export default function AddUserForm({ open, handleCloseClick }) {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
+  };
+  // group 옵션 변경
+  const handleGroupOption = (e) => {
+    setUserForm({ ...userForm, groupId: e.target.value });
   };
 
   // 계정 중복 확인
@@ -210,6 +224,20 @@ export default function AddUserForm({ open, handleCloseClick }) {
                   />
                   <div className={classes.errorText}>{validator.current.message("password", userForm.password, "required")}</div>
                 </GridItem>
+              </GridContainer>
+              <GridContainer>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Select id="group-select-helper" value={userForm.groupId} onChange={handleGroupOption} displayEmpty>
+                    {groups &&
+                      groups.map((item, index) => {
+                        return (
+                          <MenuItem value={item.id} key={item.id}>
+                            {item.name}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
+                </FormControl>
               </GridContainer>
             </CardBody>
           </DialogContent>

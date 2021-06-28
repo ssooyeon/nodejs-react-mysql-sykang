@@ -2,7 +2,6 @@ const db = require("../models");
 const Group = db.groups;
 const User = db.users;
 const Log = db.logs;
-const Op = db.Sequelize.Op;
 
 /**
  * 그룹 생성
@@ -29,12 +28,6 @@ exports.create = (req, res) => {
  */
 exports.findAll = (req, res) => {
   Group.findAll({
-    include: [
-      {
-        model: User,
-        as: "creater",
-      },
-    ],
     order: [["createdAt", "DESC"]],
   })
     .then((data) => {
@@ -50,14 +43,7 @@ exports.findAll = (req, res) => {
  */
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Group.findByPk(id, {
-    include: [
-      {
-        model: User,
-        as: "creater",
-      },
-    ],
-  })
+  Group.findByPk(id)
     .then((data) => {
       res.send(data);
     })

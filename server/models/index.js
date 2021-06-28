@@ -20,10 +20,9 @@ db.logs = require("./log.model")(sequelize, Sequelize);
 db.users = require("./user.model")(sequelize, Sequelize);
 
 db.groups = require("./group.model")(sequelize, Sequelize);
-db.groups.belongsTo(db.users, {
-  foreignKey: "createrId",
-  as: "creater",
-  onDelete: "CASCADE",
+db.users.belongsTo(db.groups, {
+  foreignKey: "groupId",
+  as: "group",
 });
 
 db.boards = require("./board.model")(sequelize, Sequelize);

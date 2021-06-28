@@ -29,6 +29,16 @@ export const LOGOUT = "LOGOUT";
 export const UPDATE_LOGGED_USER = "UPDATE_LOGGED_USER";
 
 /***************************************************
+ * Group
+ ***************************************************/
+export const CREATE_GROUP = "CREATE_GROUP";
+export const RETRIEVE_GROUPS = "RETRIEVE_GROUPS";
+export const RETRIEVE_GROUP = "RETRIEVE_GROUP";
+export const UPDATE_GROUP = "UPDATE_GROUP";
+export const DELETE_GROUP = "DELETE_GROUP";
+export const DELETE_ALL_GROUPS = "DELETE_ALL_GROUPS";
+
+/***************************************************
  * Folder & Task
  ***************************************************/
 export const CREATE_FOLDER = "CREATE_FOLDER";

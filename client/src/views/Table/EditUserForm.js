@@ -10,6 +10,9 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { InputLabel, MenuItem } from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -43,11 +46,17 @@ const styles = {
   checkDoneIcon: {
     marginTop: "25px",
   },
+  formControl: {
+    width: "100%",
+    paddingTop: "10px",
+    paddingRight: "10px",
+    paddingLeft: "10px",
+  },
 };
 
 const useStyles = makeStyles(styles);
 
-export default function EditUserForm({ open, handleCloseClick, user }) {
+export default function EditUserForm({ open, handleCloseClick, groups, user }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(
@@ -79,6 +88,10 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
   };
+  // group 옵션 변경
+  const handleGroupOption = (e) => {
+    setUserForm({ ...userForm, groupId: e.target.value });
+  };
 
   // 비밀번호 변경 화면을 펼칠때마다 form validation field를 초기화
   // :비밀번호 변경 화면을 펼쳤다가 다시 닫아도 validation field에 password가 남아있기 떄문
@@ -95,11 +108,12 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
       if (isPasswordChange) {
         edit(userForm);
       } else {
-        // 비밀번호 변경 화면이 열려있지 않으면 email 정보만 업데이트
+        // 비밀번호 변경 화면이 열려있지 않으면 email과 group 정보만 업데이트
         const paramsWithOutPassword = {
           id: userForm.id,
           account: userForm.account,
           email: userForm.email,
+          groupId: userForm.groupId,
         };
         edit(paramsWithOutPassword);
       }
@@ -229,6 +243,21 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
                   </GridContainer>
                 </>
               ) : null}
+
+              <GridContainer>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Select id="group-select-helper" value={userForm.groupId || ""} onChange={handleGroupOption} displayEmpty>
+                    {groups &&
+                      groups.map((item, index) => {
+                        return (
+                          <MenuItem value={item.id} key={item.id}>
+                            {item.name}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
+                </FormControl>
+              </GridContainer>
             </CardBody>
           </DialogContent>
           <DialogActions>

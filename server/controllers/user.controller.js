@@ -1,7 +1,7 @@
 const db = require("../models");
 const User = db.users;
+const Group = db.groups;
 const Log = db.logs;
-const Op = db.Sequelize.Op;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -19,6 +19,7 @@ exports.create = (req, res) => {
     account: req.body.account,
     email: req.body.email,
     password: hash,
+    groupId: req.body.groupId,
   };
   User.create(user)
     .then((data) => {
@@ -35,7 +36,14 @@ exports.create = (req, res) => {
  * 사용자 전체 조회
  */
 exports.findAll = (req, res) => {
-  User.findAll()
+  User.findAll({
+    include: [
+      {
+        model: Group,
+        as: "group",
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })
@@ -49,7 +57,14 @@ exports.findAll = (req, res) => {
  */
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  User.findByPk(id)
+  User.findByPk(id, {
+    include: [
+      {
+        model: Group,
+        as: "group",
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })
