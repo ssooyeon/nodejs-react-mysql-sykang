@@ -43,6 +43,7 @@ exports.findAll = (req, res) => {
         as: "group",
       },
     ],
+    order: [["createdAt", "DESC"]],
   })
     .then((data) => {
       res.send(data);
