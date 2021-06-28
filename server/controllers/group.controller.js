@@ -28,6 +28,12 @@ exports.create = (req, res) => {
  */
 exports.findAll = (req, res) => {
   Group.findAll({
+    include: [
+      {
+        model: User,
+        as: "users",
+      },
+    ],
     order: [["createdAt", "DESC"]],
   })
     .then((data) => {
@@ -43,7 +49,14 @@ exports.findAll = (req, res) => {
  */
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Group.findByPk(id)
+  Group.findByPk(id, {
+    include: [
+      {
+        model: User,
+        as: "users",
+      },
+    ],
+  })
     .then((data) => {
       res.send(data);
     })

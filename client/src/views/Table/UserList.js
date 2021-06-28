@@ -43,10 +43,13 @@ export default function UserList() {
       field: "groupId",
       headerName: "Group",
       flex: 0.1,
-      //TODO
-      // renderCell: (params) => {
-      //   return params.row.group.id;
-      // },
+      renderCell: (params) => {
+        const group = params.row.group;
+        if (group === null) {
+          return "-";
+        }
+        return group.name;
+      },
     },
     { field: "createdAt", headerName: "Date", flex: 0.2 },
     {
@@ -93,7 +96,7 @@ export default function UserList() {
   // 그룹 테이블 컬럼
   const groupColumns = [
     { field: "id", headerName: "ID", type: "number", flex: 0.1 },
-    { field: "name", headerName: "Name", flex: 0.2 },
+    { field: "name", headerName: "Name", flex: 0.1 },
     { field: "createdAt", headerName: "Date", flex: 0.2 },
     {
       field: "",

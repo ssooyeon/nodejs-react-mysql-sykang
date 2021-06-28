@@ -20,6 +20,7 @@ db.logs = require("./log.model")(sequelize, Sequelize);
 db.users = require("./user.model")(sequelize, Sequelize);
 
 db.groups = require("./group.model")(sequelize, Sequelize);
+db.groups.hasMany(db.users, { as: "users" });
 db.users.belongsTo(db.groups, {
   foreignKey: "groupId",
   as: "group",

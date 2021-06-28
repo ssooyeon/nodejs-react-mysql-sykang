@@ -172,14 +172,19 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                   <div className={classes.subTableWrapper}>
-                    {/* <DataGrid
-                      rows={users}
-                      columns={columns}
-                      pageSize={9}
-                      checkboxSelection
-                      onSelectionModelChange={(newSelection) => handleUserRowClick(newSelection.selectionModel)}
-                      selectionModel={selectionModel}
-                    /> */}
+                    {group.users &&
+                      group.users.map((item, index) => {
+                        return (
+                          <>
+                            <div key={item.id}>
+                              <span>
+                                {item.id}
+                                {item.account}
+                              </span>
+                            </div>
+                          </>
+                        );
+                      })}
                   </div>
                 </GridItem>
               </GridContainer>
