@@ -11,11 +11,11 @@ import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
 import Button from "components/CustomButtons/Button";
 
-import AddUserForm from "./AddUserForm";
-import EditUserForm from "./EditUserForm";
+import AddUserForm from "./user/AddUserForm";
+import EditUserForm from "./user/EditUserForm";
 
-import AddGroupForm from "./AddGroupForm";
-import EditGroupForm from "./EditGroupForm";
+import AddGroupForm from "./group/AddGroupForm";
+import EditGroupForm from "./group/EditGroupForm";
 
 import { retrieveUsers, deleteUser } from "actions/users";
 import { retrieveGroups, deleteGroup } from "actions/groups";

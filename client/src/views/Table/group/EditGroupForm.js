@@ -16,7 +16,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
-import { retrieveGroups, updateGroup } from "actions/groups";
+import { updateGroup } from "actions/groups";
 import GroupService from "services/GroupService";
 
 const styles = {
@@ -93,19 +93,7 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
                 type: "error",
               });
             } else {
-              dispatch(updateGroup(groupForm.id, groupForm))
-                .then(() => {
-                  alert.show("Group update successfully.", {
-                    title: "",
-                    type: "success",
-                    onClose: () => {
-                      handleClose();
-                    },
-                  });
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
+              edit();
             }
           })
           .catch((e) => {
@@ -119,7 +107,21 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
   };
 
   // 그룹 수정
-  const edit = (group) => {};
+  const edit = () => {
+    dispatch(updateGroup(groupForm.id, groupForm))
+      .then(() => {
+        alert.show("Group update successfully.", {
+          title: "",
+          type: "success",
+          onClose: () => {
+            handleClose();
+          },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
