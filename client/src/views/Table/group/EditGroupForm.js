@@ -16,8 +16,9 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
-import { updateGroup } from "actions/groups";
+import { updateGroup, updateGroupMember } from "actions/groups";
 import GroupService from "services/GroupService";
+import { LayersTwoTone } from "@material-ui/icons";
 
 const styles = {
   errorText: {
@@ -46,26 +47,52 @@ const styles = {
   },
   subTableWrapper: {
     marginTop: "20px",
-    height: "300px",
+    height: "280px",
     width: "100%",
   },
 };
 
 const useStyles = makeStyles(styles);
 
-export default function EditGroupForm({ open, handleCloseClick, group }) {
+export default function EditGroupForm({ open, handleCloseClick, users, group }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
 
+  const initialGroupstate = {
+    name: "",
+    description: "",
+    users: [],
+  };
+
+  const userColumns = [
+    { field: "account", headerName: "Account", flex: 0.1 },
+    { field: "email", headerName: "Email", flex: 0.2 },
+    {
+      field: "groupId",
+      headerName: "Group",
+      flex: 0.1,
+      renderCell: (params) => {
+        const group = params.row.group;
+        if (group === null) {
+          return "-";
+        }
+        return group.name;
+      },
+    },
+  ];
+
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
-  const [groupForm, setGroupForm] = useState([]);
+  const [groupForm, setGroupForm] = useState(initialGroupstate);
+  const [selectionModel, setSelectionModel] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     setGroupForm(group);
+    let userIds = group.users && group.users.map((obj) => obj.id);
+    setSelectionModel(userIds);
   }, [group]);
 
   const handleClose = () => {
@@ -78,27 +105,28 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
     setGroupForm({ ...groupForm, [name]: value });
   };
 
+  // 사용자 테이블에서 사용자 선택
+  const handleUserRowClick = (select) => {
+    setSelectionModel(select);
+  };
+
   // 그룹 수정 버튼 클릭
   const editGroup = () => {
     const valid = validator.current.allValid();
     if (valid) {
       const name = groupForm.name;
       if (name !== "") {
-        GroupService.findByName(name)
-          .then((res) => {
-            // 선택한 그룹의 기존 이름이 아니고, 다른 그룹의 이름일 때
-            if (res.data !== "" && res.data !== undefined && res.data.id !== groupForm.id) {
-              alert.show("This name already exist.", {
-                title: "",
-                type: "error",
-              });
-            } else {
-              edit();
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+        GroupService.findByName(name).then((res) => {
+          // 현재 그룹의 원래 이름이 아니고, 다른 그룹의 이름일 때 (중복일 때)
+          if (res.data !== "" && res.data !== undefined && res.data.id !== groupForm.id) {
+            alert.show("This name already exist.", {
+              title: "",
+              type: "error",
+            });
+          } else {
+            edit();
+          }
+        });
       }
     } else {
       validator.current.showMessages();
@@ -108,15 +136,37 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
 
   // 그룹 수정
   const edit = () => {
+    // 전체 user list에서 선택된 체크박스 userId들(selectionModel: [1,2,3,...])을 가지고 선택된 user list를 구함
+    // const members = users.filter((x) => selectionModel.includes(x.id));
+    const oldMemberIds = groupForm.users && groupForm.users.map((obj) => obj.id);
+    const isSameMember = JSON.stringify(oldMemberIds.sort()) === JSON.stringify(selectionModel.sort());
     dispatch(updateGroup(groupForm.id, groupForm))
       .then(() => {
-        alert.show("Group update successfully.", {
-          title: "",
-          type: "success",
-          onClose: () => {
-            handleClose();
-          },
-        });
+        // 그룹 멤버가 변경되었다면
+        if (!isSameMember) {
+          let data = { ...groupForm, users: selectionModel };
+          dispatch(updateGroupMember(data.id, data))
+            .then(() => {
+              alert.show("Group update with members successfully.", {
+                title: "",
+                type: "success",
+                onClose: () => {
+                  handleClose();
+                },
+              });
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          alert.show("Group update successfully.", {
+            title: "",
+            type: "success",
+            onClose: () => {
+              handleClose();
+            },
+          });
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -174,19 +224,15 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
               <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                   <div className={classes.subTableWrapper}>
-                    {group.users &&
-                      group.users.map((item, index) => {
-                        return (
-                          <>
-                            <div key={item.id}>
-                              <span>
-                                {item.id}
-                                {item.account}
-                              </span>
-                            </div>
-                          </>
-                        );
-                      })}
+                    <DataGrid
+                      density="compact"
+                      rows={users}
+                      columns={userColumns}
+                      pageSize={5}
+                      checkboxSelection
+                      onSelectionModelChange={(newSelection) => handleUserRowClick(newSelection.selectionModel)}
+                      selectionModel={selectionModel}
+                    />
                   </div>
                 </GridItem>
               </GridContainer>

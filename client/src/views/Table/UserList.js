@@ -183,11 +183,15 @@ export default function UserList() {
   // 그룹 등록 버튼 클릭 및 AddGroupForm.js에서 닫기 버튼 클릭
   const handleGroupAddModalClick = (value) => {
     setGroupAddModalOpen(value);
+    dispatch(retrieveUsers());
+    dispatch(retrieveGroups());
   };
 
   // 그룹 수정 버튼 클릭 및 EditGroupForm.js에서 닫기 버튼 클릭
   const handleGroupEditModalClick = (value) => {
     setGroupEditModalOpen(value);
+    dispatch(retrieveUsers());
+    dispatch(retrieveGroups());
   };
 
   // 그룹 삭제
@@ -197,7 +201,10 @@ export default function UserList() {
         alert.show("The group was created successfully.", {
           title: "",
           type: "SUCCESS",
-          onClose: () => {},
+          onClose: () => {
+            dispatch(retrieveUsers());
+            dispatch(retrieveGroups());
+          },
         });
       })
       .catch((e) => {
@@ -236,7 +243,7 @@ export default function UserList() {
       <EditUserForm open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} groups={groups} user={editUser} />
 
       <AddGroupForm open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} />
-      <EditGroupForm open={groupEditModalOpen} handleCloseClick={handleGroupEditModalClick} group={editGroup} />
+      <EditGroupForm open={groupEditModalOpen} handleCloseClick={handleGroupEditModalClick} users={users} group={editGroup} />
     </>
   );
 }

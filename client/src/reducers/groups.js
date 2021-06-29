@@ -1,4 +1,4 @@
-import { CREATE_GROUP, RETRIEVE_GROUPS, RETRIEVE_GROUP, UPDATE_GROUP, DELETE_GROUP, DELETE_ALL_GROUPS } from "actions/types";
+import { CREATE_GROUP, RETRIEVE_GROUPS, RETRIEVE_GROUP, UPDATE_GROUP, UPDATE_GROUP_MEMBERS, DELETE_GROUP, DELETE_ALL_GROUPS } from "actions/types";
 
 const initialState = [];
 
@@ -27,6 +27,25 @@ function groupReducer(groups = initialState, action) {
         results = groups;
       }
       return results.map((group) => {
+        if (group.id === payload.id) {
+          return {
+            ...group,
+            ...payload,
+          };
+        } else {
+          return group;
+        }
+      });
+
+    // 그룹 멤버 수정
+    case UPDATE_GROUP_MEMBERS:
+      let rsts = [];
+      if (groups.length === undefined) {
+        rsts.push(groups);
+      } else {
+        rsts = groups;
+      }
+      return rsts.map((group) => {
         if (group.id === payload.id) {
           return {
             ...group,

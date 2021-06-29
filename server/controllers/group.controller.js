@@ -80,18 +80,49 @@ exports.findByName = (req, res) => {
 };
 
 /**
- * 그룹 수정
+ * 그룹 name, description 수정
  */
 exports.update = (req, res) => {
   const id = req.params.id;
-  Group.update(req.body, { where: { id: id } })
+  const group = req.body;
+
+  Group.update(group, { where: { id: id } })
     .then((num) => {
-      Log.create({ status: "SUCCESS", message: `Group update successfully. Group name is: ${req.body.name}` });
+      Log.create({ status: "SUCCESS", message: `Group update successfully. Group name is: ${group.name}` });
       res.send({ message: "Group was updated successfully." });
     })
     .catch((err) => {
-      Log.create({ status: "ERROR", message: `Group update failed. Group title is: ${req.body.name}` });
+      Log.create({ status: "ERROR", message: `Group update failed. Group title is: ${group.name}` });
       res.status(500).send({ message: err.message || `Error updating Group with id=${id}` });
+    });
+};
+
+/**
+ * 그룹 멤버 수정
+ */
+exports.updateMembers = (req, res) => {
+  const id = req.params.id;
+  const members = req.body.users;
+
+  User.findAll()
+    .then((allUsers) => {
+      // 그룹 멤버 업데이트
+      const users = allUsers.filter((x) => members.includes(x.id));
+      Group.findByPk(id).then((group) => {
+        group
+          .setUsers(users)
+          .then((num) => {
+            Log.create({ status: "SUCCESS", message: `Group member update successfully. Group name is: ${group.name}` });
+            res.send({ message: "Group member was updated successfully." });
+          })
+          .catch((err) => {
+            Log.create({ status: "ERROR", message: `Group member update failed. Group name is: ${group.name}` });
+            res.status(500).send({ message: err.message || `Error updating Group member with id=${id}` });
+          });
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving users for update group member." });
     });
 };
 

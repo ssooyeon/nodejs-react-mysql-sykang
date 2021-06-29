@@ -1,4 +1,4 @@
-import { CREATE_GROUP, RETRIEVE_GROUPS, RETRIEVE_GROUP, UPDATE_GROUP, DELETE_GROUP, DELETE_ALL_GROUPS } from "./types";
+import { CREATE_GROUP, RETRIEVE_GROUPS, RETRIEVE_GROUP, UPDATE_GROUP, UPDATE_GROUP_MEMBERS, DELETE_GROUP, DELETE_ALL_GROUPS } from "./types";
 
 import GroupService from "../services/GroupService";
 
@@ -62,6 +62,23 @@ export const updateGroup = (id, data) => async (dispatch) => {
     const res = await GroupService.update(id, data);
     dispatch({
       type: UPDATE_GROUP,
+      payload: data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 그룹 멤버 수정
+ */
+export const updateGroupMember = (id, data) => async (dispatch) => {
+  try {
+    const res = await GroupService.updateMembers(id, data);
+    dispatch({
+      type: UPDATE_GROUP_MEMBERS,
       payload: data,
     });
     return Promise.resolve(res.data);

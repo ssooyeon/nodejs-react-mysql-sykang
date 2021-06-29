@@ -26,6 +26,11 @@ class GroupService {
     return http.put(`/groups/${id}`, data);
   }
 
+  // 그룹 멤버 수정
+  updateMembers(id, data) {
+    return http.put(`/groups/users/${id}`, data);
+  }
+
   // 그룹 삭제
   delete(id) {
     return http.delete(`/groups/${id}`);

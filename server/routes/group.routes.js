@@ -7,6 +7,7 @@ module.exports = (app) => {
   router.get("/:id", groups.findOne);
   router.get("/name/:name", groups.findByName);
   router.put("/:id", groups.update);
+  router.put("/users/:id", groups.updateMembers);
   router.delete("/:id", groups.delete);
   router.delete("/", groups.deleteAll);
 
