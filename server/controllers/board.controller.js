@@ -48,7 +48,6 @@ exports.findAll = (req, res) => {
       },
     ],
     where: condition,
-
     order: [["createdAt", "DESC"]],
     offset: offset,
     limit: limit,

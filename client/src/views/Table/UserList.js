@@ -4,8 +4,7 @@ import { useAlert } from "react-alert-17";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
-import { Add } from "@material-ui/icons";
-import { Edit, Delete } from "@material-ui/icons";
+import { Add, Edit, Delete, Search } from "@material-ui/icons";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -19,11 +18,12 @@ import EditGroupForm from "./group/EditGroupForm";
 
 import { retrieveUsers, deleteUser } from "actions/users";
 import { retrieveGroups, deleteGroup } from "actions/groups";
+import { TextField } from "@material-ui/core";
 
 const styles = {
   tableWrapper: {
     marginTop: "20px",
-    height: "700px",
+    height: "650px",
     width: "100%",
   },
 };
@@ -45,10 +45,11 @@ export default function UserList() {
       flex: 0.1,
       renderCell: (params) => {
         const group = params.row.group;
-        if (group === null) {
+        if (group === null || group === undefined) {
           return "-";
+        } else {
+          return group.name;
         }
-        return group.name;
       },
     },
     { field: "createdAt", headerName: "Date", flex: 0.2 },
@@ -142,6 +143,9 @@ export default function UserList() {
   const groups = useSelector((state) => state.groups || []);
   const dispatch = useDispatch();
 
+  const [searchUserInput, setSearchUserInput] = useState(null); // 사용자 검색
+  const [searchGroupInput, setSearchGroupInput] = useState(null); // 그룹 검색
+
   const [userAddModalOpen, setUserAddModalOpen] = useState(false); // 사용자 생성 모달
   const [userEditModalOpen, setUserEditModalOpen] = useState(false); // 사용자 수정 모달
   const [editUser, setEditUser] = useState([]); // 수정할 사용자
@@ -155,14 +159,30 @@ export default function UserList() {
     dispatch(retrieveGroups());
   }, [dispatch]);
 
+  // 사용자 검색어, 그룹 검색어 초기화 및 재조회
+  const resetInputAndRetrieve = () => {
+    setSearchUserInput(null);
+    setSearchGroupInput(null);
+    dispatch(retrieveUsers());
+    dispatch(retrieveGroups());
+  };
+
   // 사용자 등록 버튼 클릭 및 AddUserForm.js에서 닫기 버튼 클릭
-  const handleUserAddModalClick = (value) => {
+  const handleUserAddModalClick = (value, isDone) => {
     setUserAddModalOpen(value);
+    // 사용자 생성이 완료되었으면 모든 목록 재조회
+    if (isDone) {
+      resetInputAndRetrieve();
+    }
   };
 
   // 사용자 수정 버튼 클릭 및 EditUserForm.js 닫기 버튼 클릭
-  const handleUserEditModalClick = (value) => {
+  const handleUserEditModalClick = (value, isDone) => {
     setUserEditModalOpen(value);
+    // 사용자 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
+    if (isDone) {
+      searchUser();
+    }
   };
 
   // 사용자 삭제
@@ -172,7 +192,9 @@ export default function UserList() {
         alert.show("The user was created successfully.", {
           title: "",
           type: "success",
-          onClose: () => {},
+          onClose: () => {
+            resetInputAndRetrieve();
+          },
         });
       })
       .catch((e) => {
@@ -181,17 +203,21 @@ export default function UserList() {
   };
 
   // 그룹 등록 버튼 클릭 및 AddGroupForm.js에서 닫기 버튼 클릭
-  const handleGroupAddModalClick = (value) => {
+  const handleGroupAddModalClick = (value, isDone) => {
     setGroupAddModalOpen(value);
-    dispatch(retrieveUsers());
-    dispatch(retrieveGroups());
+    // 그룹 생성이 완료되었으면 모든 목록 재조회
+    if (isDone) {
+      resetInputAndRetrieve();
+    }
   };
 
   // 그룹 수정 버튼 클릭 및 EditGroupForm.js에서 닫기 버튼 클릭
-  const handleGroupEditModalClick = (value) => {
+  const handleGroupEditModalClick = (value, isDone) => {
     setGroupEditModalOpen(value);
-    dispatch(retrieveUsers());
-    dispatch(retrieveGroups());
+    // 그룹 수정이 완료되었으면 검색어 기반으로 그룹 목록 재조회
+    if (isDone) {
+      searchUser();
+    }
   };
 
   // 그룹 삭제
@@ -202,14 +228,39 @@ export default function UserList() {
           title: "",
           type: "SUCCESS",
           onClose: () => {
-            dispatch(retrieveUsers());
-            dispatch(retrieveGroups());
+            resetInputAndRetrieve();
           },
         });
       })
       .catch((e) => {
         console.log(e);
       });
+  };
+
+  // 사용자 검색 input에서 enter 클릭 시 검색 수행
+  const handleUserSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      searchUser();
+    }
+  };
+
+  // 사용자 검색
+  const searchUser = () => {
+    const params = { account: searchUserInput };
+    dispatch(retrieveUsers(params));
+  };
+
+  // 그룹 검색 input에서 enter 클릭 시 검색 수행
+  const handleGroupSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      searchGroup();
+    }
+  };
+
+  // 그룹 검색
+  const searchGroup = () => {
+    const params = { name: searchGroupInput };
+    dispatch(retrieveGroups(params));
   };
 
   return (
@@ -225,6 +276,28 @@ export default function UserList() {
           <Button color="primary" onClick={() => handleGroupAddModalClick(true)}>
             <Add />
             Add
+          </Button>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={7}>
+          <TextField
+            name="searchUserInput"
+            value={searchUserInput || ""}
+            onChange={(e) => setSearchUserInput(e.target.value)}
+            onKeyPress={(e) => handleUserSearchKeyPress(e)}
+          />
+          <Button justIcon size="sm" onClick={searchUser}>
+            <Search />
+          </Button>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={5}>
+          <TextField
+            name="searchGroupInput"
+            value={searchGroupInput || ""}
+            onChange={(e) => setSearchGroupInput(e.target.value)}
+            onKeyPress={(e) => handleGroupSearchKeyPress(e)}
+          />
+          <Button justIcon size="sm" onClick={searchGroup}>
+            <Search />
           </Button>
         </GridItem>
         <GridItem xs={12} sm={12} md={7}>

@@ -71,8 +71,14 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
   const [isValidAccount, setIsValidAccount] = useState(false); // 계정을 중복확인 했는지의 여부
   const dispatch = useDispatch();
 
+  // 닫기 버튼 클릭
   const handleClose = () => {
     handleCloseClick(false);
+  };
+  // 사용자 추가 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
   };
 
   // input 값 변경 시 userForm state 업데이트
@@ -129,7 +135,7 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
               title: "",
               type: "success",
               onClose: () => {
-                handleClose();
+                handleDone();
               },
             });
           })

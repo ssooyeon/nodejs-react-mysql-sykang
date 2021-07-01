@@ -2,6 +2,7 @@ const db = require("../models");
 const User = db.users;
 const Group = db.groups;
 const Log = db.logs;
+const Op = db.Sequelize.Op;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -36,6 +37,8 @@ exports.create = (req, res) => {
  * 사용자 전체 조회
  */
 exports.findAll = (req, res) => {
+  const { account } = req.query;
+  const condition = account ? { account: { [Op.like]: `%${account}%` } } : null;
   User.findAll({
     include: [
       {
@@ -43,6 +46,7 @@ exports.findAll = (req, res) => {
         as: "group",
       },
     ],
+    where: condition,
     order: [["createdAt", "DESC"]],
   })
     .then((data) => {

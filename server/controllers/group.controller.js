@@ -2,6 +2,7 @@ const db = require("../models");
 const Group = db.groups;
 const User = db.users;
 const Log = db.logs;
+const Op = db.Sequelize.Op;
 
 /**
  * 그룹 생성
@@ -27,6 +28,8 @@ exports.create = (req, res) => {
  * 그룹 전체 조회
  */
 exports.findAll = (req, res) => {
+  const { name } = req.query;
+  const condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
   Group.findAll({
     include: [
       {
@@ -34,6 +37,7 @@ exports.findAll = (req, res) => {
         as: "users",
       },
     ],
+    where: condition,
     order: [["createdAt", "DESC"]],
   })
     .then((data) => {

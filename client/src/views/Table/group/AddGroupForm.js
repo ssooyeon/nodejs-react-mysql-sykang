@@ -50,8 +50,14 @@ export default function AddGroupForm({ open, handleCloseClick }) {
   const [groupForm, setGroupForm] = useState(initialGroupstate);
   const dispatch = useDispatch();
 
+  // 닫기 버튼 클릭
   const handleClose = () => {
     handleCloseClick(false);
+  };
+  // 그룹 추가 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
   };
 
   // input 값 변경 시 groupForm state 업데이트
@@ -81,7 +87,7 @@ export default function AddGroupForm({ open, handleCloseClick }) {
                     title: "",
                     type: "success",
                     onClose: () => {
-                      handleClose();
+                      handleDone();
                     },
                   });
                 })

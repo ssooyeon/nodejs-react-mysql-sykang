@@ -2,8 +2,8 @@ import http from "../http-common";
 
 class GroupService {
   // 그룹 전체 조회
-  getAll() {
-    return http.get("/groups");
+  getAll(params) {
+    return http.get("/groups", { params });
   }
 
   // 그룹 조회

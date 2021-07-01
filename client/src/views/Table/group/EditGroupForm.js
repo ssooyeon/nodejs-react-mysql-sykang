@@ -95,8 +95,14 @@ export default function EditGroupForm({ open, handleCloseClick, users, group }) 
     setSelectionModel(userIds);
   }, [group]);
 
+  // 닫기 버튼 클릭
   const handleClose = () => {
     handleCloseClick(false);
+  };
+  // 그룹 수정 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
   };
 
   // input 값 변경 시 groupForm state 업데이트
@@ -151,7 +157,7 @@ export default function EditGroupForm({ open, handleCloseClick, users, group }) 
                 title: "",
                 type: "success",
                 onClose: () => {
-                  handleClose();
+                  handleDone();
                 },
               });
             })
@@ -163,7 +169,7 @@ export default function EditGroupForm({ open, handleCloseClick, users, group }) 
             title: "",
             type: "success",
             onClose: () => {
-              handleClose();
+              handleDone();
             },
           });
         }

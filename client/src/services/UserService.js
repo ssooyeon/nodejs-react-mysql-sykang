@@ -2,8 +2,8 @@ import http from "../http-common";
 
 class UserService {
   // 사용자 전체 조회
-  getAll() {
-    return http.get("/users");
+  getAll(params) {
+    return http.get("/users", { params });
   }
 
   // 사용자 조회

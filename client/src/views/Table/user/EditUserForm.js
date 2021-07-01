@@ -79,8 +79,14 @@ export default function EditUserForm({ open, handleCloseClick, groups, user }) {
     setUserForm({ ...user, passwordCheck: "" });
   }, [user]);
 
+  // 닫기 버튼 클릭
   const handleClose = () => {
     handleCloseClick(false);
+  };
+  // 사용자 수정 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
   };
 
   // input 값 변경 시 userForm state 업데이트
@@ -135,8 +141,7 @@ export default function EditUserForm({ open, handleCloseClick, groups, user }) {
           title: "",
           type: "success",
           onClose: () => {
-            handleClose();
-            dispatch(retrieveUsers());
+            handleDone();
           },
         });
       })

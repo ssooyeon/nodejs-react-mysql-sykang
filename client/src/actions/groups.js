@@ -23,9 +23,9 @@ export const createGroup = (data) => async (dispatch) => {
 /**
  * 그룹 전체 조회
  */
-export const retrieveGroups = () => async (dispatch) => {
+export const retrieveGroups = (params) => async (dispatch) => {
   try {
-    const res = await GroupService.getAll();
+    const res = await GroupService.getAll(params);
     dispatch({
       type: RETRIEVE_GROUPS,
       payload: res.data,
