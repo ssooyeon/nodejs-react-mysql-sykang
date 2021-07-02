@@ -17,8 +17,8 @@ import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
 import { updateGroup, updateGroupMember } from "actions/groups";
+import UserService from "services/UserService";
 import GroupService from "services/GroupService";
-import { LayersTwoTone } from "@material-ui/icons";
 
 const styles = {
   errorText: {
@@ -54,7 +54,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function EditGroupForm({ open, handleCloseClick, users, group }) {
+export default function EditGroupForm({ open, handleCloseClick, group }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
@@ -85,14 +85,24 @@ export default function EditGroupForm({ open, handleCloseClick, users, group }) 
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
+  const [users, setUsers] = useState([]); // select option에 표시 될 user list (fix)
   const [groupForm, setGroupForm] = useState(initialGroupstate);
   const [selectionModel, setSelectionModel] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     setGroupForm(group);
+    // group member bindng
     let userIds = group.users && group.users.map((obj) => obj.id);
     setSelectionModel(userIds);
+    // 전체 user list 조회
+    UserService.getAll()
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, [group]);
 
   // 닫기 버튼 클릭

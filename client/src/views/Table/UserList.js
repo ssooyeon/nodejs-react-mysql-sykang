@@ -170,8 +170,10 @@ export default function UserList() {
   // 사용자 등록 버튼 클릭 및 AddUserForm.js에서 닫기 버튼 클릭
   const handleUserAddModalClick = (value, isDone) => {
     setUserAddModalOpen(value);
-    // 사용자 생성이 완료되었으면 모든 목록 재조회
-    if (isDone) {
+  };
+  // 사용자 등록이 실제로 이루어지면 search input 초기화
+  const handleUserResetInput = (isReset) => {
+    if (isReset) {
       resetInputAndRetrieve();
     }
   };
@@ -205,8 +207,10 @@ export default function UserList() {
   // 그룹 등록 버튼 클릭 및 AddGroupForm.js에서 닫기 버튼 클릭
   const handleGroupAddModalClick = (value, isDone) => {
     setGroupAddModalOpen(value);
-    // 그룹 생성이 완료되었으면 모든 목록 재조회
-    if (isDone) {
+  };
+  // 그룹 등록이 실제로 이루어지면 search input 초기화
+  const handleGroupResetInput = (isReset) => {
+    if (isReset) {
       resetInputAndRetrieve();
     }
   };
@@ -214,7 +218,7 @@ export default function UserList() {
   // 그룹 수정 버튼 클릭 및 EditGroupForm.js에서 닫기 버튼 클릭
   const handleGroupEditModalClick = (value, isDone) => {
     setGroupEditModalOpen(value);
-    // 그룹 수정이 완료되었으면 검색어 기반으로 그룹 목록 재조회
+    // 그룹 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
     if (isDone) {
       searchUser();
     }
@@ -312,11 +316,11 @@ export default function UserList() {
         </GridItem>
       </GridContainer>
 
-      <AddUserForm open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} groups={groups} />
-      <EditUserForm open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} groups={groups} user={editUser} />
+      <AddUserForm open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} handleResetInput={handleUserResetInput} />
+      <EditUserForm open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} user={editUser} />
 
-      <AddGroupForm open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} />
-      <EditGroupForm open={groupEditModalOpen} handleCloseClick={handleGroupEditModalClick} users={users} group={editGroup} />
+      <AddGroupForm open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} handleResetInput={handleGroupResetInput} />
+      <EditGroupForm open={groupEditModalOpen} handleCloseClick={handleGroupEditModalClick} group={editGroup} />
     </>
   );
 }

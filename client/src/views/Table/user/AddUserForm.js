@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useAlert } from "react-alert-17";
 import SimpleReactValidator from "simple-react-validator";
@@ -21,6 +21,7 @@ import CustomInput from "components/CustomInput/CustomInput";
 
 import { createUser } from "actions/users";
 import UserService from "services/UserService";
+import GroupService from "services/GroupService";
 
 const styles = {
   errorText: {
@@ -44,7 +45,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function AddUserForm({ open, handleCloseClick, groups }) {
+export default function AddUserForm({ open, handleCloseClick, handleResetInput }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(
@@ -66,19 +67,30 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
+  const [groups, setGroups] = useState([]); // select option에 표시 될 group list (fix)
   const [userForm, setUserForm] = useState(initialUserstate);
   const [checkDoneAccount, setCheckDoneAccount] = useState(""); // 중복확인을 완료한 계정 이름
   const [isValidAccount, setIsValidAccount] = useState(false); // 계정을 중복확인 했는지의 여부
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    GroupService.getAll()
+      .then((res) => {
+        setGroups(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   // 닫기 버튼 클릭
   const handleClose = () => {
     handleCloseClick(false);
   };
-  // 사용자 추가 완료
-  const handleDone = () => {
-    const isDone = true;
-    handleCloseClick(false, isDone);
+
+  // 사용자 추가를 수행하면 검색란을 초기화
+  const sendSearchReset = () => {
+    handleResetInput(true);
   };
 
   // input 값 변경 시 userForm state 업데이트
@@ -86,6 +98,7 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
   };
+
   // group 옵션 변경
   const handleGroupOption = (e) => {
     setUserForm({ ...userForm, groupId: e.target.value });
@@ -129,13 +142,14 @@ export default function AddUserForm({ open, handleCloseClick, groups }) {
         if (data.groupId === "") {
           data.groupId = null;
         }
+        sendSearchReset();
         dispatch(createUser(data))
           .then(() => {
             alert.show("User create successfully.", {
               title: "",
               type: "success",
               onClose: () => {
-                handleDone();
+                handleClose();
               },
             });
           })

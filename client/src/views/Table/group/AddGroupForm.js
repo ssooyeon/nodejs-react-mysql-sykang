@@ -34,7 +34,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function AddGroupForm({ open, handleCloseClick }) {
+export default function AddGroupForm({ open, handleCloseClick, handleResetInput }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(new SimpleReactValidator({ autoForceUpdate: this }));
@@ -54,10 +54,10 @@ export default function AddGroupForm({ open, handleCloseClick }) {
   const handleClose = () => {
     handleCloseClick(false);
   };
-  // 그룹 추가 완료
-  const handleDone = () => {
-    const isDone = true;
-    handleCloseClick(false, isDone);
+
+  // 그룹 추가를 수행하면 검색란을 초기화
+  const sendSearchReset = () => {
+    handleResetInput(true);
   };
 
   // input 값 변경 시 groupForm state 업데이트
@@ -81,13 +81,14 @@ export default function AddGroupForm({ open, handleCloseClick }) {
                 type: "error",
               });
             } else {
+              sendSearchReset();
               dispatch(createGroup(groupForm))
                 .then(() => {
                   alert.show("Group create successfully.", {
                     title: "",
                     type: "success",
                     onClose: () => {
-                      handleDone();
+                      handleClose();
                     },
                   });
                 })

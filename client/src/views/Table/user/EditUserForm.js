@@ -19,7 +19,8 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import CustomInput from "components/CustomInput/CustomInput";
 
-import { retrieveUsers, updateUser } from "actions/users";
+import { updateUser } from "actions/users";
+import GroupService from "services/GroupService";
 
 const styles = {
   errorText: {
@@ -56,7 +57,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function EditUserForm({ open, handleCloseClick, groups, user }) {
+export default function EditUserForm({ open, handleCloseClick, user }) {
   const classes = useStyles();
   const alert = useAlert();
   const validator = useRef(
@@ -71,18 +72,27 @@ export default function EditUserForm({ open, handleCloseClick, groups, user }) {
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
+  const [groups, setGroups] = useState([]); // select option에 표시 될 group list (fix)
   const [userForm, setUserForm] = useState([]);
   const [isPasswordChange, setIsPasswordChange] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
     setUserForm({ ...user, passwordCheck: "" });
+    GroupService.getAll()
+      .then((res) => {
+        setGroups(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, [user]);
 
   // 닫기 버튼 클릭
   const handleClose = () => {
     handleCloseClick(false);
   };
+
   // 사용자 수정 완료
   const handleDone = () => {
     const isDone = true;
@@ -94,6 +104,7 @@ export default function EditUserForm({ open, handleCloseClick, groups, user }) {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
   };
+
   // group 옵션 변경
   const handleGroupOption = (e) => {
     setUserForm({ ...userForm, groupId: e.target.value });
