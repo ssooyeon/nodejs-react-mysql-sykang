@@ -2,14 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
+import { makeStyles } from "@material-ui/core/styles";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import rrulePlugin from "@fullcalendar/rrule";
+import { FormControlLabel, MenuItem } from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
+import Button from "components/CustomButtons/Button";
 
 import "./style/CustomCalendar.css";
 
@@ -17,12 +25,29 @@ import AddScheduleForm from "./AddScheduleForm";
 import EditScheduleForm from "./EditScheduleForm";
 
 import { retrieveSchedules, updateSchedule } from "actions/schedules";
+import { retrieveGroups } from "actions/groups";
 import ScheduleService from "services/ScheduleService";
 
+const styles = {
+  formControl: {
+    width: "100%",
+    paddingRight: "10px",
+  },
+};
+const useStyles = makeStyles(styles);
 const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+const groupInitState = {
+  id: "",
+  name: "",
+  description: "",
+  users: [],
+};
 
 export default function MySchedule() {
+  const classes = useStyles();
+
   const schedules = useSelector((state) => state.schedules || []);
+  const groups = useSelector((state) => state.groups || []);
   const dispatch = useDispatch();
 
   const [clickedDate, setClickedDate] = useState(new Date());
@@ -30,8 +55,13 @@ export default function MySchedule() {
   const [editScheduleModalOpen, setEditScheduleModalOpen] = useState(false); // 스케줄 수정 모달 오픈
   const [editSchedule, setEditSchedule] = useState([]);
 
+  const [defaultUserChecked, setDefaultUserChecked] = useState(true);
+  const [selectedGroup, setSelectedGroup] = useState(groupInitState);
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+
   useEffect(() => {
     dispatch(retrieveSchedules());
+    dispatch(retrieveGroups());
   }, [dispatch]);
 
   // 날짜 클릭 시 신규 스케줄 추가 팝업 오픈
@@ -186,6 +216,55 @@ export default function MySchedule() {
     setEditScheduleModalOpen(value);
   };
 
+  // 그룹 select option 변경
+  const handleGroupSelectChange = (e) => {
+    const selectId = e.target.value;
+    // if All group
+    if (selectId === "") {
+      setSelectedGroup(groupInitState);
+      setSelectedUserIds([]);
+    } else {
+      const selectGroup = groups.find((x) => x.id === selectId);
+      setSelectedGroup(selectGroup);
+      // 그룹 변경 시 기본적으로 해당 그룹 멤버 전체 선택
+      const selectUserIds = selectGroup.users && selectGroup.users.map((obj) => obj.id);
+      setSelectedUserIds(selectUserIds);
+    }
+  };
+
+  // 사용자 전체 체크박스 클릭
+  const handleUserAllCheckbox = (e) => {
+    // const checked = e.target.checked;
+    // if (checked) {
+    //   setDefaultUserChecked(true);
+    //   const selectUserIds = selectedGroup.users && selectedGroup.users.map((obj) => obj.id);
+    //   setSelectedUserIds(selectUserIds);
+    // } else {
+    //   setDefaultUserChecked(false)
+    //   setSelectedUserIds([]);
+    // }
+  };
+
+  // 사용자 체크박스 클릭
+  const handleUserCheckbox = (e) => {
+    const checkedId = parseInt(e.target.value);
+    const checked = e.target.checked;
+    if (checked) {
+      // checkbox가 체크되었으면 userIds에 추가
+      setSelectedUserIds([...selectedUserIds, checkedId]);
+    } else {
+      // checkbox가 해제되었으면 userIds에서 삭제
+      setSelectedUserIds(selectedUserIds.filter((id) => id !== checkedId));
+    }
+  };
+
+  const searchSchedule = () => {
+    const params = {
+      userIdsStr: selectedUserIds.join(","),
+    };
+    dispatch(retrieveSchedules(params));
+  };
+
   return (
     <>
       <GridContainer>
@@ -214,6 +293,61 @@ export default function MySchedule() {
             // eventContent={handleEventContent}
             // eventDidMount={handleEventDidMount}
           />
+        </GridItem>
+      </GridContainer>
+      <br />
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={2}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <Select id="group-select-helper" value={selectedGroup.id || ""} onChange={handleGroupSelectChange} displayEmpty>
+              <MenuItem value="">All</MenuItem>
+              {groups &&
+                groups.map((item, index) => {
+                  return (
+                    <MenuItem value={item.id} key={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </FormControl>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={10}>
+          <FormControlLabel
+            value=""
+            style={{ marginRight: "10px", color: "#000" }}
+            label="All"
+            control={
+              <Checkbox
+                defaultChecked={true}
+                onChange={(e) => handleUserAllCheckbox(e)}
+                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                checkedIcon={<CheckBoxIcon fontSize="small" />}
+              />
+            }
+          />
+          {selectedGroup.users &&
+            selectedGroup.users.map((item, index) => {
+              return (
+                <FormControlLabel
+                  key={item.id}
+                  value={item.id}
+                  style={{ marginRight: "10px", color: "#000" }}
+                  label={item.account}
+                  control={
+                    <Checkbox
+                      defaultChecked={true}
+                      onChange={(e) => handleUserCheckbox(e)}
+                      icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                      checkedIcon={<CheckBoxIcon fontSize="small" />}
+                    />
+                  }
+                />
+              );
+            })}
+          <Button color="primary" size="sm" onClick={searchSchedule}>
+            Load
+          </Button>
         </GridItem>
       </GridContainer>
 
