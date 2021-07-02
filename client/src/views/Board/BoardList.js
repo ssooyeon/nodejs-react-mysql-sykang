@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Pagination from "@material-ui/lab/Pagination";
 import { Add } from "@material-ui/icons";
 import { Search } from "@material-ui/icons";
+import { TextField } from "@material-ui/core";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -14,7 +15,6 @@ import Button from "components/CustomButtons/Button";
 import Card from "components/Card/Card";
 import CardFooter from "components/Card/CardFooter";
 import CardBody from "components/Card/CardBody";
-import CustomInput from "components/CustomInput/CustomInput";
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 
 import { retrieveBoards } from "actions/boards";
@@ -79,6 +79,20 @@ const styles = {
     justifyContent: "center",
     marginTop: "20px",
   },
+  searchBoardTitle: {
+    width: "97%",
+    "& .MuiInput-underline:after": {
+      borderBottom: "2px solid purple !important",
+    },
+    "& .MuiFormLabel-root.Mui-focused": {
+      color: "darkgray",
+    },
+  },
+  searchButton: {
+    "&:hover": {
+      color: "purple",
+    },
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -142,28 +156,18 @@ export default function BoardList() {
           </Link>
         </GridItem>
 
-        <GridItem xs={12} sm={12} md={11}>
-          <CustomInput
-            labelText="Search"
-            id="search"
-            name="search"
-            value={search}
-            formControlProps={{
-              fullWidth: true,
-            }}
-            inputProps={{
-              name: "search",
-              onChange: (e) => setSearch(e.target.value),
-              onKeyPress: (e) => handleKeyPress(e),
-            }}
+        <GridItem xs={12} sm={12} md={12}>
+          <TextField
+            className={classes.searchBoardTitle}
+            label="Search board title"
+            name="searchBoardTitle"
+            value={search || ""}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyPress={(e) => handleKeyPress(e)}
           />
-        </GridItem>
-        <GridItem xs={12} sm={12} md={1}>
-          <div className={classes.searchButtonWrapper}>
-            <Button justIcon onClick={searchBoards}>
-              <Search />
-            </Button>
-          </div>
+          <Button justIcon className={classes.searchButton} color="transparent" onClick={searchBoards}>
+            <Search />
+          </Button>
         </GridItem>
         {boards.rows &&
           boards.rows.map((board, index) => (

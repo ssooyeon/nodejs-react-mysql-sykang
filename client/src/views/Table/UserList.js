@@ -5,6 +5,7 @@ import { useAlert } from "react-alert-17";
 import { makeStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import { Add, Edit, Delete, Search } from "@material-ui/icons";
+import { TextField } from "@material-ui/core";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -18,13 +19,35 @@ import EditGroupForm from "./group/EditGroupForm";
 
 import { retrieveUsers, deleteUser } from "actions/users";
 import { retrieveGroups, deleteGroup } from "actions/groups";
-import { TextField } from "@material-ui/core";
 
 const styles = {
   tableWrapper: {
     marginTop: "20px",
     height: "650px",
     width: "100%",
+  },
+  searchUserAccount: {
+    width: "95%",
+    "& .MuiInput-underline:after": {
+      borderBottom: "2px solid purple !important",
+    },
+    "& .MuiFormLabel-root.Mui-focused": {
+      color: "darkgray",
+    },
+  },
+  searchGroupName: {
+    width: "93%",
+    "& .MuiInput-underline:after": {
+      borderBottom: "2px solid purple !important",
+    },
+    "& .MuiFormLabel-root.Mui-focused": {
+      color: "darkgray",
+    },
+  },
+  searchButton: {
+    "&:hover": {
+      color: "purple",
+    },
   },
 };
 
@@ -284,23 +307,27 @@ export default function UserList() {
         </GridItem>
         <GridItem xs={12} sm={12} md={7}>
           <TextField
+            className={classes.searchUserAccount}
+            label="Search user account"
             name="searchUserInput"
             value={searchUserInput || ""}
             onChange={(e) => setSearchUserInput(e.target.value)}
             onKeyPress={(e) => handleUserSearchKeyPress(e)}
           />
-          <Button justIcon size="sm" onClick={searchUser}>
+          <Button justIcon className={classes.searchButton} color="transparent" onClick={searchUser}>
             <Search />
           </Button>
         </GridItem>
         <GridItem xs={12} sm={12} md={5}>
           <TextField
+            className={classes.searchGroupName}
+            label="Search group name"
             name="searchGroupInput"
             value={searchGroupInput || ""}
             onChange={(e) => setSearchGroupInput(e.target.value)}
             onKeyPress={(e) => handleGroupSearchKeyPress(e)}
           />
-          <Button justIcon size="sm" onClick={searchGroup}>
+          <Button justIcon className={classes.searchButton} color="transparent" onClick={searchGroup}>
             <Search />
           </Button>
         </GridItem>

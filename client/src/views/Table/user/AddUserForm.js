@@ -31,6 +31,7 @@ const styles = {
   },
   checkButton: {
     marginTop: "20px",
+    marginLeft: "-20px",
   },
   checkDoneIcon: {
     marginTop: "25px",
@@ -85,6 +86,7 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
 
   // 닫기 버튼 클릭
   const handleClose = () => {
+    setIsValidAccount(false);
     handleCloseClick(false);
   };
 
