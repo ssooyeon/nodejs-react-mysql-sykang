@@ -35,6 +35,7 @@ const styles = {
   },
 };
 const useStyles = makeStyles(styles);
+
 const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
 const groupInitState = {
   id: "",
@@ -46,6 +47,7 @@ const groupInitState = {
 export default function MySchedule() {
   const classes = useStyles();
 
+  const { user: currentUser } = useSelector((state) => state.auth);
   const schedules = useSelector((state) => state.schedules || []);
   const groups = useSelector((state) => state.groups || []);
   const dispatch = useDispatch();
@@ -55,11 +57,16 @@ export default function MySchedule() {
   const [editScheduleModalOpen, setEditScheduleModalOpen] = useState(false); // 스케줄 수정 모달 오픈
   const [editSchedule, setEditSchedule] = useState([]);
 
-  const [defaultUserChecked, setDefaultUserChecked] = useState(true);
   const [selectedGroup, setSelectedGroup] = useState(groupInitState);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
 
   useEffect(() => {
+    // const currentUserGroupId = currentUser.groupId;
+    // const defaultGroup = groups.find((x) => x.id === currentUserGroupId);
+    // setSelectedGroup(defaultGroup);
+    // 그룹 변경 시 기본적으로 해당 그룹 멤버 전체 선택
+    // const selectUserIds = defaultGroup.users && defaultGroup.users.map((obj) => obj.id);
+    // setSelectedUserIds(selectUserIds);
     dispatch(retrieveSchedules());
     dispatch(retrieveGroups());
   }, [dispatch]);
@@ -234,15 +241,14 @@ export default function MySchedule() {
 
   // 사용자 전체 체크박스 클릭
   const handleUserAllCheckbox = (e) => {
-    // const checked = e.target.checked;
-    // if (checked) {
-    //   setDefaultUserChecked(true);
-    //   const selectUserIds = selectedGroup.users && selectedGroup.users.map((obj) => obj.id);
-    //   setSelectedUserIds(selectUserIds);
-    // } else {
-    //   setDefaultUserChecked(false)
-    //   setSelectedUserIds([]);
-    // }
+    const checked = e.target.checked;
+    if (checked) {
+      const selectUserIds = selectedGroup.users && selectedGroup.users.map((obj) => obj.id);
+      setSelectedUserIds(selectUserIds);
+    } else {
+      setSelectedUserIds([]);
+    }
+    console.log(selectedUserIds);
   };
 
   // 사용자 체크박스 클릭
@@ -258,11 +264,22 @@ export default function MySchedule() {
     }
   };
 
+  // 선택한 사용자에 따른 스케줄 목록 재조회
   const searchSchedule = () => {
-    const params = {
-      userIdsStr: selectedUserIds.join(","),
-    };
-    dispatch(retrieveSchedules(params));
+    let idParam = selectedUserIds.join(",");
+    // All group이 선택되어 있는 경우 모든 스케줄을 표출
+    if (selectedGroup.id === "") {
+      dispatch(retrieveSchedules());
+    } else {
+      // 선택된 사용자가 없는 경우
+      if (idParam === "") {
+        idParam = "[]";
+      }
+      const params = {
+        userIdsStr: idParam,
+      };
+      dispatch(retrieveSchedules(params));
+    }
   };
 
   return (
@@ -313,19 +330,22 @@ export default function MySchedule() {
           </FormControl>
         </GridItem>
         <GridItem xs={12} sm={12} md={10}>
-          <FormControlLabel
-            value=""
-            style={{ marginRight: "10px", color: "#000" }}
-            label="All"
-            control={
-              <Checkbox
-                defaultChecked={true}
-                onChange={(e) => handleUserAllCheckbox(e)}
-                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                checkedIcon={<CheckBoxIcon fontSize="small" />}
-              />
-            }
-          />
+          {selectedGroup.users.length > 0 ? (
+            <FormControlLabel
+              value=""
+              style={{ marginRight: "10px", color: "#000" }}
+              label="All"
+              control={
+                <Checkbox
+                  defaultChecked={true}
+                  onChange={(e) => handleUserAllCheckbox(e)}
+                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                  checkedIcon={<CheckBoxIcon fontSize="small" />}
+                />
+              }
+            />
+          ) : null}
+
           {selectedGroup.users &&
             selectedGroup.users.map((item, index) => {
               return (
@@ -336,7 +356,7 @@ export default function MySchedule() {
                   label={item.account}
                   control={
                     <Checkbox
-                      defaultChecked={true}
+                      checked={selectedUserIds.includes(item.id)}
                       onChange={(e) => handleUserCheckbox(e)}
                       icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                       checkedIcon={<CheckBoxIcon fontSize="small" />}

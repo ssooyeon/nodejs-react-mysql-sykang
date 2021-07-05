@@ -189,6 +189,7 @@ exports.authLogin = (req, res) => {
               id: data.id,
               account: account,
               email: data.email,
+              groupId: data.groupId,
             };
             // jwt 토큰을 생성
             const token = jwt.sign({ userInfo }, "the_secret_key");
@@ -197,6 +198,7 @@ exports.authLogin = (req, res) => {
               id: userInfo.id,
               account: userInfo.account,
               email: userInfo.email,
+              groupId: data.groupId,
             };
             Log.create({ status: "SUCCESS", message: `User login successfully. User account is: ${account}` });
             res.send({ user: user });

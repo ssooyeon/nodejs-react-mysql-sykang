@@ -29,6 +29,7 @@ exports.create = (req, res) => {
  */
 exports.findAll = (req, res) => {
   const { userIdsStr } = req.query;
+
   let condition = null;
   if (userIdsStr !== undefined && userIdsStr !== "") {
     // string으로 넘어온 parameter를 array로 변경
