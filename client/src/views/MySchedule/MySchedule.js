@@ -33,6 +33,9 @@ const styles = {
     width: "100%",
     paddingRight: "10px",
   },
+  repeat: {
+    background: "#fff",
+  },
 };
 const useStyles = makeStyles(styles);
 
@@ -181,37 +184,66 @@ export default function MySchedule() {
     console.log("remove");
   };
 
-  // const handleEventClassNames = (e) => {
-  //   if (e.event._def.recurringDef !== null) {
-  //     const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
-  //     if (eRrule !== null) {
-  //       return ["repeat"];
-  //     }
-  //   }
-  // };
-
   // 스케줄 랜더링 전 호출 함수
-  // const handleEventContent = (e) => {
-  //   if (e.event._def.recurringDef !== null) {
-  //     const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
-  //     if (eRrule !== null) {
-  //       return {
-  //         html: "&nbsp;<i class='fa fa-repeat' aria-hidden='true'></i>&nbsp;<b>" + e.timeText + "</b>&nbsp;" + e.event.title,
-  //       };
-  //     }
-  //   }
-  // };
+  const handleEventContent = (e) => {
+    const viewMode = e.view.type;
+    if (viewMode === "dayGridMonth") {
+      const creater = e.event.extendedProps.creater;
+      let account = "";
+      // 신규 event 추가 시 creater 항목이 없으므로 currentUser로 대체
+      if (creater !== undefined) {
+        account = creater.account;
+      } else {
+        account = currentUser.account;
+      }
+      const timeText = e.timeText;
 
-  // 스케줄 mount 전 호출 함수 (element는 생성된 상태)
-  // const handleEventDidMount = (e) => {
-  //   if (e.event._def.recurringDef !== null) {
-  //     const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
-  //     if (eRrule !== null) {
-  //       const icon = "<i class='fa fa-repeat' aria-hidden='true'></i>";
-  //       e.el.prepend(icon);
-  //     }
-  //   }
-  // };
+      const recurringDef = e.event._def.recurringDef;
+      let repeatHtml = "";
+      if (recurringDef !== null) {
+        const rrule = recurringDef.typeData.rruleSet.toString();
+        if (rrule !== null) {
+          repeatHtml = "<i class='fa fa-repeat'></i>&nbsp;";
+        }
+      }
+
+      let html = "";
+      // all day 일정이면
+      if (timeText === "") {
+        html =
+          "<div class='fc-event-time'>" +
+          timeText +
+          "</div>" +
+          "<div class='fc-event-title'>" +
+          repeatHtml +
+          e.event.title +
+          "</div>" +
+          "<div style='font-size:11px;font-style:italic;float:right;margin-right:3px;'>" +
+          account +
+          "</div>";
+      }
+      // 시간 범위가 있는 일정이면
+      else {
+        html =
+          "<div class='fc-daygrid-event-dot' style='border-color: " +
+          e.event.backgroundColor +
+          ";'></div>" +
+          repeatHtml +
+          "<div class='fc-event-time'>" +
+          timeText +
+          "</div>" +
+          "<div class='fc-event-title'>" +
+          e.event.title +
+          "</div>" +
+          "<div style='font-size:11px;font-style:italic;float:right;margin-right:3px;'>" +
+          account +
+          "</div>";
+      }
+      return {
+        html: html,
+      };
+    }
+  };
 
   // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
   const handleAddScheduleModalClick = (value) => {
@@ -306,9 +338,7 @@ export default function MySchedule() {
             eventAdd={handleEventAdd}
             eventChange={handleEventChange} // called for drag-n-drop/resize
             eventRemove={handleEventRemove}
-            // eventClassNames={handleEventClassNames}
-            // eventContent={handleEventContent}
-            // eventDidMount={handleEventDidMount}
+            eventContent={handleEventContent}
           />
         </GridItem>
       </GridContainer>
