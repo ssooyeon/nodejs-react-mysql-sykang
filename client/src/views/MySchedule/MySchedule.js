@@ -14,6 +14,8 @@ import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -60,8 +62,10 @@ export default function MySchedule() {
   const [editScheduleModalOpen, setEditScheduleModalOpen] = useState(false); // 스케줄 수정 모달 오픈
   const [editSchedule, setEditSchedule] = useState([]);
 
-  const [selectedGroup, setSelectedGroup] = useState(groupInitState);
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(groupInitState); // 선택된 그룹 정보
+  const [selectedUserIds, setSelectedUserIds] = useState([]); // 선택된 그룹에서 선택된 사용자 아이디 리스트
+
+  const [viewMode, setViewMode] = useState("users"); // 그룹 별 검색인지 사용자 별 검색인지의 여부
 
   useEffect(() => {
     dispatch(retrieveGroups());
@@ -260,6 +264,11 @@ export default function MySchedule() {
     setEditScheduleModalOpen(value);
   };
 
+  // toggle button 클릭
+  const handleToggle = (e, newMode) => {
+    setViewMode(newMode);
+  };
+
   // 그룹 select option 변경
   const handleGroupSelectChange = (e) => {
     const selectId = e.target.value;
@@ -303,6 +312,9 @@ export default function MySchedule() {
       // }
     }
   };
+
+  // 그룹 체크박스 클릭
+  const handleGroupCheckbox = (e) => {};
 
   // 선택한 사용자에 따른 스케줄 목록 재조회
   const searchSchedule = (users, groups) => {
@@ -352,61 +364,115 @@ export default function MySchedule() {
       </GridContainer>
       <br />
       <GridContainer>
-        <GridItem xs={12} sm={12} md={2}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <Select id="group-select-helper" value={selectedGroup.id || ""} onChange={handleGroupSelectChange} displayEmpty>
-              <MenuItem value="">All</MenuItem>
-              {groups &&
-                groups.map((item, index) => {
-                  return (
-                    <MenuItem value={item.id} key={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  );
-                })}
-            </Select>
-          </FormControl>
+        <GridItem xs={12} sm={12} md={1} style={{ marginRight: "20px" }}>
+          <ToggleButtonGroup size="small" value={viewMode} exclusive onChange={handleToggle} aria-label="text alignment">
+            <ToggleButton value="users" aria-label="left aligned">
+              <p>Users</p>
+            </ToggleButton>
+            <ToggleButton value="groups" aria-label="centered">
+              <p>Groups</p>
+            </ToggleButton>
+          </ToggleButtonGroup>
         </GridItem>
-        <GridItem xs={12} sm={12} md={10}>
-          {selectedGroup.users.length > 0 ? (
-            <FormControlLabel
-              value=""
-              style={{ marginRight: "10px", color: "#000" }}
-              label="All"
-              control={
-                <Checkbox
-                  checked={selectedUserIds.length === selectedGroup.users.length} // 표시된 user수와 check된 user수가 같으면 check
-                  onChange={(e) => handleUserAllCheckbox(e)}
-                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                  checkedIcon={<CheckBoxIcon fontSize="small" />}
-                />
-              }
-            />
-          ) : null}
-
-          {selectedGroup.users &&
-            selectedGroup.users.map((item, index) => {
-              return (
+        {viewMode === "users" ? (
+          <>
+            <GridItem xs={12} sm={12} md={2}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <Select id="group-select-helper" value={selectedGroup.id || ""} onChange={handleGroupSelectChange} displayEmpty>
+                  <MenuItem value="">All</MenuItem>
+                  {groups &&
+                    groups.map((item, index) => {
+                      return (
+                        <MenuItem value={item.id} key={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
+              </FormControl>
+            </GridItem>
+            <GridItem xs={12} sm={12} md={8}>
+              {selectedGroup.users.length > 0 ? (
                 <FormControlLabel
-                  key={item.id}
-                  value={item.id}
+                  value=""
                   style={{ marginRight: "10px", color: "#000" }}
-                  label={item.account}
+                  label="All"
                   control={
                     <Checkbox
-                      checked={selectedUserIds.includes(item.id)}
-                      onChange={(e) => handleUserCheckbox(e)}
+                      checked={selectedUserIds.length === selectedGroup.users.length} // 표시된 user수와 check된 user수가 같으면 check
+                      onChange={(e) => handleUserAllCheckbox(e)}
                       icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                       checkedIcon={<CheckBoxIcon fontSize="small" />}
                     />
                   }
                 />
-              );
-            })}
-          <Button color="primary" size="sm" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
-            Load
-          </Button>
-        </GridItem>
+              ) : null}
+
+              {selectedGroup.users &&
+                selectedGroup.users.map((item, index) => {
+                  return (
+                    <FormControlLabel
+                      key={item.id}
+                      value={item.id}
+                      style={{ marginRight: "10px", color: "#000" }}
+                      label={item.account}
+                      control={
+                        <Checkbox
+                          checked={selectedUserIds.includes(item.id)}
+                          onChange={(e) => handleUserCheckbox(e)}
+                          icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                          checkedIcon={<CheckBoxIcon fontSize="small" />}
+                        />
+                      }
+                    />
+                  );
+                })}
+              <Button color="primary" size="sm" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
+                Load
+              </Button>
+            </GridItem>
+          </>
+        ) : (
+          <>
+            <GridItem xs={12} sm={12} md={8}>
+              <FormControlLabel
+                value=""
+                style={{ marginRight: "10px", color: "#000" }}
+                label="All"
+                control={
+                  <Checkbox
+                    // checked={selectedUserIds.length === selectedGroup.users.length} // 표시된 user수와 check된 user수가 같으면 check
+                    onChange={(e) => handleUserAllCheckbox(e)}
+                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                    checkedIcon={<CheckBoxIcon fontSize="small" />}
+                  />
+                }
+              />
+              {groups &&
+                groups.map((item, index) => {
+                  return (
+                    <FormControlLabel
+                      key={item.id}
+                      value={item.id}
+                      style={{ marginRight: "10px", color: "#000" }}
+                      label={item.name}
+                      control={
+                        <Checkbox
+                          // checked={}
+                          onChange={(e) => handleGroupCheckbox(e)}
+                          icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                          checkedIcon={<CheckBoxIcon fontSize="small" />}
+                        />
+                      }
+                    />
+                  );
+                })}
+              <Button color="primary" size="sm" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
+                Load
+              </Button>
+            </GridItem>
+          </>
+        )}
       </GridContainer>
 
       <AddScheduleForm open={addScheduleModalOpen} handleCloseClick={handleAddScheduleModalClick} date={clickedDate} />
