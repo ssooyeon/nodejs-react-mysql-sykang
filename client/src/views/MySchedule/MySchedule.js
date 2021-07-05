@@ -64,15 +64,20 @@ export default function MySchedule() {
   const [selectedUserIds, setSelectedUserIds] = useState([]);
 
   useEffect(() => {
-    // const currentUserGroupId = currentUser.groupId;
-    // const defaultGroup = groups.find((x) => x.id === currentUserGroupId);
-    // setSelectedGroup(defaultGroup);
-    // 그룹 변경 시 기본적으로 해당 그룹 멤버 전체 선택
-    // const selectUserIds = defaultGroup.users && defaultGroup.users.map((obj) => obj.id);
-    // setSelectedUserIds(selectUserIds);
-    dispatch(retrieveSchedules());
     dispatch(retrieveGroups());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (groups.length > 0) {
+      const currentGroupId = currentUser.groupId;
+      const currentGroup = groups.find((x) => x.id === currentGroupId);
+      setSelectedGroup(currentGroup);
+      const selectUserIds = currentGroup.users.map((obj) => obj.id);
+      setSelectedUserIds(selectUserIds);
+
+      searchSchedule(selectUserIds, currentGroup);
+    }
+  }, [groups]);
 
   // 날짜 클릭 시 신규 스케줄 추가 팝업 오픈
   const handleDateSelect = (e) => {
@@ -280,7 +285,6 @@ export default function MySchedule() {
     } else {
       setSelectedUserIds([]);
     }
-    console.log(selectedUserIds);
   };
 
   // 사용자 체크박스 클릭
@@ -297,10 +301,10 @@ export default function MySchedule() {
   };
 
   // 선택한 사용자에 따른 스케줄 목록 재조회
-  const searchSchedule = () => {
-    let idParam = selectedUserIds.join(",");
+  const searchSchedule = (users, groups) => {
+    let idParam = users.join(",");
     // All group이 선택되어 있는 경우 모든 스케줄을 표출
-    if (selectedGroup.id === "") {
+    if (groups.id === "") {
       dispatch(retrieveSchedules());
     } else {
       // 선택된 사용자가 없는 경우
@@ -395,7 +399,7 @@ export default function MySchedule() {
                 />
               );
             })}
-          <Button color="primary" size="sm" onClick={searchSchedule}>
+          <Button color="primary" size="sm" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
             Load
           </Button>
         </GridItem>
