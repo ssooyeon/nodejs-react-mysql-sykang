@@ -297,6 +297,10 @@ export default function MySchedule() {
     } else {
       // checkbox가 해제되었으면 userIds에서 삭제
       setSelectedUserIds(selectedUserIds.filter((id) => id !== checkedId));
+      // debugger;
+      // if (selectedUserIds.length === 0) {
+      //   setAllUserChecked(false);
+      // }
     }
   };
 
@@ -371,7 +375,7 @@ export default function MySchedule() {
               label="All"
               control={
                 <Checkbox
-                  defaultChecked={true}
+                  checked={selectedUserIds.length === selectedGroup.users.length} // 표시된 user수와 check된 user수가 같으면 check
                   onChange={(e) => handleUserAllCheckbox(e)}
                   icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                   checkedIcon={<CheckBoxIcon fontSize="small" />}
