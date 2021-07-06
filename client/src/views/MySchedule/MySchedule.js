@@ -63,7 +63,8 @@ export default function MySchedule() {
   const [editSchedule, setEditSchedule] = useState([]);
 
   const [selectedGroup, setSelectedGroup] = useState(groupInitState); // 선택된 그룹 정보
-  const [selectedUserIds, setSelectedUserIds] = useState([]); // 선택된 그룹에서 선택된 사용자 아이디 리스트
+  const [selectedUserIds, setSelectedUserIds] = useState([]); // 선택된 그룹에서 선택된 사용자 아이디 리스트 (viewMode: users)
+  const [selectedGroupIds, setSelectedGroupIds] = useState([]); // 선택된 그룹 아이디 리스트 (viewModel: groups)
 
   const [viewMode, setViewMode] = useState("users"); // 그룹 별 검색인지 사용자 별 검색인지의 여부
 
@@ -73,12 +74,12 @@ export default function MySchedule() {
 
   useEffect(() => {
     if (groups.length > 0) {
+      // all group list가 로드되면 현재 접속한 사용자의 그룹 스케줄을 기본으로 표출
       const currentGroupId = currentUser.groupId;
       const currentGroup = groups.find((x) => x.id === currentGroupId);
       setSelectedGroup(currentGroup);
       const selectUserIds = currentGroup.users.map((obj) => obj.id);
       setSelectedUserIds(selectUserIds);
-
       searchSchedule(selectUserIds, currentGroup);
     }
   }, [groups]);
@@ -195,8 +196,9 @@ export default function MySchedule() {
 
   // 스케줄 랜더링 전 호출 함수
   const handleEventContent = (e) => {
-    const viewMode = e.view.type;
-    if (viewMode === "dayGridMonth") {
+    const calMode = e.view.type;
+    if (calMode === "dayGridMonth") {
+      const timeText = e.timeText;
       const creater = e.event.extendedProps.creater;
       let account = "";
       // 신규 event 추가 시 creater 항목이 없으므로 currentUser로 대체
@@ -205,8 +207,8 @@ export default function MySchedule() {
       } else {
         account = currentUser.account;
       }
-      const timeText = e.timeText;
 
+      // 반복 일정인 경우 아이콘 추가
       const recurringDef = e.event._def.recurringDef;
       let repeatHtml = "";
       if (recurringDef !== null) {
@@ -217,7 +219,7 @@ export default function MySchedule() {
       }
 
       let html = "";
-      // all day 일정이면
+      // all day 일정이면 반복 아이콘 + 텍스트
       if (timeText === "") {
         html =
           "<div class='fc-event-time'>" +
@@ -231,7 +233,7 @@ export default function MySchedule() {
           account +
           "</div>";
       }
-      // 시간 범위가 있는 일정이면
+      // 시간 범위가 있는 일정이면 원형 그림 + 반복 아이콘 + 시간 + 텍스트
       else {
         html =
           "<div class='fc-daygrid-event-dot' style='border-color: " +
@@ -267,16 +269,19 @@ export default function MySchedule() {
   // toggle button 클릭
   const handleToggle = (e, newMode) => {
     setViewMode(newMode);
+    setSelectedGroupIds([]);
+    setSelectedUserIds([]);
   };
 
-  // 그룹 select option 변경
+  // viewMode=users에서 그룹 select option 변경
   const handleGroupSelectChange = (e) => {
     const selectId = e.target.value;
     // if All group
     if (selectId === "") {
-      setSelectedGroup(groupInitState);
+      setSelectedGroup(groupInitState); // groupInitState의 id는 ""이므로 searchSchedule에서 전체 조회가 가능
       setSelectedUserIds([]);
     } else {
+      // 선택한 그룹 setSeletedGroup에 저장
       const selectGroup = groups.find((x) => x.id === selectId);
       setSelectedGroup(selectGroup);
       // 그룹 변경 시 기본적으로 해당 그룹 멤버 전체 선택
@@ -285,7 +290,7 @@ export default function MySchedule() {
     }
   };
 
-  // 사용자 전체 체크박스 클릭
+  // viewMode=users에서 사용자 전체 체크박스 클릭
   const handleUserAllCheckbox = (e) => {
     const checked = e.target.checked;
     if (checked) {
@@ -296,7 +301,27 @@ export default function MySchedule() {
     }
   };
 
-  // 사용자 체크박스 클릭
+  // viewMode=groups에서 그룹 전체 체크박스 클릭
+  const handleGroupAllCheckbox = (e) => {
+    const checked = e.target.checked;
+    if (checked) {
+      // group all이 체크되어 있으면 모든 그룹의 모든 유저들을 setSelectedUserIds에 삽입
+      const selectedGroupIds = groups.map((obj) => obj.id);
+      setSelectedGroupIds(selectedGroupIds);
+      let userIdArr = [];
+      for (let idx in groups) {
+        const users = groups[idx].users;
+        const userIds = users.map((obj) => obj.id);
+        userIdArr = [...userIdArr, ...userIds];
+      }
+      setSelectedUserIds(userIdArr);
+    } else {
+      setSelectedGroupIds([]);
+      setSelectedUserIds([]);
+    }
+  };
+
+  // viewMode=users에서 사용자 체크박스 클릭
   const handleUserCheckbox = (e) => {
     const checkedId = parseInt(e.target.value);
     const checked = e.target.checked;
@@ -306,17 +331,29 @@ export default function MySchedule() {
     } else {
       // checkbox가 해제되었으면 userIds에서 삭제
       setSelectedUserIds(selectedUserIds.filter((id) => id !== checkedId));
-      // debugger;
-      // if (selectedUserIds.length === 0) {
-      //   setAllUserChecked(false);
-      // }
     }
   };
 
-  // 그룹 체크박스 클릭
-  const handleGroupCheckbox = (e) => {};
+  // viewMode=groups에서 그룹 체크박스 클릭
+  const handleGroupCheckbox = (e) => {
+    const checkedId = parseInt(e.target.value);
+    const checked = e.target.checked;
 
-  // 선택한 사용자에 따른 스케줄 목록 재조회
+    const checkedGroup = groups.find((x) => x.id === checkedId);
+    const users = checkedGroup.users;
+    const userIds = users.map((obj) => obj.id);
+    if (checked) {
+      setSelectedGroupIds([...selectedGroupIds, checkedId]);
+      // checkbox가 체크되었으면 체크된 그룹의 user들을 selectedUserIds에 추가
+      setSelectedUserIds([...selectedUserIds, ...userIds]);
+    } else {
+      setSelectedGroupIds(selectedGroupIds.filter((id) => id !== checkedId));
+      // checkbox가 해제되었으면 해제된 그룹의 user들을 selectedUserIds에서 찾아서 삭제
+      setSelectedUserIds(selectedUserIds.filter((x) => userIds.indexOf(x) < 0));
+    }
+  };
+
+  // viewMode=users에서 선택한 사용자에 따른 스케줄 목록 재조회
   const searchSchedule = (users, groups) => {
     let idParam = users.join(",");
     // All group이 선택되어 있는 경우 모든 스케줄을 표출
@@ -441,8 +478,8 @@ export default function MySchedule() {
                 label="All"
                 control={
                   <Checkbox
-                    // checked={selectedUserIds.length === selectedGroup.users.length} // 표시된 user수와 check된 user수가 같으면 check
-                    onChange={(e) => handleUserAllCheckbox(e)}
+                    checked={selectedGroupIds.length === groups.length} // 표시된 group수와 check된 group 같으면 check
+                    onChange={(e) => handleGroupAllCheckbox(e)}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
                   />
@@ -458,7 +495,7 @@ export default function MySchedule() {
                       label={item.name}
                       control={
                         <Checkbox
-                          // checked={}
+                          checked={selectedGroupIds.includes(item.id)}
                           onChange={(e) => handleGroupCheckbox(e)}
                           icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                           checkedIcon={<CheckBoxIcon fontSize="small" />}
