@@ -293,7 +293,7 @@ export default function MySchedule() {
     data = { ...data, id: id, allDay: allDay, rrule: rrule, duration: duration };
     dispatch(updateSchedule(data.id, data))
       .then(() => {
-        dispatch(retrieveSchedules());
+        searchSchedule(selectedUserIds, selectedGroup);
       })
       .catch((e) => {
         console.log(e);
@@ -308,15 +308,19 @@ export default function MySchedule() {
   // 스케줄 랜더링 전 호출 함수
   const handleEventContent = (e) => {
     const calMode = e.view.type;
+    if (viewMode === "users") {
+    } else if (viewMode === "groups") {
+    }
+
     if (calMode === "dayGridMonth") {
       const timeText = e.timeText;
       const creater = e.event.extendedProps.creater;
-      let account = "";
+      let text = "";
       // 신규 event 추가 시 creater 항목이 없으므로 currentUser로 대체
       if (creater !== undefined) {
-        account = creater.account;
+        text = creater.account;
       } else {
-        account = currentUser.account;
+        text = currentUser.account;
       }
 
       // 반복 일정인 경우 아이콘 추가
@@ -330,7 +334,7 @@ export default function MySchedule() {
       }
 
       let html = "";
-      // all day 일정이면 반복 아이콘 + 텍스트
+      // all day 일정이면 반복 아이콘 + 텍스트(account or group name)
       if (timeText === "") {
         html =
           "<div class='fc-event-time'>" +
@@ -341,10 +345,10 @@ export default function MySchedule() {
           e.event.title +
           "</div>" +
           "<div style='font-size:11px;font-style:italic;float:right;margin-right:3px;'>" +
-          account +
+          text +
           "</div>";
       }
-      // 시간 범위가 있는 일정이면 원형 그림 + 반복 아이콘 + 시간 + 텍스트
+      // 시간 범위가 있는 일정이면 원형 그림 + 반복 아이콘 + 시간 + 텍스트(account or group name)
       else {
         html =
           "<div class='fc-daygrid-event-dot' style='border-color: " +
@@ -358,7 +362,7 @@ export default function MySchedule() {
           e.event.title +
           "</div>" +
           "<div style='font-size:11px;font-style:italic;float:right;margin-right:3px;'>" +
-          account +
+          text +
           "</div>";
       }
       return {
