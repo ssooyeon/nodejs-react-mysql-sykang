@@ -103,6 +103,13 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
     setScheduleForm(initialScheduleState);
     setIsRepeat(false);
   };
+  // 스케줄 등록 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
+    setScheduleForm(initialScheduleState);
+    setIsRepeat(false);
+  };
 
   // input 값 변경 시 scheduleForm state 업데이트
   const handleInputChange = (e) => {
@@ -208,7 +215,7 @@ export default function AddScheduleForm({ open, handleCloseClick, date }) {
       data = { ...data, rrule: rrule, duration: duration };
       dispatch(createSchedule(data))
         .then(() => {
-          handleClose();
+          handleDone();
         })
         .catch((e) => {
           console.log(e);

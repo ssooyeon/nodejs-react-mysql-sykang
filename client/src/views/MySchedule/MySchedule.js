@@ -74,15 +74,22 @@ export default function MySchedule() {
 
   useEffect(() => {
     if (groups.length > 0) {
-      // all group list가 로드되면 현재 접속한 사용자의 그룹 스케줄을 기본으로 표출
-      const currentGroupId = currentUser.groupId;
-      const currentGroup = groups.find((x) => x.id === currentGroupId);
-      setSelectedGroup(currentGroup);
-      const selectUserIds = currentGroup.users.map((obj) => obj.id);
-      setSelectedUserIds(selectUserIds);
-      searchSchedule(selectUserIds, currentGroup);
+      loadCurrentUserSchedule();
     }
   }, [groups]);
+
+  // viewMode==users일 때 current user의 group의 스케줄을 기본으로 표출
+  const loadCurrentUserSchedule = () => {
+    const currentGroupId = currentUser.groupId;
+    if (viewMode === "groups") {
+      setSelectedGroupIds([currentUser.groupId]);
+    }
+    const currentGroup = groups.find((x) => x.id === currentGroupId);
+    setSelectedGroup(currentGroup);
+    const selectUserIds = currentGroup.users.map((obj) => obj.id);
+    setSelectedUserIds(selectUserIds);
+    searchSchedule(selectUserIds, currentGroup);
+  };
 
   /**************************************************** */
   /**********************검색 관련********************** */
@@ -203,14 +210,18 @@ export default function MySchedule() {
 
   // 스케줄 클릭 시 스케줄 수정 팝업 오픈
   const handleEventClick = (e) => {
-    ScheduleService.get(e.event.id)
-      .then((res) => {
-        setEditSchedule(res.data);
-        setEditScheduleModalOpen(true);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // 선택한 스케줄의 creater와 current user가 같을 때만 수정 팝업 오픈
+    const createrId = e.event.extendedProps.creater.id;
+    if (createrId === currentUser.id) {
+      ScheduleService.get(e.event.id)
+        .then((res) => {
+          setEditSchedule(res.data);
+          setEditScheduleModalOpen(true);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   // 스케줄 신규 추가 후 콜백 함수
@@ -371,9 +382,23 @@ export default function MySchedule() {
     }
   };
 
+  const handleEventAllow = (dropInfo, draggedEvent) => {
+    // 선택된 스케줄의 creater와 current user가 같을 때만 drag 및 resize 가능 활성화
+    const createrId = draggedEvent.extendedProps.creater.id;
+    if (createrId !== currentUser.id) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
-  const handleAddScheduleModalClick = (value) => {
+  const handleAddScheduleModalClick = (value, isDone) => {
     setAddScheduleModalOpen(value);
+    // 스케줄 신규 등록이 완료되었고, 표출된 스케줄에 current user가 없으면 강제로 current user의 group의 스케줄을 표출
+    if (isDone && selectedUserIds.find((x) => x !== currentUser.id)) {
+      loadCurrentUserSchedule();
+    }
   };
 
   // 스케줄 수정 버튼 클릭 및 EditScheduleForm.js 에서 닫기 버튼 클릭
@@ -519,6 +544,7 @@ export default function MySchedule() {
             eventChange={handleEventChange} // called for drag-n-drop/resize
             eventRemove={handleEventRemove}
             eventContent={handleEventContent}
+            eventAllow={handleEventAllow}
           />
         </GridItem>
       </GridContainer>
