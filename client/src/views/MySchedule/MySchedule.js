@@ -178,7 +178,7 @@ export default function MySchedule() {
   const searchSchedule = (users, groups) => {
     let idParam = users.join(",");
     // All group이 선택되어 있는 경우 모든 스케줄을 표출
-    if (groups.id === "") {
+    if (viewMode === "users" && groups.id === "") {
       dispatch(retrieveSchedules());
     } else {
       // 선택된 사용자가 없는 경우
