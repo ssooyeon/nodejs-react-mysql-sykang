@@ -8,6 +8,8 @@ function scheduleReducer(schedules = initialState, action) {
   switch (type) {
     // 스케줄 생성
     case CREATE_SCHEDULE:
+      console.log(schedules);
+      console.log(payload);
       return [...schedules, payload];
 
     // 스케줄 전체 조회

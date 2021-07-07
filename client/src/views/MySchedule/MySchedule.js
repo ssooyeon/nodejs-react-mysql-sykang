@@ -211,7 +211,7 @@ export default function MySchedule() {
   // 스케줄 클릭 시 스케줄 수정 팝업 오픈
   const handleEventClick = (e) => {
     // 선택한 스케줄의 creater와 current user가 같을 때만 수정 팝업 오픈
-    const createrId = e.event.extendedProps.creater.id;
+    const createrId = e.event.extendedProps.createrId;
     if (createrId === currentUser.id) {
       ScheduleService.get(e.event.id)
         .then((res) => {
@@ -319,19 +319,21 @@ export default function MySchedule() {
   // 스케줄 랜더링 전 호출 함수
   const handleEventContent = (e) => {
     const calMode = e.view.type;
-    if (viewMode === "users") {
-    } else if (viewMode === "groups") {
-    }
 
     if (calMode === "dayGridMonth") {
       const timeText = e.timeText;
       const creater = e.event.extendedProps.creater;
+      // viewMode에 따라 그룹명 또는 사용자 계정명 표출
       let text = "";
-      // 신규 event 추가 시 creater 항목이 없으므로 currentUser로 대체
-      if (creater !== undefined) {
-        text = creater.account;
-      } else {
-        text = currentUser.account;
+      if (viewMode === "users") {
+        if (creater !== undefined) {
+          text = creater.account;
+        } else {
+          text = currentUser.account;
+        }
+      } else if (viewMode === "groups") {
+        const currentGroup = groups.find((x) => x.id === creater.groupId);
+        text = currentGroup.name;
       }
 
       // 반복 일정인 경우 아이콘 추가
@@ -355,7 +357,7 @@ export default function MySchedule() {
           repeatHtml +
           e.event.title +
           "</div>" +
-          "<div style='font-size:11px;font-style:italic;float:right;margin-right:3px;'>" +
+          "<div style='font-size:11px;float:right;margin-right:3px;font-style:italic;'>" +
           text +
           "</div>";
       }
@@ -372,7 +374,7 @@ export default function MySchedule() {
           "<div class='fc-event-title'>" +
           e.event.title +
           "</div>" +
-          "<div style='font-size:11px;font-style:italic;float:right;margin-right:3px;'>" +
+          "<div style='font-size:11px;float:right;margin-right:3px;font-style:italic;'>" +
           text +
           "</div>";
       }
@@ -382,9 +384,10 @@ export default function MySchedule() {
     }
   };
 
+  // drop 및 resize 실행 직전
   const handleEventAllow = (dropInfo, draggedEvent) => {
     // 선택된 스케줄의 creater와 current user가 같을 때만 drag 및 resize 가능 활성화
-    const createrId = draggedEvent.extendedProps.creater.id;
+    const createrId = draggedEvent.extendedProps.createrId;
     if (createrId !== currentUser.id) {
       return false;
     } else {

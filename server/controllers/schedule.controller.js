@@ -15,8 +15,21 @@ exports.create = (req, res) => {
   const schedule = req.body;
   Schedule.create(schedule)
     .then((data) => {
-      Log.create({ status: "SUCCESS", message: `Schedule create successfully. New schedule title is: ${req.body.title}` });
-      res.send(data);
+      Schedule.findByPk(data.id, {
+        include: [
+          {
+            model: User,
+            as: "creater",
+          },
+        ],
+      })
+        .then((result) => {
+          Log.create({ status: "SUCCESS", message: `Schedule create successfully. New schedule title is: ${req.body.title}` });
+          res.send(result);
+        })
+        .catch((err) => {
+          res.status(500).send({ message: err.message || `Error retrieving Schedule with id=${id}` });
+        });
     })
     .catch((err) => {
       Log.create({ status: "ERROR", message: `Schedule create failed. Schedule title is: ${req.body.title}` });
