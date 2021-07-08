@@ -16,9 +16,13 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+/** logs */
 db.logs = require("./log.model")(sequelize, Sequelize);
+
+/** users */
 db.users = require("./user.model")(sequelize, Sequelize);
 
+/** groups  with users */
 db.groups = require("./group.model")(sequelize, Sequelize);
 db.groups.hasMany(db.users, { as: "users" });
 db.users.belongsTo(db.groups, {
@@ -26,6 +30,7 @@ db.users.belongsTo(db.groups, {
   as: "group",
 });
 
+/** boards with users */
 db.boards = require("./board.model")(sequelize, Sequelize);
 db.users.hasMany(db.boards, { as: "boards" });
 db.boards.belongsTo(db.users, {
@@ -33,6 +38,7 @@ db.boards.belongsTo(db.users, {
   as: "user",
 });
 
+/** folders with users */
 db.folders = require("./folder.model")(sequelize, Sequelize);
 db.folders.belongsTo(db.users, {
   foreignKey: "managerId",
@@ -44,6 +50,7 @@ db.folders.belongsTo(db.folders, {
   onDelete: "CASCADE",
 });
 
+/** tasks with folders, users */
 db.tasks = require("./task.model")(sequelize, Sequelize);
 db.folders.hasMany(db.tasks, { as: "tasks" });
 db.tasks.belongsTo(db.folders, {
@@ -59,6 +66,7 @@ db.tasks.belongsTo(db.users, {
 db.users.belongsToMany(db.folders, { through: "userFolder", as: "folders", foreignKey: "userId" });
 db.folders.belongsToMany(db.users, { through: "userFolder", as: "users", foreignKey: "folderId" });
 
+/** schedules with users */
 db.schedules = require("./schedule.model")(sequelize, Sequelize);
 db.schedules.belongsTo(db.users, {
   foreignKey: "createrId",

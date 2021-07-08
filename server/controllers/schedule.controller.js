@@ -9,12 +9,13 @@ const Op = db.Sequelize.Op;
  */
 exports.create = (req, res) => {
   if (!req.body.title) {
-    res.status(400).send({ message: "Content cannot be empty." });
+    res.status(400).send({ message: "Title cannot be empty." });
     return;
   }
   const schedule = req.body;
   Schedule.create(schedule)
     .then((data) => {
+      // 스케줄 생성 후 creater(object property)를 포함하여 리턴하기 위해 재조회 수행
       Schedule.findByPk(data.id, {
         include: [
           {
@@ -41,12 +42,11 @@ exports.create = (req, res) => {
  * 스케줄 전체 조회
  */
 exports.findAll = (req, res) => {
-  const { userIdsStr } = req.query;
-
+  const { userIdsStr } = req.query; // id array string "[1,2,3,4]"
   let condition = null;
   if (userIdsStr !== undefined && userIdsStr !== "") {
     // string으로 넘어온 parameter를 array로 변경
-    const userIdsArr = userIdsStr.split(",");
+    const userIdsArr = userIdsStr.split(","); // [1,2,3,4]
     condition = { createrId: { [Op.in]: userIdsArr } };
   }
 

@@ -25,7 +25,7 @@ exports.create = (req, res) => {
 };
 
 /**
- * 그룹 전체 조회
+ * 그룹 전체 조회 또는 검색
  */
 exports.findAll = (req, res) => {
   const { name } = req.query;
@@ -106,12 +106,13 @@ exports.update = (req, res) => {
  */
 exports.updateMembers = (req, res) => {
   const id = req.params.id;
-  const members = req.body.users;
+  const members = req.body.users; // id array
 
   User.findAll()
     .then((allUsers) => {
-      // 그룹 멤버 업데이트
+      // 전체 유저 중 req.body에 담긴 id들을 이용하여 user들을 찾음
       const users = allUsers.filter((x) => members.includes(x.id));
+      // 찾은 user들을 group에 setUsers
       Group.findByPk(id).then((group) => {
         group
           .setUsers(users)

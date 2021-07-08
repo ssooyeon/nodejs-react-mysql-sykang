@@ -28,8 +28,6 @@ exports.create = (req, res) => {
  * 테스크 전체 조회
  */
 exports.findAll = (req, res) => {
-  // const { title } = req.query;
-  // const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
   Task.findAll({
     include: [
       {
@@ -37,7 +35,6 @@ exports.findAll = (req, res) => {
         as: "creater",
       },
     ],
-    // where: condition,
     order: [["ordering", "ASC"]],
   })
     .then((data) => {

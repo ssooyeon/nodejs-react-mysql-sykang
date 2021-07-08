@@ -17,8 +17,8 @@ exports.create = (req, res) => {
   const user = req.body.user;
   Folder.create(folder)
     .then((createdFolder) => {
+      // 폴더가 생성되었으면 생성된 폴더에 addUsers
       Log.create({ status: "SUCCESS", message: `Folder create successfully. New folder name is: ${req.body.folder.name}` });
-      console.log(user);
       if (user !== undefined && user !== null) {
         createdFolder.addUsers(user.id);
       }
@@ -68,37 +68,6 @@ exports.findAll = (req, res) => {
 };
 
 /**
- * 테스크 폴더에서 가장 상위 폴더 리스트 전체 조회
- */
-// exports.findParentAll = (req, res) => {
-//   Folder.findAll({
-//     include: [
-//       {
-//         model: Task,
-//         as: "tasks",
-//         include: [
-//           {
-//             model: User,
-//             as: "creater",
-//           },
-//         ],
-//       },
-//     ],
-//     where: { parentId: { [Op.eq]: null } },
-//     order: [
-//       ["ordering", "ASC"],
-//       [{ model: Task, as: "tasks" }, "ordering", "ASC"],
-//     ],
-//   })
-//     .then((data) => {
-//       res.send(data);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({ message: err.message || "Some error occurred while retrieving folders." });
-//     });
-// };
-
-/**
  * 테스크 폴더에서 현재 로그인 한 사용자의 가장 상위 폴더 리스트 전체 조회
  */
 exports.findParentAllByCurrentUser = (req, res) => {
@@ -109,6 +78,7 @@ exports.findParentAllByCurrentUser = (req, res) => {
         model: User,
         as: "users",
         through: {
+          // M:N 관계 조회 (userFolder)
           attributes: [],
         },
         where: {
@@ -136,8 +106,8 @@ exports.findAllWithSharedUsers = (req, res) => {
       {
         model: User,
         as: "users",
-        // attributes: ["id", "name"]
         through: {
+          // M:N 관계 조회 (userFolder)
           attributes: [],
         },
       },
@@ -218,11 +188,14 @@ exports.updateSharedUsers = (req, res) => {
  */
 exports.delete = (req, res) => {
   const id = req.params.id;
+  // 삭제할 폴더의 하위 폴더 삭제
   Folder.destroy({
     where: { parentId: id },
   }).then(() => {});
 
+  // 삭제할 폴더의 테스크들 삭제
   Task.destroy({ where: { folderId: id } }).then(() => {
+    // 삭제할 폴더 삭제
     Folder.destroy({ where: { id: id } })
       .then((num) => {
         if (num === 1) {

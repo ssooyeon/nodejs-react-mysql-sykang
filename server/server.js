@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // db
 const db = require("./models");
-// db.sequelize.sync({ force: true });
+// db.sequelize.sync({ force: true });  // DB 테이블 초기화 옵션
 db.sequelize.sync();
 
 app.get("/", (req, res) => {

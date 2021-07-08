@@ -14,6 +14,7 @@ exports.create = (req, res) => {
     res.status(400).send({ message: "Account cannot be empty." });
     return;
   }
+  // 비밀번호 암호화
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(req.body.password, salt);
   const user = {
@@ -34,7 +35,7 @@ exports.create = (req, res) => {
 };
 
 /**
- * 사용자 전체 조회
+ * 사용자 전체 조회 또는 검색
  */
 exports.findAll = (req, res) => {
   const { account } = req.query;
@@ -116,8 +117,7 @@ exports.compareCurrentPassword = (req, res) => {
  */
 exports.update = (req, res) => {
   const id = req.params.id;
-  // request.body의 비밀번호가 모두 존재하면 비밀번호 해시를 생성
-  // :공백도 해시로 생성될 수 있기 때문
+  // request.body의 비밀번호가 모두 존재하면 비밀번호 해시를 생성: 공백도 해시로 생성될 수 있기 때문
   if (req.body.password !== undefined && req.body.password !== "") {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);

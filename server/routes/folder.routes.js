@@ -4,7 +4,6 @@ module.exports = (app) => {
 
   router.post("/", folders.create);
   router.get("/", folders.findAll);
-  // router.get("/parents", folders.findParentAll);
   router.get("/parents/:id", folders.findParentAllByCurrentUser);
   router.get("/users/:id", folders.findAllWithSharedUsers);
   router.get("/:id", folders.findOne);

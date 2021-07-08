@@ -49,8 +49,8 @@ exports.findAll = (req, res) => {
     ],
     where: condition,
     order: [["createdAt", "DESC"]],
-    offset: offset,
-    limit: limit,
+    offset: offset, // offset 행 부터 (변동)
+    limit: limit, // limit 개수 만큼 조회 (고정)
   })
     .then((data) => {
       res.send(data);
