@@ -3,6 +3,10 @@ import { Line } from "react-chartjs-2";
 import "chartjs-plugin-streaming";
 
 export default function LinChart({ data, legend, options }) {
+  // useEffect(() => {
+  //   window.addEventListener("touchstart", null, { passive: true });
+  // }, []);
+
   // const LineChart = ({ data, legend, options }) => {
   return <Line data={data} legend={legend} options={options} height={300} />;
 }

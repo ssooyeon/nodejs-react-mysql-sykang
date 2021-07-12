@@ -244,6 +244,7 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
                     inputProps={{
                       type: "password",
                       name: "password",
+                      autoComplete: "password",
                       onChange: (e) => handleInputChange(e),
                       onBlur: () => validator.current.showMessageFor("password"),
                     }}

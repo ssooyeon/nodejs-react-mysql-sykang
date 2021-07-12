@@ -300,7 +300,6 @@ export default function MyTask() {
     const data = { folder, user };
     dispatch(createFolder(data))
       .then((createdFolder) => {
-        console.log(createdFolder);
         // 생성한 folder 보여주기
         dispatch(retrieveParentFolders(currentUser.id))
           .then((res) => {
@@ -539,14 +538,16 @@ export default function MyTask() {
         <GridItem xs={12} sm={12} md={12}>
           <FormControl className={`${classes.formControl} ${customClasses.selectBox}`}>
             <InputLabel id="demo-simple-select-label"></InputLabel>
-            <Select labelId="demo-simple-select-label" value={currentFolder} onChange={(e) => handleSelectChange(e.target.value)}>
-              {folders &&
-                folders.map((folder, index) => (
-                  <MenuItem value={folder.id} key={folder.id}>
-                    {folder.name}
-                  </MenuItem>
-                ))}
-            </Select>
+            {folders.length > 0 && folders.find(x => x.id === parseInt(currentFolder)) ? (
+              <Select labelId="demo-simple-select-label" value={currentFolder} onChange={(e) => handleSelectChange(e.target.value)}>
+                {folders &&
+                  folders.map((folder, index) => (
+                    <MenuItem value={folder.id} key={folder.id}>
+                      {folder.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            ) : null}
           </FormControl>
           <Button className={`${customClasses.iconButton} ${customClasses.mt20}`} justIcon size="sm" onClick={() => editSharedUser(currentFolder)}>
             <Person className={`${customClasses.titleSpan} ${customClasses.icon}`} />
