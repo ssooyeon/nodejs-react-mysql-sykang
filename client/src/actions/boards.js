@@ -48,7 +48,6 @@ export const retrieveBoard = (id) => async (dispatch) => {
       type: RETRIEVE_BOARD,
       payload: res.data,
     });
-    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);

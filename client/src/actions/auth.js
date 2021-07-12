@@ -12,7 +12,6 @@ export const authLogin = (data) => async (dispatch) => {
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
-    console.log(res);
     if (res.message !== undefined) {
       return Promise.resolve(res.message);
     } else {

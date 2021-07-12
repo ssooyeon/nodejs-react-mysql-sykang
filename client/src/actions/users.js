@@ -56,7 +56,6 @@ export const retrieveUser = (id) => async (dispatch) => {
       type: RETRIEVE_USER,
       payload: res.data,
     });
-    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
@@ -74,7 +73,6 @@ export const retrieveByAccount = (account) => async (dispatch) => {
       type: RETRIEVE_BY_ACCOUNT,
       payload: res.data,
     });
-    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
@@ -92,7 +90,6 @@ export const compareCurrentPassword = (data) => async (dispatch) => {
       type: COMPARE_CURRENT_PASSWORD,
       payload: res.data,
     });
-    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
@@ -110,7 +107,6 @@ export const updateUser = (id, data) => async (dispatch) => {
       type: UPDATE_USER,
       payload: res.data,
     });
-    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);

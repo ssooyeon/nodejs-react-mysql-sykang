@@ -78,7 +78,6 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
       const data = { users };
       dispatch(updateSharedUser(userFolder.id, data))
         .then((res) => {
-          console.log(res);
           alert.show("Shared users of folders update successfully.", {
             title: "",
             type: "success",

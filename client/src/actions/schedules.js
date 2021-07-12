@@ -48,7 +48,6 @@ export const retrieveSchedule = (id) => async (dispatch) => {
       type: RETRIEVE_SCHEDULE,
       payload: res.data,
     });
-    console.log(res.data);
     return Promise.resolve(res.data);
   } catch (err) {
     console.log(err);
