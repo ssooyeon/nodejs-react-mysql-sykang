@@ -74,14 +74,14 @@ export default function MySchedule() {
 
   useEffect(() => {
     if (groups.length > 0) {
-      loadCurrentUserSchedule();
+      loadCurrentUserSchedule(viewMode);
     }
   }, [groups]);
 
   // viewMode==users일 때 current user의 group의 스케줄을 기본으로 표출
-  const loadCurrentUserSchedule = () => {
+  const loadCurrentUserSchedule = (mode) => {
     const currentGroupId = currentUser.groupId;
-    if (viewMode === "groups") {
+    if (mode === "groups") {
       setSelectedGroupIds([currentUser.groupId]);
     }
     const currentGroup = groups.find((x) => x.id === currentGroupId);
@@ -99,6 +99,7 @@ export default function MySchedule() {
     setViewMode(newMode);
     setSelectedGroupIds([]);
     setSelectedUserIds([]);
+    loadCurrentUserSchedule(newMode);
   };
 
   // viewMode=users에서 그룹 select option 변경
@@ -400,7 +401,7 @@ export default function MySchedule() {
     setAddScheduleModalOpen(value);
     // 스케줄 신규 등록이 완료되었고, 표출된 스케줄에 current user가 없으면 강제로 current user의 group의 스케줄을 표출
     if (isDone && selectedUserIds.find((x) => x !== currentUser.id)) {
-      loadCurrentUserSchedule();
+      loadCurrentUserSchedule(viewMode);
     }
   };
 
