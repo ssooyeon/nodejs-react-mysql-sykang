@@ -207,6 +207,7 @@ export default function UserList() {
     // 사용자 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
     if (isDone) {
       searchUser();
+      searchGroup();  // 수정한 user의 group이 변경되었을 경우에는 group 목록도 재조회해야 함
     }
   };
 
@@ -244,6 +245,7 @@ export default function UserList() {
     // 그룹 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
     if (isDone) {
       searchUser();
+      searchGroup();
     }
   };
 

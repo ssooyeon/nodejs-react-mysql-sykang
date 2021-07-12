@@ -15,8 +15,22 @@ exports.create = (req, res) => {
   const group = req.body;
   Group.create(group)
     .then((data) => {
-      Log.create({ status: "SUCCESS", message: `Group create successfully. New Group name is: ${req.body.name}` });
-      res.send(data);
+      // group 생성 후 user(object property)를 포함하여 리턴시키기 위해 재조회 수행
+      Group.findByPk(data.id, {
+        include: [
+          {
+            model: User,
+            as: "users",
+          },
+        ],
+      })
+        .then((result) => {
+          Log.create({ status: "SUCCESS", message: `Group create successfully. New Group name is: ${req.body.name}` });
+          res.send(result);
+        })
+        .catch((err) => {
+          res.status(500).send({ message: err.message || `Error retrieving Group with id=${id}` });
+        });
     })
     .catch((err) => {
       Log.create({ status: "ERROR", message: `Group create failed. Group name is: ${req.body.name}` });

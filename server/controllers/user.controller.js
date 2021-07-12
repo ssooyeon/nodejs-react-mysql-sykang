@@ -25,8 +25,22 @@ exports.create = (req, res) => {
   };
   User.create(user)
     .then((data) => {
-      Log.create({ status: "SUCCESS", message: `User create successfully. New user account is: ${req.body.account}` });
-      res.send(data);
+      // user 생성 후 group(object property)를 포함하여 리턴시키기 위해 재조회 수행
+      User.findByPk(data.id, {
+        include: [
+          {
+            model: Group,
+            as: "group",
+          },
+        ],
+      })
+        .then((result) => {
+          Log.create({ status: "SUCCESS", message: `User create successfully. New user account is: ${req.body.account}` });
+          res.send(result);
+        })
+        .catch((err) => {
+          res.status(500).send({ message: err.message || `Error retrieving User with id=${id}` });
+        });
     })
     .catch((err) => {
       Log.create({ status: "ERROR", message: `User create failed. User is: ${req.body.account}` });
