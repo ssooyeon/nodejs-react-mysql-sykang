@@ -228,7 +228,7 @@ export default function MyProfile(props) {
                         inputProps={{
                           type: "password",
                           name: "currentPassword",
-                          autoComplete: "current-password",
+                          autoComplete: "off",
                           onChange: (e) => handleInputChange(e),
                           onBlur: () => validator.current.showMessageFor("currentPassword"),
                         }}
@@ -249,7 +249,7 @@ export default function MyProfile(props) {
                         inputProps={{
                           type: "password",
                           name: "password",
-                          autoComplete: "new-password",
+                          autoComplete: "off",
                           onChange: (e) => handleInputChange(e),
                           onBlur: () => validator.current.showMessageFor("password"),
                         }}
@@ -270,6 +270,7 @@ export default function MyProfile(props) {
                         inputProps={{
                           type: "password",
                           name: "passwordCheck",
+                          autoComplete: "off",
                           onChange: (e) => handleInputChange(e),
                           onBlur: () => validator.current.showMessageFor("passwordCheck"),
                         }}

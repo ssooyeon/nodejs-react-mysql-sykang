@@ -140,6 +140,7 @@ export default function Login(props) {
                     inputProps={{
                       type: "password",
                       name: "password",
+                      autoComplete: "off",
                       onChange: (e) => handleInputChange(e),
                       onBlur: () => validator.current.showMessageFor("password"),
                       onKeyPress: (e) => handleKeyPress(e),

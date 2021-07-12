@@ -220,6 +220,7 @@ export default function Register(props) {
                     inputProps={{
                       type: "password",
                       name: "password",
+                      autoComplete: "off",
                       onChange: (e) => handleInputChange(e),
                       onBlur: () => validator.current.showMessageFor("password"),
                     }}
@@ -240,6 +241,7 @@ export default function Register(props) {
                     inputProps={{
                       type: "password",
                       name: "passwordCheck",
+                      autoComplete: "off",
                       onChange: (e) => handleInputChange(e),
                       onBlur: () => validator.current.showMessageFor("passwordCheck"),
                       onKeyPress: (e) => handleKeyPress(e),

@@ -232,6 +232,7 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
                         inputProps={{
                           type: "password",
                           name: "password",
+                          autoComplete: "off",
                           onChange: (e) => handleInputChange(e),
                           onBlur: () => validator.current.showMessageFor("password"),
                         }}
@@ -252,6 +253,7 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
                         inputProps={{
                           type: "password",
                           name: "passwordCheck",
+                          autoComplete: "off",
                           onChange: (e) => handleInputChange(e),
                           onBlur: () => validator.current.showMessageFor("passwordCheck"),
                         }}
