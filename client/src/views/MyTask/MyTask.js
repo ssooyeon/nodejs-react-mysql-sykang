@@ -538,7 +538,7 @@ export default function MyTask() {
         <GridItem xs={12} sm={12} md={12}>
           <FormControl className={`${classes.formControl} ${customClasses.selectBox}`}>
             <InputLabel id="demo-simple-select-label"></InputLabel>
-            {folders.length > 0 && folders.find(x => x.id === parseInt(currentFolder)) ? (
+            {folders.length > 0 && folders.find((x) => x.id === parseInt(currentFolder)) ? (
               <Select labelId="demo-simple-select-label" value={currentFolder} onChange={(e) => handleSelectChange(e.target.value)}>
                 {folders &&
                   folders.map((folder, index) => (
