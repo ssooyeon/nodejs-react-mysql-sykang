@@ -7,8 +7,8 @@ import SimpleReactValidator from "simple-react-validator";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Check } from "@material-ui/icons";
+import Button from "@material-ui/core/Button";
 
-import Button from "components/CustomButtons/Button";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card";
@@ -40,7 +40,8 @@ const styles = {
     marginTop: "20px",
   },
   checkDoneIcon: {
-    marginTop: "25px",
+    marginTop: "40px",
+    float: "right",
   },
 };
 
@@ -181,7 +182,7 @@ export default function Register(props) {
                     </div>
                   ) : (
                     <div className={classes.checkButton}>
-                      <Button color="info" onClick={checkAccount}>
+                      <Button variant="outlined" style={{ marginTop: "15px", float: "right" }} onClick={checkAccount}>
                         Check
                       </Button>
                     </div>
@@ -254,10 +255,11 @@ export default function Register(props) {
               </GridContainer>
             </CardBody>
             <CardFooter className={classes.cardFooter}>
-              <Button color="primary" onClick={register}>
+              <Button variant="outlined" onClick={register}>
                 Submit
               </Button>
             </CardFooter>
+            <br />
           </form>
         </Card>
       </GridItem>

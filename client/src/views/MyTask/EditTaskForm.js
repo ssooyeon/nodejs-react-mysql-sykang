@@ -16,7 +16,9 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "components/CustomButtons/Button";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
@@ -131,9 +133,9 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
             <div className={customClasses.createrLabel}>by @{taskForm.creater ? taskForm.creater.account : "N/A"}</div>
             <div className={classes.labelText}>
               label: &nbsp; <div className={classes.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
-              <Button className={classes.iconButton} justIcon size="sm" onClick={() => onColorStateChange(null)}>
+              <IconButton aria-label="close" className={`${classes.iconButton} ${classes.labelDeleteIcon}`} onClick={() => onColorStateChange(null)}>
                 <Close className={classes.icon} />
-              </Button>
+              </IconButton>
             </div>
           </DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>
@@ -223,12 +225,15 @@ export default function EditTaskForm({ open, handleCloseClick, task }) {
               </GridContainer>
             </CardBody>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={editTask} color="primary">
+          <DialogActions style={{ padding: "8px 30px" }}>
+            <Button variant="outlined" onClick={editTask}>
               Submit
             </Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
+          <br />
         </form>
       </Dialog>
     </>

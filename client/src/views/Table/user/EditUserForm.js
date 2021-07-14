@@ -13,7 +13,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { MenuItem } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Button from "components/CustomButtons/Button";
+import Button from "@material-ui/core/Button";
+
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
@@ -285,12 +286,15 @@ export default function EditUserForm({ open, handleCloseClick, user }) {
               </GridContainer>
             </CardBody>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={editUser} color="primary">
+          <DialogActions style={{ padding: "8px 40px" }}>
+            <Button variant="outlined" onClick={editUser}>
               Submit
             </Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
+          <br />
         </form>
       </Dialog>
     </>

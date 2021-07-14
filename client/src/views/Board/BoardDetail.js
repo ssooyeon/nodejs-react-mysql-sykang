@@ -9,10 +9,11 @@ import Divider from "@material-ui/core/Divider";
 import { Edit } from "@material-ui/icons";
 import { Delete } from "@material-ui/icons";
 import { ArrowBack } from "@material-ui/icons";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Button from "components/CustomButtons/Button";
 import Card from "components/Card/Card";
 import CardHeader from "components/Card/CardHeader";
 import CardFooter from "components/Card/CardFooter";
@@ -123,13 +124,13 @@ export default function BoardDetail(props) {
               <h3 className={classes.cardTitle}>{boards.title}</h3>
               <div className={classes.buttonWrapper}>
                 <Link to={"/admin/board/edit/" + boards.id}>
-                  <Button color="info" justIcon>
+                  <IconButton aria-label="edit">
                     <Edit />
-                  </Button>
+                  </IconButton>
                 </Link>
-                <Button color="danger" justIcon onClick={confirmRemoveBoard}>
+                <IconButton aria-label="edit" onClick={confirmRemoveBoard}>
                   <Delete />
-                </Button>
+                </IconButton>
               </div>
             </CardHeader>
             <Divider light />
@@ -146,7 +147,7 @@ export default function BoardDetail(props) {
         </GridItem>
       </GridContainer>
       <Link to={"/admin/board/"}>
-        <Button>
+        <Button variant="outlined">
           <ArrowBack />
           Back
         </Button>

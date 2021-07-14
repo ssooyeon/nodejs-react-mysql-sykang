@@ -16,10 +16,10 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import Button from "@material-ui/core/Button";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
-import Button from "components/CustomButtons/Button";
 
 import "./style/CustomCalendar.css";
 
@@ -476,7 +476,7 @@ export default function MySchedule() {
                     />
                   );
                 })}
-              <Button color="primary" size="sm" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
+              <Button variant="outlined" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
                 Load
               </Button>
             </GridItem>
@@ -516,7 +516,7 @@ export default function MySchedule() {
                     />
                   );
                 })}
-              <Button color="primary" size="sm" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
+              <Button variant="outlined" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
                 Load
               </Button>
             </GridItem>

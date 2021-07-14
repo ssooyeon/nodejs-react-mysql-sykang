@@ -13,7 +13,8 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "components/CustomButtons/Button";
+import Button from "@material-ui/core/Button";
+
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
 import { MenuItem, TextField } from "@material-ui/core";
@@ -460,15 +461,19 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
               </GridContainer>
             </CardBody>
           </DialogContent>
-          <DialogActions>
-            <Button color="danger" justIcon className={classes.deleteIconButton} onClick={removeScheduleClick}>
+          <DialogActions style={{ padding: "8px 40px" }}>
+            <Button variant="outlined" onClick={removeScheduleClick}>
               <Delete />
+              Remove
             </Button>
-            <Button onClick={editScheduleClick} color="primary">
+            <Button variant="outlined" onClick={editScheduleClick}>
               Submit
             </Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
+          <br />
         </form>
       </Dialog>
     </>

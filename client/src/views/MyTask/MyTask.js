@@ -10,13 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Add, Person, Edit, Delete, Menu as MenuIcon } from "@material-ui/icons";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-
-import GridItem from "components/Grid/GridItem";
-import GridContainer from "components/Grid/GridContainer";
-import Card from "components/Card/Card";
-import CardHeader from "components/Card/CardHeader";
-import CardFooter from "components/Card/CardFooter";
-import Button from "components/CustomButtons/Button";
+import IconButton from "@material-ui/core/IconButton";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
@@ -26,6 +20,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
+
+import GridItem from "components/Grid/GridItem";
+import GridContainer from "components/Grid/GridContainer";
+import Card from "components/Card/Card";
+import CardHeader from "components/Card/CardHeader";
+import CardFooter from "components/Card/CardFooter";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import AddTaskForm from "./AddTaskForm";
@@ -549,30 +549,35 @@ export default function MyTask() {
               </Select>
             ) : null}
           </FormControl>
-          <Button className={`${customClasses.iconButton} ${customClasses.mt20}`} justIcon size="sm" onClick={() => editSharedUser(currentFolder)}>
-            <Person className={`${customClasses.titleSpan} ${customClasses.icon}`} />
-          </Button>
-          <Button className={`${customClasses.iconButton} ${customClasses.mt20}`} justIcon size="sm" onClick={() => editParentFolder(currentFolder)}>
-            <Edit className={`${customClasses.titleSpan} ${customClasses.icon}`} />
-          </Button>
-          <Button
+          <IconButton
+            aria-label="members"
             className={`${customClasses.iconButton} ${customClasses.mt20}`}
-            justIcon
-            size="sm"
-            onClick={() => {
-              confirmRemoveFolder(currentFolder);
-            }}
+            onClick={() => editSharedUser(currentFolder)}
+          >
+            <Person className={`${customClasses.titleSpan} ${customClasses.icon}`} />
+          </IconButton>
+          <IconButton
+            aria-label="edit"
+            className={`${customClasses.iconButton} ${customClasses.mt20}`}
+            onClick={() => editParentFolder(currentFolder)}
+          >
+            <Edit className={`${customClasses.titleSpan} ${customClasses.icon}`} />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
+            className={`${customClasses.iconButton} ${customClasses.mt20}`}
+            onClick={() => confirmRemoveFolder(currentFolder)}
           >
             <Delete className={`${customClasses.titleSpan} ${customClasses.icon}`} />
-          </Button>
-          <Button className={customClasses.iconButtonLarge} justIcon onClick={addParentFolder}>
+          </IconButton>
+          <IconButton aria-label="add" className={customClasses.iconButtonLarge} onClick={addParentFolder}>
             <Add className={customClasses.colorIcon} />
             Folder
-          </Button>
-          <Button className={customClasses.iconButtonLarge} justIcon onClick={addColumn}>
+          </IconButton>
+          <IconButton aria-label="add" className={customClasses.iconButtonLarge} onClick={addColumn}>
             <Add className={customClasses.colorIcon} />
             Column
-          </Button>
+          </IconButton>
           <div className={customClasses.themeColorPicker}>
             <CirclePicker colors={themeColorList} circleSize={20} onChangeComplete={(colore) => onColorStateChange(colore.hex)} />
           </div>
@@ -587,25 +592,25 @@ export default function MyTask() {
                       <Card className={customClasses.cardNoMargin}>
                         <CardHeader color="warning" stats icon>
                           <p className={classes.cardCategory}>
-                            <Button className={customClasses.plusIconButton} justIcon size="sm" onClick={() => addTask(column)}>
+                            <IconButton aria-label="add" className={customClasses.plusIconButton} onClick={() => addTask(column)}>
                               <Add className={customClasses.plusIcon} />
-                            </Button>
+                            </IconButton>
                             {index > 0 ? ( // 첫 번째 컬럼이면
-                              <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => columnOrderingBack(column)}>
+                              <IconButton aria-label="move" className={customClasses.iconButton} onClick={() => columnOrderingBack(column)}>
                                 <ArrowBackIosIcon className={customClasses.arrowIcon} />
-                              </Button>
+                              </IconButton>
                             ) : null}
                             {column.name}
-                            <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => editColumn(column)}>
+                            <IconButton aria-label="edit" className={customClasses.iconButton} onClick={() => editColumn(column)}>
                               <Edit className={customClasses.icon} />
-                            </Button>
-                            <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => confirmRemoveColumn(column.id)}>
+                            </IconButton>
+                            <IconButton aria-label="delete" className={customClasses.iconButton} onClick={() => confirmRemoveColumn(column.id)}>
                               <Delete className={customClasses.icon} />
-                            </Button>
+                            </IconButton>
                             {index + 1 < length ? ( // 마지막 컬럼이면
-                              <Button className={customClasses.iconButton} justIcon size="sm" onClick={() => columnOrderingForward(column)}>
+                              <IconButton aria-label="move" className={customClasses.iconButton} onClick={() => columnOrderingForward(column)}>
                                 <ArrowForwardIosIcon className={customClasses.arrowIcon} />
-                              </Button>
+                              </IconButton>
                             ) : null}
                           </p>
                           <h3 className={classes.cardTitle}></h3>
@@ -642,17 +647,16 @@ export default function MyTask() {
                                                   <div className={customClasses.circleLabel} style={{ background: item.labelColor }}></div>
                                                 ) : null}
                                                 <div className={customClasses.right}>
-                                                  <Button
+                                                  <IconButton
+                                                    aria-label="action"
                                                     className={customClasses.iconButton}
-                                                    justIcon
-                                                    size="sm"
                                                     aria-controls="simple-menu"
                                                     aria-haspopup="true"
                                                     data-task={JSON.stringify(item)}
                                                     onClick={handleTaskMenuClick}
                                                   >
                                                     <MenuIcon className={customClasses.icon} />
-                                                  </Button>
+                                                  </IconButton>
                                                   <Menu
                                                     id="simple-menu"
                                                     anchorEl={anchorEl}

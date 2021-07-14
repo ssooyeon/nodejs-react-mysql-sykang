@@ -9,7 +9,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { DataGrid } from "@material-ui/data-grid";
-import Button from "components/CustomButtons/Button";
+import Button from "@material-ui/core/Button";
+
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
@@ -66,7 +67,7 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
   };
 
   // userFolder 추가(수정)
-  const adduserFolder = () => {
+  const addUserFolder = () => {
     const users = selectionModel;
     const checkCurrentUser = users.find((x) => x === currentUser.id);
     if (checkCurrentUser === undefined) {
@@ -96,7 +97,7 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
   return (
     <>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
-        <form autoComplete="off" onSubmit={adduserFolder}>
+        <form autoComplete="off" onSubmit={addUserFolder}>
           <DialogTitle id="form-dialog-title">Edit Shared Users</DialogTitle>
           <DialogContent>
             <DialogContentText>Select the users you want to share that top-level folder with and click the Submit button.</DialogContentText>
@@ -117,12 +118,15 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
               </GridContainer>
             </CardBody>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={adduserFolder} color="primary">
+          <DialogActions style={{ padding: "8px 40px" }}>
+            <Button variant="outlined" onClick={addUserFolder}>
               Submit
             </Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
+          <br />
         </form>
       </Dialog>
     </>

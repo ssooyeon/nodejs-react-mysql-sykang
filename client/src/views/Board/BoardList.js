@@ -8,10 +8,11 @@ import Pagination from "@material-ui/lab/Pagination";
 import { Add } from "@material-ui/icons";
 import { Search } from "@material-ui/icons";
 import { TextField } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
-import Button from "components/CustomButtons/Button";
 import Card from "components/Card/Card";
 import CardFooter from "components/Card/CardFooter";
 import CardBody from "components/Card/CardBody";
@@ -80,7 +81,7 @@ const styles = {
     marginTop: "20px",
   },
   searchBoardTitle: {
-    width: "97%",
+    width: "96%",
     "& .MuiInput-underline:after": {
       borderBottom: "2px solid purple !important",
     },
@@ -149,7 +150,7 @@ export default function BoardList() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <Link to={"/admin/board/add"}>
-            <Button color="primary">
+            <Button variant="outlined">
               <Add />
               Add
             </Button>
@@ -165,9 +166,9 @@ export default function BoardList() {
             onChange={(e) => setSearch(e.target.value)}
             onKeyPress={(e) => handleKeyPress(e)}
           />
-          <Button justIcon className={classes.searchButton} color="transparent" onClick={searchBoards}>
+          <IconButton aria-label="search" className={classes.searchButton} onClick={searchBoards}>
             <Search />
-          </Button>
+          </IconButton>
         </GridItem>
         {boards.rows &&
           boards.rows.map((board, index) => (

@@ -39,6 +39,10 @@ const styles = {
     marginBottom: "10px !important",
     color: "#000",
   },
+  labelDeleteIcon: {
+    padding: "0px !important",
+    height: "auto !important",
+  },
 };
 
 export default styles;

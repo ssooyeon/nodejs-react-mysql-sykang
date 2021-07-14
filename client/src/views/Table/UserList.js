@@ -6,10 +6,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import { Add, Edit, Delete, Search } from "@material-ui/icons";
 import { TextField } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
-import Button from "components/CustomButtons/Button";
 
 import AddUserForm from "./user/AddUserForm";
 import EditUserForm from "./user/EditUserForm";
@@ -27,7 +28,7 @@ const styles = {
     width: "100%",
   },
   searchUserAccount: {
-    width: "95%",
+    width: "94%",
     "& .MuiInput-underline:after": {
       borderBottom: "2px solid purple !important",
     },
@@ -36,7 +37,7 @@ const styles = {
     },
   },
   searchGroupName: {
-    width: "93%",
+    width: "92%",
     "& .MuiInput-underline:after": {
       borderBottom: "2px solid purple !important",
     },
@@ -105,12 +106,12 @@ export default function UserList() {
 
         return (
           <>
-            <Button justIcon color="warning" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onUserEditClick}>
+            <IconButton aria-label="edit" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onUserEditClick}>
               <Edit />
-            </Button>
-            <Button justIcon color="danger" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onUserRemoveClick}>
+            </IconButton>
+            <IconButton aria-label="delete" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onUserRemoveClick}>
               <Delete />
-            </Button>
+            </IconButton>
           </>
         );
       },
@@ -150,12 +151,12 @@ export default function UserList() {
 
         return (
           <>
-            <Button justIcon color="warning" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onGroupEditClick}>
+            <IconButton aria-label="edit" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onGroupEditClick}>
               <Edit />
-            </Button>
-            <Button justIcon color="danger" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onGroupRemoveClick}>
+            </IconButton>
+            <IconButton aria-label="delete" style={{ minWidth: "30px", width: "30px", height: "30px" }} onClick={onGroupRemoveClick}>
               <Delete />
-            </Button>
+            </IconButton>
           </>
         );
       },
@@ -207,7 +208,7 @@ export default function UserList() {
     // 사용자 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
     if (isDone) {
       searchUser();
-      searchGroup();  // 수정한 user의 group이 변경되었을 경우에는 group 목록도 재조회해야 함
+      searchGroup(); // 수정한 user의 group이 변경되었을 경우에는 group 목록도 재조회해야 함
     }
   };
 
@@ -296,13 +297,13 @@ export default function UserList() {
     <>
       <GridContainer>
         <GridItem xs={12} sm={12} md={7}>
-          <Button color="primary" onClick={() => handleUserAddModalClick(true)}>
+          <Button variant="outlined" onClick={() => handleUserAddModalClick(true)}>
             <Add />
             Add
           </Button>
         </GridItem>
         <GridItem xs={12} sm={12} md={5}>
-          <Button color="primary" onClick={() => handleGroupAddModalClick(true)}>
+          <Button variant="outlined" onClick={() => handleGroupAddModalClick(true)}>
             <Add />
             Add
           </Button>
@@ -316,9 +317,9 @@ export default function UserList() {
             onChange={(e) => setSearchUserInput(e.target.value)}
             onKeyPress={(e) => handleUserSearchKeyPress(e)}
           />
-          <Button justIcon className={classes.searchButton} color="transparent" onClick={searchUser}>
+          <IconButton aria-label="search" className={classes.searchButton} onClick={searchUser}>
             <Search />
-          </Button>
+          </IconButton>
         </GridItem>
         <GridItem xs={12} sm={12} md={5}>
           <TextField
@@ -329,9 +330,9 @@ export default function UserList() {
             onChange={(e) => setSearchGroupInput(e.target.value)}
             onKeyPress={(e) => handleGroupSearchKeyPress(e)}
           />
-          <Button justIcon className={classes.searchButton} color="transparent" onClick={searchGroup}>
+          <IconButton aria-label="search" className={classes.searchButton} onClick={searchGroup}>
             <Search />
-          </Button>
+          </IconButton>
         </GridItem>
         <GridItem xs={12} sm={12} md={7}>
           <div className={classes.tableWrapper}>

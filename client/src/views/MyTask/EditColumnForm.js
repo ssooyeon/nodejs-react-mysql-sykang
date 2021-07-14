@@ -7,7 +7,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "components/CustomButtons/Button";
+import Button from "@material-ui/core/Button";
+
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
@@ -106,12 +107,15 @@ export default function EditColumnForm({ open, handleCloseClick, column }) {
               </GridContainer>
             </CardBody>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={editColumn} color="primary">
+          <DialogActions style={{ padding: "8px 40px" }}>
+            <Button variant="outlined" onClick={editColumn}>
               Submit
             </Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
+          <br />
         </form>
       </Dialog>
     </>

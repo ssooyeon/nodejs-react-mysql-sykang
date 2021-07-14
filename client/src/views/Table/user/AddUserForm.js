@@ -13,7 +13,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { MenuItem } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Button from "components/CustomButtons/Button";
+import Button from "@material-ui/core/Button";
+
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CardBody from "components/Card/CardBody";
@@ -34,7 +35,8 @@ const styles = {
     marginLeft: "-20px",
   },
   checkDoneIcon: {
-    marginTop: "25px",
+    marginTop: "40px",
+    float: "right",
   },
   formControl: {
     width: "100%",
@@ -181,7 +183,7 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
             <DialogContentText>To register a new user, enter your account name, email, and password and click the Submit button.</DialogContentText>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={11}>
+                <GridItem xs={12} sm={12} md={10}>
                   <CustomInput
                     labelText="Account"
                     id="account"
@@ -198,14 +200,14 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
                   />
                   <div className={classes.errorText}>{validator.current.message("account", userForm.account, "required")}</div>
                 </GridItem>
-                <GridItem xs={12} sm={12} md={1}>
+                <GridItem xs={12} sm={12} md={2}>
                   {isValidAccount ? (
                     <div className={classes.checkDoneIcon}>
                       <Check />
                     </div>
                   ) : (
                     <div className={classes.checkButton}>
-                      <Button color="info" style={{ minWidth: "30px", width: "30px" }} onClick={checkAccount}>
+                      <Button variant="outlined" style={{ marginTop: "15px", float: "right" }} onClick={checkAccount}>
                         Check
                       </Button>
                     </div>
@@ -271,12 +273,15 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
               </GridContainer>
             </CardBody>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={addUser} color="primary">
+          <DialogActions style={{ padding: "8px 40px" }}>
+            <Button variant="outlined" onClick={addUser}>
               Submit
             </Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              Cancel
+            </Button>
           </DialogActions>
+          <br />
         </form>
       </Dialog>
     </>
