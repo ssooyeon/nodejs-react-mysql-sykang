@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useAlert } from "react-alert-17";
+import { useAlert } from "react-alert";
 import Moment from "react-moment";
 
 import { makeStyles } from "@material-ui/core/styles";

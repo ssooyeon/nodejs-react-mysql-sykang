@@ -32,7 +32,7 @@
     "perfect-scrollbar": "^1.5.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
-    "react-alert-17": "^7.0.2",
+    "react-alert": "^7.0.3",
     "react-alert-template-mui": "^1.0.7",
     "react-beautiful-dnd": "^13.1.0",
     "react-calendar": "^3.4.0",
@@ -64,7 +64,9 @@
       "react-app",
       "react-app/jest"
     ],
-    "plugins": ["react-hooks"],
+    "plugins": [
+      "react-hooks"
+    ],
     "rules": {
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "off",

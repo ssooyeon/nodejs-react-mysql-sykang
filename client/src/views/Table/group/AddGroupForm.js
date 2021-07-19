@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { useAlert } from "react-alert-17";
+import { useAlert } from "react-alert";
 import SimpleReactValidator from "simple-react-validator";
 
 import { makeStyles } from "@material-ui/core/styles";

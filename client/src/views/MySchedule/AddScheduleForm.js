@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useAlert } from "react-alert-17";
+import { useAlert } from "react-alert";
 import { CirclePicker } from "react-color";
 import DatePicker from "react-date-picker";
 import DateTimePicker from "react-datetime-picker";

@@ -2,7 +2,7 @@ import React, { useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
-import { useAlert } from "react-alert-17";
+import { useAlert } from "react-alert";
 import SimpleReactValidator from "simple-react-validator";
 
 import { makeStyles } from "@material-ui/core/styles";
