@@ -96,7 +96,17 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
+      {/* <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick> */}
+      <Dialog
+        open={open}
+        onClose={(e, reason) => {
+          if (reason !== "backdropClick") {
+            handleClose(e, reason);
+          }
+        }}
+        aria-labelledby="form-dialog-title"
+        maxWidth="md"
+      >
         <form autoComplete="off" onSubmit={addUserFolder}>
           <DialogTitle id="form-dialog-title">Edit Shared Users</DialogTitle>
           <DialogContent>

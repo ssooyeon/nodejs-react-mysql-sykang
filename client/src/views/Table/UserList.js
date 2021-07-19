@@ -336,12 +336,12 @@ export default function UserList() {
         </GridItem>
         <GridItem xs={12} sm={12} md={7}>
           <div className={classes.tableWrapper}>
-            <DataGrid rows={users} columns={userColumns} pageSize={10} checkboxSelection />
+            <DataGrid rows={users} columns={userColumns} pageSize={10} checkboxSelection disableSelectionOnClick />
           </div>
         </GridItem>
         <GridItem xs={12} sm={12} md={5}>
           <div className={classes.tableWrapper}>
-            <DataGrid rows={groups} columns={groupColumns} pageSize={10} checkboxSelection />
+            <DataGrid rows={groups} columns={groupColumns} pageSize={10} checkboxSelection disableSelectionOnClick />
           </div>
         </GridItem>
       </GridContainer>

@@ -270,7 +270,17 @@ export default function EditScheduleForm({ open, handleCloseClick, schedule }) {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
+      {/* <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick> */}
+      <Dialog
+        open={open}
+        onClose={(e, reason) => {
+          if (reason !== "backdropClick") {
+            handleClose(e, reason);
+          }
+        }}
+        aria-labelledby="form-dialog-title"
+        maxWidth="md"
+      >
         <form autoComplete="off" onSubmit={editScheduleClick}>
           <DialogTitle id="form-dialog-title">Edit schedule</DialogTitle>
           <DialogContent className={classes.modalContentWrapper}>

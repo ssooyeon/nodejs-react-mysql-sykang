@@ -91,6 +91,12 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
     setIsValidAccount(false);
     handleCloseClick(false);
   };
+  // const handleClose = (e, reason) => {
+  //   if (reason !== "backdropClick") {
+  //     setIsValidAccount(false);
+  //     handleCloseClick(false);
+  //   }
+  // };
 
   // 사용자 추가를 수행하면 검색란을 초기화
   const sendSearchReset = () => {
@@ -176,7 +182,17 @@ export default function AddUserForm({ open, handleCloseClick, handleResetInput }
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick>
+      {/* <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="md" disableBackdropClick> */}
+      <Dialog
+        open={open}
+        onClose={(e, reason) => {
+          if (reason !== "backdropClick") {
+            handleClose(e, reason);
+          }
+        }}
+        aria-labelledby="form-dialog-title"
+        maxWidth="md"
+      >
         <form autoComplete="off">
           <DialogTitle id="form-dialog-title">Add new user</DialogTitle>
           <DialogContent>
