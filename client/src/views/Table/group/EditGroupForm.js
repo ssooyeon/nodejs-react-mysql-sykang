@@ -257,6 +257,7 @@ export default function EditGroupForm({ open, handleCloseClick, group }) {
                       columns={userColumns}
                       pageSize={5}
                       checkboxSelection
+                      disableSelectionOnClick
                       onSelectionModelChange={(newSelection) => handleUserRowClick(newSelection.selectionModel)}
                       selectionModel={selectionModel}
                     />

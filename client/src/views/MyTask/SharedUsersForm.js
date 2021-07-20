@@ -120,6 +120,7 @@ export default function SharedUsersForm({ open, handleCloseClick, userFolder }) 
                       columns={columns}
                       pageSize={9}
                       checkboxSelection
+                      disableSelectionOnClick
                       onSelectionModelChange={(newSelection) => handleUserRowClick(newSelection.selectionModel)}
                       selectionModel={selectionModel}
                     />
