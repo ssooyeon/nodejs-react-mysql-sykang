@@ -52,7 +52,8 @@
     "rrule": "^2.6.8",
     "simple-react-validator": "^1.6.0",
     "uuid": "^8.3.2",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+    "redux-devtools-extension": "^2.13.9"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -92,7 +93,6 @@
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.8",
     "immutable": "^4.0.0-rc.14",
-    "prettier": "2.0.5",
-    "redux-devtools-extension": "^2.13.9"
+    "prettier": "2.0.5"
   }
 }
