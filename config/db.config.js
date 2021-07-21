@@ -1,8 +1,10 @@
+require("dotenv").config();
+
 module.exports = {
-  HOST: "localhost",
-  USER: "root",
-  PASSWORD: "1234",
-  DB: "my_blog",
+  HOST: process.env.DB_HOST,
+  USER: process.env.DB_USER,
+  PASSWORD: process.env.DB_PASSWORD,
+  DB: process.env.DB_NAME,
   dialect: "mysql",
   //TODO: not working
   dialectOptions: { charset: "utf8mb4", dateStrings: true, typeCast: true },
