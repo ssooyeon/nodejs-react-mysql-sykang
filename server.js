@@ -5,11 +5,6 @@ const session = require("express-session");
 const path = require("path");
 const app = express();
 
-// default
-// var corsOptions = {
-//   origin: "http://localhost:8083",
-// };
-// app.use(cors(corsOptions));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(
@@ -19,25 +14,20 @@ app.use(
     saveUninitialized: true,
   })
 );
-// app.use(express.static(path.join(__dirname, "client/build")));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname + "/client/build/index.html"));
-// });
-// app.use(bodyParser.urlencoded({ extended: true }));
-
 // db
 const db = require("./models");
 // db.sequelize.sync({ force: true });  // DB 테이블 초기화 옵션
 db.sequelize.sync();
 
-// app.get("/", (req, res) => {
-//   res.json({ message: "Welcome :) ❤" });
-// });
+console.log(process.env.NODE_ENV);
 
-app.use(express.static(path.join(__dirname, "client/build")));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/build", "index.html"));
-});
+// heroku deploy일 경우에만 client build 설정
+if (process.env.NODE_ENV === "prod") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 
 // routes
 require("./routes/user.routes")(app);
