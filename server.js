@@ -6,10 +6,11 @@ const path = require("path");
 const app = express();
 
 // default
-var corsOptions = {
-  origin: "http://localhost:8083",
-};
-app.use(cors(corsOptions));
+// var corsOptions = {
+//   origin: "http://localhost:8083",
+// };
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(
   session({
@@ -18,10 +19,10 @@ app.use(
     saveUninitialized: true,
   })
 );
-// app.use(express.static(path.join(__dirname, "client/build")));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname + "/client/build/index.html"));
-// });
+app.use(express.static(path.join(__dirname, "client/build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+});
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // db
