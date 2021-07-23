@@ -4,3 +4,5 @@
 .env
 .env.dev
 .env.prod
+/clinet/.env.development
+/client/.env.production
