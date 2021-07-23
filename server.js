@@ -19,8 +19,6 @@ const db = require("./models");
 // db.sequelize.sync({ force: true });  // DB 테이블 초기화 옵션
 db.sequelize.sync();
 
-console.log(process.env.NODE_ENV);
-
 // heroku deploy일 경우에만 client build 설정
 if (process.env.NODE_ENV === "prod") {
   app.use(express.static(path.join(__dirname, "client/build")));

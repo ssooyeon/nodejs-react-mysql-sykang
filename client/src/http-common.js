@@ -1,9 +1,7 @@
 import axios from "axios";
 
 export default axios.create({
-  // baseURL: "http://localhost:8081/api",
-  baseURL: "/api",
-  // baseURL: "https://nodejs-react-mysql-sykang.herokuapp.com/api",
+  baseURL: process.env.REACT_APP_API_HOST,
   headers: {
     "Content-type": "application/json",
   },
