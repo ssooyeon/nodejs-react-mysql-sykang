@@ -24,7 +24,7 @@ db.sequelize.sync();
 // heroku deploy일 경우에만 client build 설정
 if (process.env.NODE_ENV === "prod") {
   app.use(express.static(path.join(__dirname, "client", "build")));
-  app.get("*", (req, res) => {
+  app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });
 
