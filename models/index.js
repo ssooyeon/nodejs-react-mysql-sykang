@@ -1,6 +1,6 @@
 let path;
 switch (process.env.NODE_ENV) {
-  case "prod":
+  case "production":
     path = `${__dirname}/../.env.prod`;
     break;
   case "dev":
