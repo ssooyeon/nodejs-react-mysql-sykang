@@ -34,6 +34,11 @@ if (process.env.NODE_ENV === "prod") {
     http.get(process.env.DEPLOY_SERVER_URL);
   });
 }
+app.use(express.static(path.join(__dirname, "client", "build")));
+app.get("/*", (req, res) => {
+  console.log("test from app.get!");
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 // routes
 require("./routes/user.routes")(app);
