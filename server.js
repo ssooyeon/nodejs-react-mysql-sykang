@@ -23,10 +23,16 @@ db.sequelize.sync();
 
 // heroku deploy일 경우에만 client build 설정
 if (process.env.NODE_ENV === "prod") {
-  app.use(express.static(path.join(__dirname, "client/build")));
+  // app.use(express.static(path.join(__dirname, "client/build")));
+  // app.get("/", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  // });
+
+  app.use(express.static("client/build"));
   app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
+
   // heroku server를 9(utc:0)-19(utc:10)시에 20분마다 호출
   cron.schedule("*/20 0-10 * * *", function () {
     console.log(`node-cron: call ${process.env.DEPLOY_SERVER_URL}`);
