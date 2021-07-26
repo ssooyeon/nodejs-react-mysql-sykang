@@ -28,6 +28,10 @@ if (process.env.NODE_ENV === "production") {
     console.log("==========================>test from app.get!");
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });
+  app.get("/test", (req, res) => {
+    console.log("==========================>test from app.get.test!");
+    res.send("test route page");
+  });
 
   // heroku server를 9(utc:0)-19(utc:10)시에 20분마다 호출
   cron.schedule("*/20 0-10 * * *", function () {
