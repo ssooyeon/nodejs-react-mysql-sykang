@@ -107,4 +107,4 @@ git push heroku master
 
 ## to more information
 
-1. If you want to see a project that's simpler than this one, visit https://github.com/ssooyeon/nodejs-react-mysql-basic. Same as this project, task & calendar management page is excluded.
+1. If you want to see a project that's simpler than this one, visit *https://github.com/ssooyeon/nodejs-react-mysql-basic*. Same as this project, task & calendar management page is excluded.
