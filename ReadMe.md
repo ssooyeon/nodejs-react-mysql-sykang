@@ -12,7 +12,9 @@
 2. register & login & logout
 3. crud function
 4. real-time chart
-5. redux & store
+5. draggable component
+6. calendar management
+7. redux & store
 
 # setting project
 
