@@ -1,12 +1,12 @@
 # What this project provides
 
-## server (node.js)
+## server (nodejs)
 
 1. crud api
 2. local system monitoring logic
 3. heroku deploy
 
-## client (react.js)
+## client (reactjs)
 
 1. default template
 2. register & login & logout
